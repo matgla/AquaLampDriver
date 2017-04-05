@@ -1,1 +1,1 @@
-"C:\Program Files\GNU ARM Eclipse\QEMU\2.7.0-201611282115-dev\bin\qemu-system-gnuarmeclipse.exe" -board STM32F4-Discovery -verbose --verbose --verbose --semihosting-config enable=on,target=native -d unimp,guest_errors -image bin\stm32BootLoader.bin -serial COM1
+"C:\Program Files\GNU ARM Eclipse\QEMU\2.7.0-201611282115-dev\bin\qemu-system-gnuarmeclipse.exe" -board STM32F4-Discovery -verbose --verbose --verbose --semihosting-config enable=on,target=native -d unimp,guest_errors -image bin\msos.bin -serial COM1

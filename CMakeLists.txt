@@ -28,7 +28,7 @@ if (BUILD_TARGET)
     include(CMake/STM32.cmake)
 endif (BUILD_TARGET)
 
-project(STM32BootLoader C CXX ASM)
+project(msos C CXX ASM)
 
 if (ASAN)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
@@ -73,16 +73,16 @@ if (BUILD_TARGET)
                 ${STM32_SOURCES}
                 ${STM32_STARTUP_SOURCE})
 
-    add_executable(stm32BootLoader.elf
+    add_executable(msos.elf
                 ${PROD_SOURCES})
 
-    target_link_libraries(stm32BootLoader.elf stm32lib ${STM32_LIBRARIES})
+    target_link_libraries(msos.elf stm32lib ${STM32_LIBRARIES})
 
-    add_custom_command(TARGET  POST_BUILD stm32BootLoader.elf
-        COMMAND ${ARM_TOOLCHAIN}/bin/arm-none-eabi-size --format=berkeley "stm32BootLoader.elf")
+    add_custom_command(TARGET  POST_BUILD msos.elf
+        COMMAND ${ARM_TOOLCHAIN}/bin/arm-none-eabi-size --format=berkeley "msos.elf")
 
-    add_custom_target(stm32BootLoader.hex DEPENDS stm32BootLoader.elf COMMAND ${CMAKE_OBJCOPY} -Oihex stm32BootLoader.elf stm32BootLoader.hex)
-    add_custom_target(stm32BootLoader.bin DEPENDS stm32BootLoader.elf COMMAND ${CMAKE_OBJCOPY} -Obinary stm32BootLoader.elf stm32BootLoader.bin)
+    add_custom_target(msos.hex DEPENDS msos.elf COMMAND ${CMAKE_OBJCOPY} -Oihex msos.elf msos.hex)
+    add_custom_target(msos.bin DEPENDS msos.elf COMMAND ${CMAKE_OBJCOPY} -Obinary msos.elf msos.bin)
 
     # If STM32 ST-Link Utility is found, add a make target to program the chip
     if(DEFINED STM32_STLINK_CLI_EXECUTABLE)
@@ -90,8 +90,8 @@ if (BUILD_TARGET)
         # -Q : quiet mode, no progress bar
         # -V : Verifies that the programming operation was performed successfully.
         # -P : program file (.hex)
-        set(STLINK_CMD ${STM32_STLINK_CLI_EXECUTABLE} -c SWD UR -P ${CMAKE_BINARY_DIR}/stm32BootLoader.hex)
-        add_custom_target(program-flash DEPENDS stm32BootLoader.hex COMMAND ${STLINK_CMD})
+        set(STLINK_CMD ${STM32_STLINK_CLI_EXECUTABLE} -c SWD UR -P ${CMAKE_BINARY_DIR}/msos.hex)
+        add_custom_target(program-flash DEPENDS msos.hex COMMAND ${STLINK_CMD})
     endif()
 endif (BUILD_TARGET)
 

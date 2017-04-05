@@ -15,7 +15,7 @@ if [ $RC -ne 0 ]; then
 fi
 
 echo "3. Generate binary"
-make stm32BootLoader.bin
+make msos.bin
 RC="$?"
 if [ $RC -ne 0 ]; then
     exit $RC

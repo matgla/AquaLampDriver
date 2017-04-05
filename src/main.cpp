@@ -1,24 +1,15 @@
-//#include "fs/romfs/fileSystemHeader.hpp"
 #include "stm32f4xx.h"
 #include <boost/sml.hpp>
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-// #include "stm32f4xx_rcc.h"
 #include "kernel.hpp"
 #include "logger.hpp"
-// #include "usart.hpp"
 #include "bootloader.hpp"
 #include "state_machine/bootloader_sm.hpp"
 #include "types.h"
 #include "utils.hpp"
-// //#include <stdio.h>
-// //#include "usart.hpp"
-// #include "kernel.hpp"
-// #include "logger.hpp"
-// #include "usart.hpp"
-// #include <cstdio>
-// #include <cstdlib>
 #include "usart.hpp"
 
 
@@ -103,7 +94,7 @@ int main(void)
     // sm.process_event(fin{});
 
     // sm.process_event(timeout{});
-
+    assert(0==1);
 
     while (1)
     {
