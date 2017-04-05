@@ -1,0 +1,11 @@
+127.0.0.1 4444
+WAIT "On-Chip"
+SEND "reset halt\m"
+WAIT "target state: halted"
+SEND "flash probe 0\m"
+WAIT "found at"
+SEND "stm32f4x mass_erase 0\m"
+WAIT "stm32x mass erase complete"
+SEND "flash write_bank 0 stm32bootloader.bin 0\m"
+WAIT "to flash bank"
+SEND "reset halt\m"

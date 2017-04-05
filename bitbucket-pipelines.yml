@@ -1,0 +1,17 @@
+# This is a sample build configuration for C++.
+# Check our guides at https://confluence.atlassian.com/x/VYk8Lw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: matgla/docker_stm:latest
+
+pipelines:
+  default:
+    - step:
+        script: # Modify the commands below to build your repository.
+          - sudo socat PTY,link=/dev/ttyS10 PTY,link=/dev/ttyS11 &
+          - sudo chown admin /dev/ttyS10 && chown admin /dev/ttyS11
+          - source /home/admin/.bashrc; ./sbs.py -brn
+          - source /home/admin/.bashrc; ./sbs.py -urn
+          - source /home/admin/.bashrc; ./sbs.py -sn
+          

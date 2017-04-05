@@ -1,0 +1,5 @@
+build: /mnt/source
+
+build:
+  context: /mnt/source
+  command: cd /mnt/source && generate.sh
