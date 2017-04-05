@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include "kernel.hpp"
 #include "logger.hpp"
-#include "bootloader.hpp"
 #include "state_machine/bootloader_sm.hpp"
 #include "types.h"
 #include "utils.hpp"

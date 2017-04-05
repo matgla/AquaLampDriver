@@ -6,8 +6,6 @@
 #include <stm32f4xx_usart.h>
 #include <system_stm32f4xx.h>
 
-
-#include "messages.hpp"
 #include "readerWriterBuffer.hpp"
 
 #define USART_WAIT(USARTx)                       \
