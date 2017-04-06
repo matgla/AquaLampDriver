@@ -11,7 +11,7 @@ taskList globalTaskList;
 
 volatile int pid = 1;
 
-void initialize() {
+void initialize_t() {
     pid = 1;
     globalTaskList.numberOfTasks = 0;
     globalTaskList.currentNode = NULL;
@@ -141,6 +141,7 @@ void configureTask(task *taskPtr, u32 functionAddress) {
 
 u32* scheduler() {
     globalTaskList.currentNode = globalTaskList.currentNode->nextNode;
+    printf("Context switch to: 0x%08x%d\n", globalTaskList.currentNode->task->sp);
     return globalTaskList.currentNode->task->sp;
 }
 
@@ -151,19 +152,21 @@ void initializeMultiTasking() {
 
 
 void SysTick_Handler(void)  {
-
-	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    write(0, "systick\n\0", 9);
+	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;  // Generate PendSV interrupt
 }
 
-int first = 1;
+volatile int first = 1;
 
 void PendSV_Handler(void)
 {
+    printf("pendSv\n");
   if(first == 1) {
     first++;
 	} else {
-		globalTaskList.currentNode->task->sp = get_PSP() - 9;
+		globalTaskList.currentNode->task->sp = get_PSP() - 9; 
 	}
 
+    
 	context_switch(scheduler());
 }

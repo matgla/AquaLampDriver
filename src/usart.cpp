@@ -78,42 +78,42 @@ void USART<UsartNumber>::send(const char* str, int size)
     }
 }
 
-template <USARTS UsartNumber>
-void USART<UsartNumber>::sendMessage(u8* payload, u8 size)
-{
-    send(size);
-    send(payload, size);
-    waitForAck(10);
-}
+// template <USARTS UsartNumber>
+// void USART<UsartNumber>::sendMessage(u8* payload, u8 size)
+// {
+//     send(size);
+//     send(payload, size);
+//     waitForAck(10);
+// }
 
-template <USARTS UsartNumber>
-u8 USART<UsartNumber>::getMessage(u8* buffer)
-{
-    Logger logger("USART");
-    u8 msgSize = 1;
-    int index = 0;
-    bool receivedSize = false;
-    while (index < msgSize)
-    {
-        if (getBuffer().size())
-        {
-            if (!receivedSize)
-            {
-                msgSize = getBuffer().getByte();
-                logger << Level::INFO << "Received size: " << msgSize << "\n";
-                logger << Level::INFO << "Data: ";
-                receivedSize = true;
-            }
-            else
-            {
-                buffer[index++] = getBuffer().getByte();
-                logger << buffer[index - 1];
-            }
-        }
-    }
-    logger << " \n";
-    return msgSize;
-}
+// template <USARTS UsartNumber>
+// u8 USART<UsartNumber>::getMessage(u8* buffer)
+// {
+//     Logger logger("USART");
+//     u8 msgSize = 1;
+//     int index = 0;
+//     bool receivedSize = false;
+//     while (index < msgSize)
+//     {
+//         if (getBuffer().size())
+//         {
+//             if (!receivedSize)
+//             {
+//                 msgSize = getBuffer().getByte();
+//                 logger << Level::INFO << "Received size: " << msgSize << "\n";
+//                 logger << Level::INFO << "Data: ";
+//                 receivedSize = true;
+//             }
+//             else
+//             {
+//                 buffer[index++] = getBuffer().getByte();
+//                 logger << buffer[index - 1];
+//             }
+//         }
+//     }
+//     logger << " \n";
+//     return msgSize;
+// }
 
 template <USARTS UsartNumber>
 USART<UsartNumber>::USART()
@@ -205,69 +205,69 @@ void USART<UsartNumber>::wait()
     };
 }
 
-template <USARTS UsartNumber>
-i16 USART<UsartNumber>::findMessageInBuffer(u8 msgId, u8& msgSize)
-{
-    while (true)
-    {
-        msgSize = 1;
+// template <USARTS UsartNumber>
+// i16 USART<UsartNumber>::findMessageInBuffer(u8 msgId, u8& msgSize)
+// {
+//     while (true)
+//     {
+//         msgSize = 1;
 
-        int index = 0;
-        u16 readerIndex = 0;
-        bool receivedSize = false;
-        // receive message
-        while (index < msgSize)
-        {
-            u8 value;
-            if (!buffer_.getValue(readerIndex, value))
-            {
-                return -1;
-            }
-            if (!receivedSize)
-            {
-                msgSize = value;
-                receivedSize = true;
-            }
-            else
-            {
-                if (0 == index)
-                {
-                    if (msgId == value)
-                    {
-                        return readerIndex;
-                    }
-                }
-                ++index;
-            }
-            ++readerIndex;
-        }
-    }
-}
+//         int index = 0;
+//         u16 readerIndex = 0;
+//         bool receivedSize = false;
+//         // receive message
+//         while (index < msgSize)
+//         {
+//             u8 value;
+//             if (!buffer_.getValue(readerIndex, value))
+//             {
+//                 return -1;
+//             }
+//             if (!receivedSize)
+//             {
+//                 msgSize = value;
+//                 receivedSize = true;
+//             }
+//             else
+//             {
+//                 if (0 == index)
+//                 {
+//                     if (msgId == value)
+//                     {
+//                         return readerIndex;
+//                     }
+//                 }
+//                 ++index;
+//             }
+//             ++readerIndex;
+//         }
+//     }
+// }
 
-template <USARTS UsartNumber>
-void USART<UsartNumber>::removeDataFromBuffer(i16 pos, u8 nrOfBytes)
-{
-    for (int i = 0; i < nrOfBytes; ++i)
-    {
-        buffer_.removeAt(pos);
-    }
-}
+// template <USARTS UsartNumber>
+// void USART<UsartNumber>::removeDataFromBuffer(i16 pos, u8 nrOfBytes)
+// {
+//     for (int i = 0; i < nrOfBytes; ++i)
+//     {
+//         buffer_.removeAt(pos);
+//     }
+// }
 
-template <USARTS UsartNumber>
-void USART<UsartNumber>::waitForAck(u32 timeout)
-{
-    Logger logger("USART");
-    u8 size = 0;
-    short int pos = -1;
-    // find ack message
-    while (pos == -1)
-    {
-        pos = findMessageInBuffer(static_cast<u8>(Messages::ACK), size);
-    }
+// template <USARTS UsartNumber>
+// void USART<UsartNumber>::waitForAck(u32 timeout)
+// {
+//     Logger logger("USART");
+//     u8 size = 0;
+//     short int pos = -1;
+//     // find ack message
+//     while (pos == -1)
+//     {
+//         pos = findMessageInBuffer(static_cast<u8>(Messages::ACK), size);
+//     }
 
-    // remove ack message
-    removeDataFromBuffer(pos, size);
-}
+//     // remove ack message
+//     // removeDataFromBuffer(pos, size);
+// }
 
 template <USARTS UsartNumber>
 bool USART<UsartNumber>::isTransmissionOngoing()
@@ -285,22 +285,7 @@ void USART<UsartNumber>::setTransmissionOngoing(bool ongoing)
 template <USARTS UsartNumber>
 void USART<UsartNumber>::receive(u8 data)
 {
-    if (!transmissionOngoing_)
-    {
-        transmissionOngoing_ = true;
-        nrOfBytesToReceive_ = data;
-        buffer_.write(data);
-        return;
-    }
-
     buffer_.write(data);
-    --nrOfBytesToReceive_;
-    if (nrOfBytesToReceive_ == 0)
-    {
-        transmissionOngoing_ = false;
-        Ack ack;
-        send(reinterpret_cast<u8*>(&ack), sizeof(Ack));
-    }
 }
 
 

@@ -65,7 +65,7 @@ if (BUILD_TARGET)
 
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${CMAKE_SOURCE_DIR}/lkr/stm32f407vg_flash.ld --specs=nano.specs")
 
-    file(GLOB_RECURSE PROD_SOURCES "src/*.c" "src/*.cpp" "src/*.h" "src/*.hpp")
+    file(GLOB_RECURSE PROD_SOURCES "src/*.c" "src/*.cpp" "src/*.h" "src/*.hpp" "src/*.S")
 
     message("${PROD_SOURCES}")
 

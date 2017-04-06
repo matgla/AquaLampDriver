@@ -87,7 +87,7 @@ taskReturns deleteTaskFromList(u8 pid);
 listNode* findTask(u8 searchingPid);
 listNode* findTaskReturnPrev(u8 searchingPid);
 void configureTask(task *taskPtr, u32 functionAddress);
-void initialize();
+void initialize_t();
 int contextSwitch();
 u32* scheduler();
 u8 nextFreePid();

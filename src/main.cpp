@@ -11,6 +11,8 @@
 #include "utils.hpp"
 #include "usart.hpp"
 
+#include "tasking.h"
+
 
 // namespace sml = boost::sml;
 
@@ -51,6 +53,29 @@
 //     }
 // };
 
+Logger l1("WUNTEK1");
+Logger l2("WUNTEK2");
+
+void handler1()
+{
+    while(true)
+    {
+         //l1 << Level::INFO << "Wontek 1\n";
+         printf("wontek1\n");
+         DelayS(1);
+    }
+}
+
+void handler2()
+{
+    while(true)
+    {
+        printf("wontek2\n");
+        DelayS(1);
+
+    }
+}
+
 int main(void)
 {
     SystemInit();
@@ -63,6 +88,20 @@ int main(void)
     // GPIO_SetBits(GPIOD, GPIO_Pin_14);
 
     hardwareInitialize();
+    
+    task t1, t2;
+    initialize_t();
+
+    configureTask(&t1, (u32)handler1);
+    configureTask(&t2, (u32)handler2);
+
+
+    addTaskToList(&t1);
+    addTaskToList(&t2);
+
+    initializeMultiTasking();
+    
+    
     boost::sml::sm<BootLoaderSm> sm{logger};
 
     sm.process_event(evInitialize{});
@@ -93,7 +132,6 @@ int main(void)
     // sm.process_event(fin{});
 
     // sm.process_event(timeout{});
-    assert(0==1);
 
     while (1)
     {

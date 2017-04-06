@@ -7,6 +7,8 @@
 
 namespace sml = boost::sml;
 
+void* __dso_handle;
+
 void initializeBoardLeds()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -22,7 +24,7 @@ void initializeBoardLeds()
 class Initial;
 class Initialized;
 class BootModeDetected;
-class Bootloader;
+class BootLoader;
 class BootFw;
 
 // clang-format off

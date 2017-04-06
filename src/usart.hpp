@@ -41,13 +41,13 @@ class USART
     void send(char* str);
     void send(u8* str, int size);
     void send(const char* str, int size);
-    void sendMessage(u8* message, u8 size);
-    u8 getMessage(u8* buffer);
+    // void sendMessage(u8* message, u8 size);
+    // u8 getMessage(u8* buffer);
     bool isTransmissionOngoing();
     void setTransmissionOngoing(bool ongoing);
     void receive(u8 data);
     void flush();
-    void waitForAck(u32 timeout);
+    // void waitForAck(u32 timeout);
 
   private:
     USART();
@@ -57,8 +57,8 @@ class USART
     void USARTInit();
     void InitClocks();
     void wait();
-    i16 findMessageInBuffer(u8 msgId, u8& size);
-    void removeDataFromBuffer(i16 pos, u8 nrOfBytes);
+    // i16 findMessageInBuffer(u8 msgId, u8& size);
+    // void removeDataFromBuffer(i16 pos, u8 nrOfBytes);
 
 
     GPIO_TypeDef* gpioPortRx_;
