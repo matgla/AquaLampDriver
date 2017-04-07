@@ -40,6 +40,14 @@ if (LSAN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak")
 endif (LSAN)
 
+if(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
+    message("build debug")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+else(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -os")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -os")
+endif(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
 
 include_directories(libs/include)
 

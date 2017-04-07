@@ -1,15 +1,20 @@
 .thumb
 .syntax unified
 
-.global context_switch
-context_switch:
+.global store_context
+store_context:
 
-mrs r1, psp
-stmdb r1!, {r4 - r11, lr}
-
-ldmia r0!, {r4 - r11, lr}
+mrs r0, psp
+stmdb r0!, {r4 - r11}
 msr psp, r0
+bx lr
 
+.global load_context
+load_context:
+
+mrs r0, psp
+ldmia r0!, {r4 - r11}
+msr psp, r0
 bx lr
 
 .global continue_user_task
