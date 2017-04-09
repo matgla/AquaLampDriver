@@ -53,28 +53,47 @@
 //     }
 // };
 
-Logger l1("WUNTEK1");
-Logger l2("WUNTEK2");
 
 void handler1()
 {
+    //Logger l1("WUNTEK1");
+
     while(true)
     {
-         //l1 << Level::INFO << "Wontek 1\n";
-         printf("wontek1\n");
-         DelayS(1);
+        // l1  << "Wontek 1\n";
+        printf("w1\n");
+        // DelayS(1);
+        // asm("SVC 1\n");
+        // SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
     }
 }
 
 void handler2()
 {
+    //Logger l2("WUNTEK2");
+
     while(true)
     {
-        printf("wontek2\n");
-        DelayS(1);
 
+       printf("w2\n");
+       // DelayS(1);
+        //asm("SVC 1\n");
     }
 }
+
+void handler3()
+{
+    //Logger l2("WUNTEK2");
+
+    while(true)
+    {
+
+       printf("w3\n");
+       // DelayS(1);
+        //asm("SVC 1\n");
+    }
+}
+
 
 int main(void)
 {
@@ -89,17 +108,16 @@ int main(void)
 
     hardwareInitialize();
     
-    task t1, t2;
+    task t1, t2, t3;
     initialize_t();
 
     configureTask(&t1, (u32)handler1);
     configureTask(&t2, (u32)handler2);
-
+configureTask(&t3, (u32)handler3);
 
     addTaskToList(&t1);
-    addTaskToList(&t2);
-
-    initializeMultiTasking();
+   addTaskToList(&t2);
+ addTaskToList(&t3);
     
     
     boost::sml::sm<BootLoaderSm> sm{logger};
@@ -107,6 +125,7 @@ int main(void)
     sm.process_event(evInitialize{});
     sm.process_event(evGetBootMode{});
     sm.process_event(evBoot{});
+    // asm("SVC 1\n");
     // BootLoader bl(logger);
     //logger << Level::INFO << "Bootloader started\r";
 
@@ -132,9 +151,13 @@ int main(void)
     // sm.process_event(fin{});
 
     // sm.process_event(timeout{});
-
+    
+   initializeMultiTasking();
+  multi_start();
+    printf("go further\n");
     while (1)
     {
+        //printf("Iam in loop\n");
     }
 }
 

@@ -39,6 +39,8 @@ def main():
                         help='leak sanitizer')
     parser.add_argument('-e', '--asan', dest='asan', action='store_true',
                         help='address sanitizer')
+    parser.add_argument('-k', '--flash', dest='flash', action='store_true',
+                        help='flash target')
 
     args = parser.parse_args()
 

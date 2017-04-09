@@ -1,19 +1,29 @@
 .thumb
 .syntax unified
 
-.global store_context
-store_context:
+.global context_switch
+context_switch:
 
-mrs r0, psp
-stmdb r0!, {r4 - r11}
+ldmia r0!, {r4 - r11}
 msr psp, r0
+mov r0, #0x03
+msr control, r0
 bx lr
 
 .global load_context
 load_context:
-
 mrs r0, psp
-ldmia r0!, {r4 - r11}
+ldmia r0!, {r4 - r11, lr}
+msr psp, r0
+;mov r0, #0x03
+;msr control, r0
+
+bx lr
+
+.global store_context
+store_context:
+mrs r0, psp
+stmdb r0!, {r4 - r11, lr}
 msr psp, r0
 bx lr
 

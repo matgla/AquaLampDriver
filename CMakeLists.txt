@@ -17,7 +17,7 @@ option(BUILD_TESTS OFF "Build all tests")
 option(BUILD_TARGET OFF "Build target")
 
 if (BUILD_TARGET)
-
+	message("Build target")
     # Add the 'Modules' folder to the search path for FindXXX.cmake files
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
 

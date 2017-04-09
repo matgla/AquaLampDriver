@@ -69,3 +69,5 @@ class Runner:
             self.commands_to_run.append(self.builder.build_unit_tests())
         if self.args.st or self.args.all_tests:
             self.commands_to_run.append(self.builder.run_system_tests())
+        if self.args.flash:
+            self.commands_to_run.append(self.builder.flash_target())

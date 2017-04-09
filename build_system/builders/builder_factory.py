@@ -15,3 +15,6 @@ class BuilderFactory:
         
     def run_system_tests(self):
         raise NotImplementedError("Please implement this abstract method")
+
+    def flash_target(self):
+        raise NotImplementedError("Please implement this abstract method")

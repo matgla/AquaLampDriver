@@ -17,3 +17,6 @@ class NativeBuilderFactory(BuilderFactory):
         
     def run_system_tests(self):
         return native_builders.NativeSystemTestBuilder()
+
+    def flash_target(self):
+        return native_builders.NativeFlashTarget()

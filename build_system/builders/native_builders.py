@@ -33,8 +33,9 @@ class NativeUnitTestBuilder(NativeDefaultBuilder):
     def get_cmd(self):
         return "cd scripts && ./test_ut.sh"
         
-class NativeSystemTestBuilder(NativeDefaultBuilder):
+class NativeFlashTarget(NativeDefaultBuilder):
     def get_cmd_name(self):
-        return "run system tests"
+        return "flash target"
     def get_cmd(self):
-        return "cd scripts && ./test_st.sh"
+        return "cd scripts && ./flash.sh"
+

@@ -17,3 +17,6 @@ class DockerBuilderFactory(BuilderFactory):
 
     def run_system_tests(self):
         return docker_builders.DockerSystemTestRunner()
+
+    def flash_target(self):
+        return
