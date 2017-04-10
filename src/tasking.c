@@ -127,26 +127,10 @@ void task_finish()
 }
 
 void configureTask(task *taskPtr, u32 functionAddress) {
-
-
-	/* Create the stack */
 	void* stack = taskPtr->taskStack;
     
 	coreRegisters* core = (coreRegisters*)(stack + USER_STACK_SIZE*sizeof(u32) - sizeof(coreRegisters) - sizeof(hwRegisters));
 	hwRegisters* hw = (hwRegisters*)(stack + USER_STACK_SIZE*sizeof(u32) - sizeof(hwRegisters));
-
-    // 	/* Create the stack */
-	// u32* stack = taskPtr->taskStack;
-    
-	// coreRegisters* core = (coreRegisters*)(stack + USER_STACK_SIZE - sizeof(coreRegisters) - sizeof(hwRegisters));
-	// hwRegisters* hw = (hwRegisters*)(stack + USER_STACK_SIZE - sizeof(hwRegisters));
-    
-
-	// // hwReg.psr = DEFAULT_PSR_STATUS;
-	// // hwReg.lr = (u32)task_finish;
-	// // hwReg.pc = functionAddress;
-
-    // // coreReg.lr = RETURN_THREAD_NONFP_PSP;
 
 
     if (first) { // First task should be sleep task ( idle task ), and lr points to function address, because it won't be started in handle mode 
@@ -161,59 +145,6 @@ void configureTask(task *taskPtr, u32 functionAddress) {
 	}
 
     taskPtr->sp = (void*)core;
-    
-    // if (first) { // First task should be sleep task ( idle task ), and lr points to function address, because it won't be started in handle mode 
-	// 	stack[8] = (unsigned int) functionAddress;
-	// 	stack[9] = (unsigned int) 0;
-    //     stack[14] = (unsigned) &task_finish;
-	// 	stack[15] = (unsigned int) functionAddress;
-	// 	stack[16] = (unsigned int) 0x01000000; /* PSR Thumb bit */
-	// 	first = 0;
-	// } else {
-	// 	stack[8] = (unsigned int) RETURN_THREAD_NONFP_PSP;
-	// 	stack[9] = (unsigned int) 0;
-	// 	stack[14] = (unsigned) &task_finish;
-	// 	stack[15] = (unsigned int) functionAddress;
-	// 	stack[16] = (unsigned int) 0x01000000; /* PSR Thumb bit */
-	// }
-
-    // taskPtr->sp = stack;
-    
-    // coreRegisters coreReg;
-	// hwRegisters hwReg;
-
-    // int allocationSize = sizeof(u32)*USER_STACK_SIZE;
-
-	// hwReg.psr = DEFAULT_PSR_STATUS;
-	// hwReg.lr = (u32)task_finish;
-	// hwReg.pc = functionAddress;
-
-    // coreReg.lr = RETURN_THREAD_NONFP_PSP;
-
-
-    // hwReg.r0 = 0xabda;
-    // hwReg.r1 = 0x1111;
-    // hwReg.r2 = 0x2222;
-    // hwReg.r3 = 0x3333;
-    // hwReg.r12 = 0xcccc;
-
-    // coreReg.r4 = 0x4444;
-    // coreReg.r5 = 0x5555;
-    // coreReg.r6 = 0x6666;
-    // coreReg.r7 = 0x7777;
-    // coreReg.r8 = 0x8888;
-    // coreReg.r9 = 0x9999;
-    // coreReg.r10 = 0xaaaa;
-    // coreReg.r11 = 0xbbbb;
-
-    // //taskPtr->taskStack = (u32*)malloc(allocationSize);
-    // taskPtr->spEnd = taskPtr->taskStack + allocationSize;
-    // u8* sp = (u8*)taskPtr->taskStack;
-    // memcpy(sp + allocationSize - sizeof(hwRegisters), &hwReg, sizeof(hwRegisters));
-    // memcpy(sp + allocationSize - sizeof(hwRegisters) - sizeof(coreRegisters), &coreReg, sizeof(coreRegisters));
-    // taskPtr->sp = sp + allocationSize - sizeof(hwRegisters) - sizeof(coreRegisters);
-    // taskPtr->status = STOPPED;
-
 }
 
 void scheduler() {
@@ -224,7 +155,7 @@ void scheduler() {
 void initializeMultiTasking() {
 	//initialize();
     NVIC_SetPriorityGrouping( 0b011 );
-SysTick_Config(1000000);
+    initalizeSysTick(1);
     __set_BASEPRI( 0 );
     NVIC_SetPriority( PendSV_IRQn, 0xFF );
 
@@ -249,10 +180,6 @@ void multi_start()
     asm volatile("msr control, r0\n");
     asm volatile("isb\n");
     asm volatile("bx lr\n");
-}
-
-void SysTick_Handler(void)  {
-	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 
 void __attribute__((naked)) PendSV_Handler(void)

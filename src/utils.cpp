@@ -1,5 +1,5 @@
 #include "utils.hpp"
-
+#include "systick.hpp"
 
 /*
 ** reverse string in place 
@@ -43,10 +43,20 @@ void itoa(int n, char * s, int base_n)
  }
 }
 
- 
+void DelayUs(u32 time_us)
+{
+    auto ticks_start = getTicks();
+    auto ticks = getTicks();
+    while (((ticks = getTicks()) - ticks_start) < time_us/10) {
+        asm volatile("wfi");
+    }
+}
 
- void DelayS(u32 time) {
-   for(int i = 0; i < 1000; i++) {
-    for (int j = 0; j < time * 100; j++) {}
-   }
- }
+void Delay(u32 time_ms)
+{
+    DelayUs(1000*time_ms);
+}
+
+void DelayS(u32 time) {
+    Delay(1000*time);
+}

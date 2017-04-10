@@ -61,10 +61,11 @@ void handler1()
     while(true)
     {
         // l1  << "Wontek 1\n";
-        printf("w1\n");
+        //printf("w1\n");
         // DelayS(1);
         // asm("SVC 1\n");
         // SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+        asm("wfi");
     }
 }
 
@@ -76,6 +77,7 @@ void handler2()
     {
 
        printf("w2\n");
+       DelayS(1);
        // DelayS(1);
         //asm("SVC 1\n");
     }
@@ -89,7 +91,7 @@ void handler3()
     {
 
        printf("w3\n");
-       // DelayS(1);
+       DelayS(1);
         //asm("SVC 1\n");
     }
 }
