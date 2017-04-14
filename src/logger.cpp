@@ -54,10 +54,10 @@ const char* Logger::getLevelString(const Level& level)
 
 const char* Logger::getTimeString()
 {
-    // auto t = std::time(nullptr);
-    // struct tm *currentTime = std::localtime(&t);
-    //std::strftime(buffer, TIME_BUFFER_SIZE, "%m/%d/%y %H:%M:%S", currentTime);
-    return "00/00/00 00:00:00"; // TODO: Maybe it is possible to optimize size ?
+    auto t = std::time(nullptr);
+    struct tm *currentTime = std::localtime(&t);
+    std::strftime(buffer, TIME_BUFFER_SIZE, "%m/%d/%y %H:%M:%S", currentTime);
+    return buffer; // TODO: Maybe it is possible to optimize size ?
 }
 
 // void logLine(Level level, const char *format, ...)

@@ -5,16 +5,20 @@
 #include <sys/time.h>
 #include <errno.h>
 
+#include "stm32f4xx_rtc.h"
+
 
 #include "usart.hpp"
 
 
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
-    uint64_t t = 0;                        // get uptime in nanoseconds
+    tm td = {0};
+    td.tm_year = 117;
+    uint64_t t = 12345;mktime(&td);                        // get uptime in nanoseconds
     tv->tv_sec = t / 1000000000;           // convert to seconds
     tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds
-    return 0;                              // return non-zero for error
+    return t;                              // return non-zero for error
 }
 
 #undef errno
