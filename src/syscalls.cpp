@@ -94,7 +94,7 @@ caddr_t _sbrk(int incr)
 
 int _write(int file, const char* ptr, int len)
 {
-    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send('ptr, len');
+    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send(ptr, len);
 
     return len;
 }

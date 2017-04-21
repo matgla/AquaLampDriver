@@ -76,11 +76,47 @@
 //   RTC_WriteBackupRegister(RTC_BKP_DR0, 0x32F2);
 // }
 
+/*
+TIM3_CH1 PA6
+TIM3_CH2 PA7
+TIM3_CH3 PB0
+TIM4_CH4 PB1
+
+TIM2_CH1 PA0
+TIM2_CH2 PA1
+TIM2_CH3 PA2
+TIM2_CH4 PA3
+*/
+void initializeBoardLeds()
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA, ENABLE);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
+}
+extern "C" {void TIM2_IRQHandler();}
+void TIM2_IRQHandler()
+{
+ if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
+ {
+ TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+ 
+ if (GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_12))
+ GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+ else
+ GPIO_SetBits(GPIOB, GPIO_Pin_12);
+ } 
+}
+ 
+
 int main(void)
 {
     SystemInit();
-    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send("ready", 5);
-
+    initializeBoardLeds();
+    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send("ready\n\0", 6);
+    GPIO_ResetBits(GPIOB, GPIO_Pin_12);
     Logger logger("boot\0");
 
     hardwareInitialize();
@@ -91,15 +127,115 @@ int main(void)
     sm.process_event(evGetBootMode{});
     sm.process_event(evBoot{});
 
-    logger << Level::INFO << "Jadymt\n";
+    logger << Level::INFO << "Jadymy z tematem\n";
    
+     GPIO_InitTypeDef gpio;
+    TIM_TimeBaseInitTypeDef tim;
+    NVIC_InitTypeDef nvic;
+     TIM_OCInitTypeDef  channel;
+
+ RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+    logger << Level::INFO << "Timer enabled\n";
+    
+   GPIO_StructInit(&gpio);
+ gpio.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_0|GPIO_Pin_1;
+ gpio.GPIO_Speed = GPIO_Speed_50MHz;
+ gpio.GPIO_Mode = GPIO_Mode_AF_PP;
+ GPIO_Init(GPIOB, &gpio);
+
+    TIM_TimeBaseStructInit(&tim);
+ tim.TIM_CounterMode = TIM_CounterMode_Up;
+ tim.TIM_Prescaler = 101 - 1;
+ tim.TIM_Period = 100 - 1;
+ TIM_TimeBaseInit(TIM4, &tim);
+ 
+ TIM_OCStructInit(&channel);
+ channel.TIM_OCMode = TIM_OCMode_PWM1;
+ channel.TIM_OutputState = TIM_OutputState_Enable;
+ channel.TIM_Pulse = 50;
+ TIM_OC1Init(TIM4, &channel);
+ channel.TIM_Pulse = 60;
+ TIM_OC2Init(TIM4, &channel);
+ channel.TIM_Pulse = 70;
+ TIM_OC3Init(TIM4, &channel);
+ channel.TIM_Pulse = 80;
+  TIM_OC4Init(TIM4, &channel);
+ 
+ TIM_Cmd(TIM4, ENABLE);
+
+
+ //
+RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+    logger << Level::INFO << "Timer enabled\n";
+    
+   GPIO_StructInit(&gpio);
+ gpio.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;
+ gpio.GPIO_Speed = GPIO_Speed_50MHz;
+ gpio.GPIO_Mode = GPIO_Mode_AF_PP;
+ GPIO_Init(GPIOA, &gpio);
+
+    TIM_TimeBaseStructInit(&tim);
+ tim.TIM_CounterMode = TIM_CounterMode_Up;
+ tim.TIM_Prescaler = 101 - 1;
+ tim.TIM_Period = 100 - 1;
+ TIM_TimeBaseInit(TIM3, &tim);
+ 
+ TIM_OCStructInit(&channel);
+ channel.TIM_OCMode = TIM_OCMode_PWM1;
+ channel.TIM_OutputState = TIM_OutputState_Enable;
+ channel.TIM_Pulse = 10;
+ TIM_OC1Init(TIM3, &channel);
+ channel.TIM_Pulse = 50;
+ TIM_OC2Init(TIM3, &channel);
+ channel.TIM_Pulse = 80;
+ TIM_OC3Init(TIM3, &channel);
+ channel.TIM_Pulse = 95;
+  TIM_OC4Init(TIM3, &channel);
+ 
+ TIM_Cmd(TIM3, ENABLE);
+
+ //
+
+
+ RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+    logger << Level::INFO << "Timer enabled\n";
+    
+   GPIO_StructInit(&gpio);
+ gpio.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3;
+ gpio.GPIO_Speed = GPIO_Speed_50MHz;
+ gpio.GPIO_Mode = GPIO_Mode_AF_PP;
+ GPIO_Init(GPIOA, &gpio);
+
+     TIM_TimeBaseStructInit(&tim);
+ tim.TIM_CounterMode = TIM_CounterMode_Up;
+ tim.TIM_Prescaler = 101 - 1;
+ tim.TIM_Period = 100 - 1;
+ TIM_TimeBaseInit(TIM2, &tim);
+ 
+ TIM_OCStructInit(&channel);
+ channel.TIM_OCMode = TIM_OCMode_PWM1;
+ channel.TIM_OutputState = TIM_OutputState_Enable;
+ channel.TIM_Pulse = 10;
+ TIM_OC1Init(TIM2, &channel);
+ channel.TIM_Pulse = 20;
+ TIM_OC2Init(TIM2, &channel);
+ channel.TIM_Pulse = 30;
+ TIM_OC3Init(TIM2, &channel);
+ channel.TIM_Pulse = 40;
+  TIM_OC4Init(TIM2, &channel);
+ 
+ TIM_Cmd(TIM2, ENABLE);
+    logger << Level::INFO << "Pwm Enabled\n";
+  //  TIM_Cmd(TIM2, ENABLE);
+    
+    logger << Level::INFO << "NVIC reconfigured\n";
     while (1)
     {
-        //printf("Iam in loop\n");
+        printf("Iam in loop\n");
         int i = 0;
         for(int j = 0; j < 1000000; j++)
         {
-            for (int y = 0; y < 10000; y++)
+            for (int y = 0; y < 10; y++)
             {
                 i += i;
             }
