@@ -1,5 +1,4 @@
-#include "stm32f4xx.h"
-#include "stm32f4xx_rtc.h"
+#include "stm32includes.hpp"
 #include <boost/sml.hpp>
 #include <cassert>
 #include <cstdlib>
@@ -11,8 +10,6 @@
 #include "types.h"
 #include "utils.hpp"
 #include "usart.hpp"
-
-#include "tasking.h"
 
 // __IO uint32_t uwAsynchPrediv = 0;
 // __IO uint32_t uwSynchPrediv = 0;
@@ -82,7 +79,7 @@
 int main(void)
 {
     SystemInit();
-    hw::USART<hw::USARTS::USART1_PP1>::getUsart();
+    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send("ready", 5);
 
     Logger logger("boot\0");
 
@@ -93,6 +90,8 @@ int main(void)
     sm.process_event(evInitialize{});
     sm.process_event(evGetBootMode{});
     sm.process_event(evBoot{});
+
+    logger << Level::INFO << "Jadymt\n";
    
     while (1)
     {

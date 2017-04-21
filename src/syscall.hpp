@@ -1,5 +1,3 @@
-#include "stm32f4xx_conf.h"
-
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>

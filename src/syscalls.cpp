@@ -1,11 +1,9 @@
-#include "stm32f4xx_conf.h"
+#include "stm32includes.hpp"
 #include "syscall.hpp"
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <errno.h>
-
-#include "stm32f4xx_rtc.h"
 
 
 #include "usart.hpp"
@@ -96,7 +94,7 @@ caddr_t _sbrk(int incr)
 
 int _write(int file, const char* ptr, int len)
 {
-    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send(ptr, len);
+    hw::USART<hw::USARTS::USART1_PP1>::getUsart().send('ptr, len');
 
     return len;
 }

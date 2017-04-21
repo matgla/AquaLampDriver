@@ -133,24 +133,28 @@ void USART<UsartNumber>::init()
 {
     USART_DeInit(USARTx_);
     InitClocks();
-    GPIOInit(gpioPinTx_, gpioPinSourceTx_, gpioAF_, gpioPortTx_);
-    GPIOInit(gpioPinRx_, gpioPinSourceRx_, gpioAF_, gpioPortRx_);
+    GPIOInit(gpioPinTx_, gpioPortTx_);
+   // GPIOInit(gpioPinRx_, gpioPortRx_);
     NVICInit();
     USARTInit();
 }
 
 template <USARTS UsartNumber>
-void USART<UsartNumber>::GPIOInit(u16 pin, u16 pinSource, u16 afUsart, GPIO_TypeDef* port)
+void USART<UsartNumber>::GPIOInit(u16 pin, GPIO_TypeDef* port)
 {
     GPIO_InitTypeDef gpioInit;
 
-    GPIO_PinAFConfig(port, pinSource, afUsart);
+   // GPIO_PinAFConfig(port, pinSource, afUsart);
 
-    gpioInit.GPIO_Pin = pin;
-    gpioInit.GPIO_Mode = GPIO_Mode_AF;
-    gpioInit.GPIO_OType = GPIO_OType_PP;
-    gpioInit.GPIO_Speed = GPIO_Low_Speed;
-    gpioInit.GPIO_PuPd = GPIO_PuPd_UP;
+    gpioInit.GPIO_Pin = gpioPinRx_;
+    gpioInit.GPIO_Mode = GPIO_Mode_IN_FLOATING; // GPIO_Mode_AF stm32f4xx
+    //gpioInit.GPIO_OType = GPIO_OType_PP;
+    //gpioInit.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(port, &gpioInit);
+
+    gpioInit.GPIO_Pin = gpioPinTx_;
+    gpioInit.GPIO_Speed = GPIO_Speed_50MHz;
+    gpioInit.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_Init(port, &gpioInit);
 }
 
@@ -169,6 +173,7 @@ template <USARTS UsartNumber>
 void USART<UsartNumber>::NVICInit()
 {
     NVIC_InitTypeDef init;
+    
     init.NVIC_IRQChannel = usartIrqn_;
     init.NVIC_IRQChannelCmd = ENABLE;
     init.NVIC_IRQChannelPreemptionPriority = 6;
@@ -303,7 +308,6 @@ void USART<UsartNumber>::flush()
 template <>
 USART<USARTS::USART1_PP1>::USART()
     : gpioPortRx_(GPIOA), gpioPortTx_(GPIOA), gpioPinRx_(GPIO_Pin_10), gpioPinTx_(GPIO_Pin_9),
-      gpioPinSourceRx_(GPIO_PinSource10), gpioPinSourceTx_(GPIO_PinSource9), gpioAF_(GPIO_AF_USART1),
       usartIrqn_(USART1_IRQn), transmissionOngoing_(false)
 {
     USARTx_ = USART1;
@@ -334,52 +338,10 @@ bool USART<USARTS::USART1_PP1>::initialized()
 template <>
 void USART<USARTS::USART1_PP1>::InitClocks()
 {
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_USART1, ENABLE);
 }
 
-/////////////////////////////////////////////
-//     specializations for USART2_PP1
-/////////////////////////////////////////////
-template <>
-USART<USARTS::USART2_PP1>::USART()
-    : gpioPortRx_(GPIOB), gpioPortTx_(GPIOB), gpioPinRx_(GPIO_Pin_11), gpioPinTx_(GPIO_Pin_10),
-      gpioPinSourceRx_(GPIO_PinSource11), gpioPinSourceTx_(GPIO_PinSource10), gpioAF_(GPIO_AF_USART3),
-      usartIrqn_(USART3_IRQn), transmissionOngoing_(false)
-{
-    USARTx_ = USART3;
-    init();
-}
-
-bool wasUsart2Initialized = false;
-
-template <>
-USART<USARTS::USART2_PP1>& USART<USARTS::USART2_PP1>::getUsart()
-{
-    static USART s2;
-    wasUsart2Initialized = true;
-    return s2;
-}
-
-template <>
-bool USART<USARTS::USART2_PP1>::initialized()
-{
-    return wasUsart2Initialized;
-}
-
-template <>
-void USART<USARTS::USART2_PP1>::InitClocks()
-{
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-}
-
-template class
-    USART<USARTS::USART1_PP1>;
-
-template class
-    USART<USARTS::USART2_PP1>;
-}
+template class USART<USARTS::USART1_PP1>;
 
 void USART1_IRQHandler(void)
 {
@@ -390,11 +352,4 @@ void USART1_IRQHandler(void)
     }
 }
 
-void USART2_IRQHandler(void)
-{
-    if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
-    {
-        char c = USART2->DR;
-        hw::USART<hw::USARTS::USART2_PP1>::getUsart().receive(c);
-    }
-}
+}  // namespace hw

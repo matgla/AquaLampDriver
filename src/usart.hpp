@@ -2,9 +2,8 @@
 
 #include "utils.hpp"
 #include <cstdint>
-#include <stm32f4xx_gpio.h>
-#include <stm32f4xx_usart.h>
-#include <system_stm32f4xx.h>
+#include "stm32includes.hpp"
+#include "system_stm32f10x.h"
 
 #include "readerWriterBuffer.hpp"
 
@@ -52,7 +51,7 @@ class USART
   private:
     USART();
     void init();
-    void GPIOInit(u16 pin, u16 pinSource, u16 afUsart, GPIO_TypeDef* port);
+    void GPIOInit(u16 pin, GPIO_TypeDef* port);
     void NVICInit();
     void USARTInit();
     void InitClocks();
@@ -65,10 +64,6 @@ class USART
     GPIO_TypeDef* gpioPortTx_;
     u16 gpioPinRx_;
     u16 gpioPinTx_;
-    u16 gpioPinSourceRx_;
-    u16 gpioPinSourceTx_;
-
-    u16 gpioAF_;
 
     u16 usartIrqn_;
 

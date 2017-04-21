@@ -1,2 +1,2 @@
 #!/bin/bash
-"${STM_QEMU_PATH}/bin/qemu-system-gnuarmeclipse" -nographic -board STM32F4-Discovery -verbose --verbose --verbose --semihosting-config enable=on,target=native -d unimp,guest_errors -image bin/msos.elf
+"${STM_QEMU_PATH}/bin/qemu-system-gnuarmeclipse" -nographic -board NUCLEO-F103RB -verbose --verbose --verbose --semihosting-config enable=on,target=native -d unimp,guest_errors -image bin/msos.elf

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stm32f4xx_it.h"
+#include "stm32includes.hpp"
 
 #include "hw_utils.h"
 

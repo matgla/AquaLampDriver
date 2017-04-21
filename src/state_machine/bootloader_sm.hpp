@@ -3,23 +3,22 @@
 
 #include "helpers.hpp"
 #include "logger.hpp"
-#include "stm32f4xx_gpio.h"
-
+#include "stm32includes.hpp"
 namespace sml = boost::sml;
 
-void* __dso_handle;
+// void* __dso_handle;
 
-void initializeBoardLeds()
-{
-    GPIO_InitTypeDef GPIO_InitStructure;
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_Init(GPIOD, &GPIO_InitStructure);
-}
+// void initializeBoardLeds()
+// {
+//     GPIO_InitTypeDef GPIO_InitStructure;
+//     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+//     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14;
+//     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+//     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+//     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+//     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+//     GPIO_Init(GPIOD, &GPIO_InitStructure);
+// }
 
 class Initial;
 class Initialized;
@@ -41,8 +40,8 @@ enum class BootMode
 
 const auto initialize = [](Logger& logger) {
     logger << Level::INFO << "STM32 intialization ongoing\n";
-    initializeBoardLeds();
-    GPIO_SetBits(GPIOD, GPIO_Pin_14);
+  //  initializeBoardLeds();
+    // GPIO_SetBits(GPIOD, GPIO_Pin_14);
 
 };
 

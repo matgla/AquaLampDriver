@@ -24,7 +24,7 @@ if (BUILD_TARGET)
     #
     # Setup STM32 variables
     #
-    set(STM32_FAMILY "STM32F4xx") 	# Support "STM32F10x", "STM32F2xx", "STM32F4xx"
+    set(STM32_FAMILY "STM32F10x") 	# Support "STM32F10x", "STM32F2xx", "STM32F4xx"
     include(CMake/STM32.cmake)
 endif (BUILD_TARGET)
 
@@ -63,15 +63,15 @@ if (BUILD_TARGET)
     #    -DSTM32F4XX
     #    )
 
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_STDPERIPH_DRIVER -DSTM32F429_439xx")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD")
 
     if(DEBUG)
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -d -DUSE_FULL_ASSERT")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -d -DUSE_FULL_ASSERT")
     endif (DEBUG)
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${CMAKE_SOURCE_DIR}/lkr/stm32f407vg_flash.ld --specs=nano.specs")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${CMAKE_SOURCE_DIR}/lkr/stm32f103_128k.ld --specs=nano.specs")
 
     file(GLOB_RECURSE PROD_SOURCES "src/*.c" "src/*.cpp" "src/*.h" "src/*.hpp" "src/*.S")
 

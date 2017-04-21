@@ -1,6 +1,5 @@
 #include "hw_utils.h"
-#include "stm32f4xx.h"
-#include "system_stm32f4xx.h"
+#include "stm32includes.hpp"
 #include <stdint.h>
 #include <stdio.h>
 extern uint32_t SystemCoreClock;
