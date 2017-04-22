@@ -101,6 +101,10 @@ class Logger
         return *this;
     }
 
+    Logger& info()
+    {
+        return *this << Level::INFO;
+    }
 
   private:
     const char* getLevelString(const Level& level);

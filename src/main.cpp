@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <unistd.h>
-#include "kernel.hpp"
 #include "logger.hpp"
 #include "state_machine/bootloader_sm.hpp"
 #include "types.h"
@@ -119,8 +118,6 @@ int main(void)
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
     Logger logger("boot\0");
 
-    hardwareInitialize();
-
     boost::sml::sm<BootLoaderSm> sm{logger};
 
     sm.process_event(evInitialize{});
@@ -229,15 +226,32 @@ RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
   //  TIM_Cmd(TIM2, ENABLE);
     
     logger << Level::INFO << "NVIC reconfigured\n";
+    char msg[100];
+    int i = 0;
     while (1)
     {
-        printf("Iam in loop\n");
-        int i = 0;
-        for(int j = 0; j < 1000000; j++)
+        if (hw::USART<hw::USARTS::USART1_PP1>::getUsart().size())
         {
-            for (int y = 0; y < 10; y++)
+            while (hw::USART<hw::USARTS::USART1_PP1>::getUsart().size())
             {
-                i += i;
+                char c = hw::USART<hw::USARTS::USART1_PP1>::getUsart().read();
+                if (c == '\n')
+                {
+                    msg[i] = 0;
+                    logger.info() << "Get message: " << msg << "\n";
+                    i = 0;
+                    
+                }
+                else 
+                {
+                    msg[i++] = c;
+                }
+            }
+            if (i > 100)
+            {
+                logger.info() << "Buffer overflow!\n";
+                i = 0;
+                continue;
             }
         }
         sm.process_event(evInitialize{});

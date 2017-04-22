@@ -78,6 +78,18 @@ void USART<UsartNumber>::send(const char* str, int size)
     }
 }
 
+template <USARTS UsartNumber>
+u32 USART<UsartNumber>::size()
+{
+    return buffer_.size();
+}
+
+template <USARTS UsartNumber>
+u8 USART<UsartNumber>::read()
+{
+    return buffer_.getByte();
+}
+
 // template <USARTS UsartNumber>
 // void USART<UsartNumber>::sendMessage(u8* payload, u8 size)
 // {
@@ -149,7 +161,6 @@ void USART<UsartNumber>::GPIOInit(u16 pin, GPIO_TypeDef* port)
     gpioInit.GPIO_Pin = gpioPinRx_;
     gpioInit.GPIO_Mode = GPIO_Mode_IN_FLOATING; // GPIO_Mode_AF stm32f4xx
     //gpioInit.GPIO_OType = GPIO_OType_PP;
-    //gpioInit.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(port, &gpioInit);
 
     gpioInit.GPIO_Pin = gpioPinTx_;
@@ -176,7 +187,6 @@ void USART<UsartNumber>::NVICInit()
     
     init.NVIC_IRQChannel = usartIrqn_;
     init.NVIC_IRQChannelCmd = ENABLE;
-    init.NVIC_IRQChannelPreemptionPriority = 6;
     init.NVIC_IRQChannelSubPriority = getSubPriority(USARTx_);
     NVIC_Init(&init);
 }
@@ -338,16 +348,21 @@ bool USART<USARTS::USART1_PP1>::initialized()
 template <>
 void USART<USARTS::USART1_PP1>::InitClocks()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO | RCC_APB2Periph_USART1, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1, ENABLE);
 }
 
 template class USART<USARTS::USART1_PP1>;
+
+extern "C" {
+void USART1_IRQHandler(void);
+}
 
 void USART1_IRQHandler(void)
 {
     if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
         char c = USART1->DR;
+        hw::USART<hw::USARTS::USART1_PP1>::getUsart().send(c);
         hw::USART<hw::USARTS::USART1_PP1>::getUsart().receive(c);
     }
 }

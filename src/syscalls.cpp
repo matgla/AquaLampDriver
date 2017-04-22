@@ -13,7 +13,8 @@ int _gettimeofday(struct timeval* tv, void* tzvp)
 {
     tm td = {0};
     td.tm_year = 117;
-    uint64_t t = 12345;mktime(&td);                        // get uptime in nanoseconds
+    uint64_t t = 123000000045;
+    mktime(&td);                        // get uptime in nanoseconds
     tv->tv_sec = t / 1000000000;           // convert to seconds
     tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds
     return t;                              // return non-zero for error

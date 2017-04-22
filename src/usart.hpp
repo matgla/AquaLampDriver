@@ -40,12 +40,14 @@ class USART
     void send(char* str);
     void send(u8* str, int size);
     void send(const char* str, int size);
+    u8 read();
     // void sendMessage(u8* message, u8 size);
     // u8 getMessage(u8* buffer);
     bool isTransmissionOngoing();
     void setTransmissionOngoing(bool ongoing);
     void receive(u8 data);
     void flush();
+    u32 size();
     // void waitForAck(u32 timeout);
 
   private:
@@ -75,8 +77,3 @@ class USART
 };
 }
 
-extern "C" {
-void USART1_IRQHandler(void);
-void USART2_IRQHandler(void);
-void USART3_IRQHandler(void);
-}
