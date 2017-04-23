@@ -30,11 +30,10 @@ enum class Output
     NONE
 };
 
-
 struct Deleter
 {
     template <typename T>
-    void operator()(T* obj) 
+    void operator()(T *obj)
     {
         free(obj);
     }
@@ -44,19 +43,19 @@ class Logger
 {
   public:
     Logger();
-    Logger(const char* space, int fd = 0);
+    Logger(const char *space, int fd = 0);
 
     // template <typename
 
     template <typename Type>
-    Logger& operator<<(Type text)
+    Logger &operator<<(Type text)
     {
         // TODO: Add api for system calls ( all ) with splitted backend
         write(fd_, text, strlen(text));
         return *this;
     }
 
-    Logger& operator<<(u8 ch)
+    Logger &operator<<(u8 ch)
     {
         char text[4];
         utils::itoa(ch, text, 10);
@@ -64,7 +63,7 @@ class Logger
         return *this;
     }
 
-    Logger& operator<<(u32 ch)
+    Logger &operator<<(u32 ch)
     {
         char text[40];
         utils::itoa(ch, text, 10);
@@ -72,7 +71,7 @@ class Logger
         return *this;
     }
 
-    Logger& operator<<(char ch)
+    Logger &operator<<(char ch)
     {
         char text[1];
         text[0] = ch;
@@ -80,7 +79,7 @@ class Logger
         return *this;
     }
 
-    Logger& operator<<(int ch)
+    Logger &operator<<(int ch)
     {
         char text[20];
         utils::itoa(ch, text, 10);
@@ -88,10 +87,10 @@ class Logger
         return *this;
     }
 
-    Logger& operator<<(const Level& level)
+    Logger &operator<<(const Level &level)
     {
         write(fd_, "<", 1);
-        const char* time = getTimeString();
+        const char *time = getTimeString();
         write(fd_, time, strlen(time));
         write(fd_, "> ", 2);
         write(fd_, getLevelString(level), strlen(getLevelString(level)));
@@ -101,14 +100,14 @@ class Logger
         return *this;
     }
 
-    Logger& info()
+    Logger &info()
     {
         return *this << Level::INFO;
     }
 
   private:
-    const char* getLevelString(const Level& level);
-    const char* getTimeString();
+    const char *getLevelString(const Level &level);
+    const char *getTimeString();
     std::unique_ptr<char, Deleter> name_;
     int fd_;
 };

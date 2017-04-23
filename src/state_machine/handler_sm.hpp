@@ -5,16 +5,15 @@
 #include <boost/sml.hpp>
 
 #include "logger.hpp"
-#include "helpers.hpp"
+#include "state_machine/helpers.hpp"
 #include "stm32f10x_conf.h"
+
 void *__dso_handle;
 namespace sml = boost::sml;
 
 namespace handler
 {
 const int MSG_BUFFER_SIZE = 100;
-
-Logger logger("HandlerSM");
 
 class Idle;
 class Handle;
@@ -40,7 +39,7 @@ class evGetMsg
     char msg_[MSG_BUFFER_SIZE];
 };
 // clang-format off
-struct evSuccess {};
+class evSuccess {};
 class evComplete {};
 class evFail {};
 class evGotPart {};
@@ -50,14 +49,22 @@ struct HandlerSm
 {
     auto operator()() noexcept
     {
+        logger_.info() << "No nie dziala\n";
         using namespace sml;
         // clang-format off
         return make_transition_table(
             //|---------STATE----------|-----------EVENT-----------|-------GUARD--------|-----------------ACTION------------------|--------TARGET----------|//
-              *state<Idle>             + event<evGetMsg>                                / [](const auto &msg) {logger.info() << "Received msg: " << msg.get() << "\n";}   = state<Handle>
+              *state<Idle>             + event<evGetMsg>                                / call(this, &HandlerSm::handle)          = state<Handle>
         );
         // clang-format on
     }
+    Logger logger_{"HandlerSM\0"};
+
+  private:
+    void handle(const evGetMsg &msg)
+    {
+        logger_.info() << "Received msg: " << msg.get() << "\n";
+    };
 };
 
 } // namespace handler

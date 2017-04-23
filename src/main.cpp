@@ -119,9 +119,8 @@ int main(void)
     hw::USART<hw::USARTS::USART1_PP1>::getUsart().send("ready\n\0", 6);
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
     Logger logger("boot\0");
-
     // boost::sml::sm<BootLoaderSm> sm{logger};
-    boost::sml::sm<handler::HandlerSm> h;
+    boost::sml::sm<handler::HandlerSm> h{};
 
     // sm.process_event(evInitialize{});
     // sm.process_event(evGetBootMode{});
