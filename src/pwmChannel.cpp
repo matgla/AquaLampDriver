@@ -20,6 +20,8 @@ Channel::Channel(u32 pin,
     init();
 }
 
+Channel::~Channel(){};
+
 void Channel::setPulse(u8 width)
 {
     assert(width <= 100);
@@ -29,9 +31,7 @@ void Channel::setPulse(u8 width)
     channel.TIM_OCMode = TIM_OCMode_PWM1;
     channel.TIM_OutputState = TIM_OutputState_Enable;
     float multiplier = (float)width / 100;
-    printf("multiplifer %f\n", multiplier);
     u32 pulse = period_ * multiplier;
-    printf("pulse:  %d, period: %d\n", pulse, period_);
     channel.TIM_Pulse = pulse;
     //TIM_Cmd(timer_, DISABLE);
     switch (chNr_)
@@ -67,7 +67,7 @@ void Channel::init()
 {
     initClocks();
     initGpio();
-    // 36 KHz
+    // 100 KHz
     initTimer(100000);
 }
 
@@ -94,12 +94,118 @@ void Channel::initTimer(u32 freq)
     tim.TIM_CounterMode = TIM_CounterMode_Up;
     u32 pre = SystemCoreClock / 1000000 - 1;
     tim.TIM_Prescaler = pre;
-    printf("Core clock: %d, pre: %d\n", SystemCoreClock, pre);
     period_ = 1000000 / freq;
     tim.TIM_Period = period_ - 1;
     TIM_TimeBaseInit(timer_, &tim);
-
     setPulse(0);
+}
+
+Channel0::Channel0() : Channel(GPIO_Pin_0,
+                               GPIOA,
+                               TIM2,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOA,
+                               Channels::CH0)
+{
+}
+
+Channel1::Channel1() : Channel(GPIO_Pin_1,
+                               GPIOA,
+                               TIM2,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOA,
+                               Channels::CH1)
+{
+}
+
+Channel2::Channel2() : Channel(GPIO_Pin_2,
+                               GPIOA,
+                               TIM2,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOA,
+                               Channels::CH2)
+{
+}
+
+Channel3::Channel3() : Channel(GPIO_Pin_3,
+                               GPIOA,
+                               TIM2,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOA,
+                               Channels::CH3)
+{
+}
+
+Channel4::Channel4() : Channel(GPIO_Pin_6,
+                               GPIOA,
+                               TIM3,
+                               RCC_APB1Periph_TIM3,
+                               RCC_APB2Periph_GPIOA,
+                               Channels::CH0)
+{
+}
+
+Channel5::Channel5() : Channel(GPIO_Pin_7,
+                               GPIOA,
+                               TIM3,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOA,
+                               Channels::CH1)
+{
+}
+
+Channel6::Channel6() : Channel(GPIO_Pin_0,
+                               GPIOB,
+                               TIM3,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOB,
+                               Channels::CH2)
+{
+}
+
+Channel7::Channel7() : Channel(GPIO_Pin_1,
+                               GPIOB,
+                               TIM3,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOB,
+                               Channels::CH3)
+{
+}
+
+Channel8::Channel8() : Channel(GPIO_Pin_6,
+                               GPIOB,
+                               TIM4,
+                               RCC_APB1Periph_TIM2,
+                               RCC_APB2Periph_GPIOB,
+                               Channels::CH0)
+{
+}
+
+Channel9::Channel9() : Channel(GPIO_Pin_7,
+                               GPIOB,
+                               TIM4,
+                               RCC_APB1Periph_TIM4,
+                               RCC_APB2Periph_GPIOB,
+                               Channels::CH1)
+{
+}
+
+Channel10::Channel10() : Channel(GPIO_Pin_8,
+                                 GPIOB,
+                                 TIM4,
+                                 RCC_APB1Periph_TIM4,
+                                 RCC_APB2Periph_GPIOB,
+                                 Channels::CH2)
+{
+}
+
+Channel11::Channel11() : Channel(GPIO_Pin_9,
+                                 GPIOB,
+                                 TIM4,
+                                 RCC_APB1Periph_TIM4,
+                                 RCC_APB2Periph_GPIOB,
+                                 Channels::CH3)
+{
 }
 
 } // namespace pwm

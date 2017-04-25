@@ -223,7 +223,7 @@ int main(void)
     // TIM_OC4Init(TIM2, &channel);
 
     // TIM_Cmd(TIM2, ENABLE);
-    pwm::Channel ch0(TIM2_CH0_PIN, TIM2_CH0_PORT, TIM2, TIM2_RCC, TIM2_CH0_RCC, pwm::Channels::CH0);
+    pwm::Channel0 ch0;
     ch0.setPulse(20);
     logger << Level::INFO << "Pwm Enabled\n";
     //  TIM_Cmd(TIM2, ENABLE);
@@ -240,13 +240,6 @@ int main(void)
                 if (c == '\n')
                 {
                     msg[i] = 0;
-                    // char *m;
-                    // m = strtok(msg, " ");
-                    // while (m != nullptr)
-                    // {
-                    //     logger.info() << "Get message: " << m << "\n";
-                    //     m = strtok(nullptr, " ");
-                    // }
                     hand.handle(msg);
                     i = 0;
                     logger.info() << "event proceeded\n";

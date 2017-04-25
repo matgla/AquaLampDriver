@@ -38,33 +38,30 @@ enum class BootMode
     BOOTLOAD
 };
 
-const auto initialize = [](Logger& logger) {
+const auto initialize = [](Logger &logger) {
     logger << Level::INFO << "STM32 intialization ongoing\n";
-  //  initializeBoardLeds();
+    //  initializeBoardLeds();
     // GPIO_SetBits(GPIOD, GPIO_Pin_14);
 
 };
 
-const auto bootFw = [](Logger& logger) {
+const auto bootFw = [](Logger &logger) {
     logger << Level::INFO << "Booting firmware...\n";
 };
 
-const auto bootLoader = [](Logger& logger) {
+const auto bootLoader = [](Logger &logger) {
     logger << Level::INFO << "Booting loader...\n";
 };
-
 
 class BootLoaderSm
 {
     BootMode bootMode_;
-
 
   public:
     BootLoaderSm()
         : bootMode_(BootMode::BOOTLOAD)
     {
     }
-
 
     auto operator()() noexcept
     {
@@ -92,8 +89,7 @@ class BootLoaderSm
         return bootMode_ == BootMode::BOOTLOAD;
     }
 
-
-    void getBootMode(Logger& logger)
+    void getBootMode(Logger &logger)
     {
         logger << Level::INFO << "Obtaining boot mode\n";
     }

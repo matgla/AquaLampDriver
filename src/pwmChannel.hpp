@@ -2,8 +2,18 @@
 
 #include "stm32f10x_conf.h"
 
+#include <tuple>
+
 namespace pwm
 {
+
+enum class Channels
+{
+    CH0,
+    CH1,
+    CH2,
+    CH3
+};
 
 #define TIM2_CH0_PIN GPIO_Pin_0
 #define TIM2_CH1_PIN GPIO_Pin_1
@@ -47,18 +57,11 @@ namespace pwm
 #define TIM4_CH3_RCC RCC_APB2Periph_GPIOB
 #define TIM4_RCC RCC_APB1Periph_TIM4
 
-enum class Channels
-{
-    CH0,
-    CH1,
-    CH2,
-    CH3
-};
-
 class Channel
 {
   public:
     Channel(u32 pin, GPIO_TypeDef *port, TIM_TypeDef *timer, u32 rccPeriph, u32 rccGpio, Channels chNr);
+    virtual ~Channel();
     void setPulse(u8 width);
 
   private:
@@ -75,4 +78,83 @@ class Channel
     Channels chNr_;
     u32 period_;
 };
+
+class Channel0 : public Channel
+{
+  public:
+    Channel0();
+};
+
+class Channel1 : public Channel
+{
+  public:
+    Channel1();
+};
+
+class Channel2 : public Channel
+{
+  public:
+    Channel2();
+};
+
+class Channel3 : public Channel
+{
+  public:
+    Channel3();
+};
+
+class Channel4 : public Channel
+{
+  public:
+    Channel4();
+};
+
+class Channel5 : public Channel
+{
+  public:
+    Channel5();
+};
+
+class Channel6 : public Channel
+{
+  public:
+    Channel6();
+};
+
+class Channel7 : public Channel
+{
+  public:
+    Channel7();
+};
+
+class Channel8 : public Channel
+{
+  public:
+    Channel8();
+};
+
+class Channel9 : public Channel
+{
+  public:
+    Channel9();
+};
+
+class Channel10 : public Channel
+{
+  public:
+    Channel10();
+};
+
+class Channel11 : public Channel
+{
+  public:
+    Channel11();
+};
+
+class Channel12 : public Channel
+{
+  public:
+    Channel12();
+};
+
 } // namespace pwm
