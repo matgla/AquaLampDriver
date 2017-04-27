@@ -1,5 +1,5 @@
 #!/bin/bash
-"${STM_QEMU_PATH}/bin/qemu-system-gnuarmeclipse" -nographic -board generic -mcu STM32F103RB -verbose --verbose --verbose --semihosting-config enable=on,target=native -d unimp,guest_errors -image bin/msos.elf
+"${STM_QEMU_PATH}/bin/qemu-system-gnuarmeclipse" -nographic -board STM32-P103 -mcu STM32F103RB -verbose --verbose --verbose --semihosting-config enable=on,target=native -d unimp,guest_errors -image bin/msos.elf
 
 # Maple                LeafLab Arduino-style STM32 microcontroller board (r5)
 #   NUCLEO-F103RB        ST Nucleo Development Board for STM32 F1 series

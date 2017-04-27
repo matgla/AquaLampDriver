@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "logger.hpp"
 #include "state_machine/bootloader_sm.hpp"
-#include "handler.hpp"
+#include "dispatcher/dispatcher.hpp"
 #include "types.h"
 #include "utils.hpp"
 #include "usart.hpp"
@@ -80,6 +80,8 @@
 /*
 TIM3_CH1 PA6
 TIM3_CH2 PA7
+
+
 TIM3_CH3 PB0
 TIM4_CH4 PB1
 
@@ -97,21 +99,6 @@ void initializeBoardLeds()
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
-extern "C" {
-void TIM2_IRQHandler();
-}
-void TIM2_IRQHandler()
-{
-    if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
-    {
-        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-
-        if (GPIO_ReadOutputDataBit(GPIOB, GPIO_Pin_12))
-            GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-        else
-            GPIO_SetBits(GPIOB, GPIO_Pin_12);
-    }
-}
 
 int main(void)
 {
@@ -121,7 +108,7 @@ int main(void)
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
     Logger logger("boot\0");
     // boost::sml::sm<BootLoaderSm> sm{logger};
-    handler::Handler hand;
+    dispatcher::Dispatcher hand;
 
     // sm.process_event(evInitialize{});
     // sm.process_event(evGetBootMode{});

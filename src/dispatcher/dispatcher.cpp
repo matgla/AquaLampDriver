@@ -1,14 +1,14 @@
-#include "handler.hpp"
+#include "dispatcher.hpp"
 
 #include <cstring>
 
-namespace handler
+namespace dispatcher
 {
-Handler::Handler() : logger_("Handler\0")
+Dispatcher::Dispatcher() : logger_("Handler\0")
 {
 }
 
-bool Handler::handle(char *msg)
+bool Dispatcher::handle(char *msg)
 {
     logger_.info() << "Handle message: " << msg << "\n";
     char *part;
@@ -30,6 +30,17 @@ bool Handler::handle(char *msg)
         ++i;
         arg = strtok(nullptr, " ");
     }
+
+    for (auto& handler : handlers_)
+    {
+        if (handler->match(cmd, arg))
+        {
+            logger_.info() << "Handler " << handler->getName() 
+                << " accepted execution";
+            handler->handle(cmd, arg);
+        }
+    }
 }
+
 
 } // namespace handler
