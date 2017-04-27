@@ -3,10 +3,12 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <memory>
 #include <unistd.h>
 #include "logger.hpp"
 #include "state_machine/bootloader_sm.hpp"
 #include "dispatcher/dispatcher.hpp"
+#include "dispatcher/ChannelHandler.hpp"
 #include "types.h"
 #include "utils.hpp"
 #include "usart.hpp"
@@ -109,6 +111,8 @@ int main(void)
     Logger logger("boot\0");
     // boost::sml::sm<BootLoaderSm> sm{logger};
     dispatcher::Dispatcher hand;
+    handler::IHandlerPtr channelHandler(new handler::ChannelHandler("ChannelHandler\0"));
+    hand.registerHandler(std::move(channelHandler));
 
     // sm.process_event(evInitialize{});
     // sm.process_event(evGetBootMode{});

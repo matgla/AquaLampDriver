@@ -5,7 +5,7 @@
 #include <functional>
 #include <vector>
 
-#include "IHandler.hpp"
+#include "dispatcher/IHandler.hpp"
 
 namespace dispatcher
 {

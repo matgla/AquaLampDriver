@@ -8,6 +8,11 @@ Dispatcher::Dispatcher() : logger_("Handler\0")
 {
 }
 
+bool Dispatcher::registerHandler(handler::IHandlerPtr handler)
+{
+    handlers_.push_back(std::move(handler));
+}
+
 bool Dispatcher::handle(char *msg)
 {
     logger_.info() << "Handle message: " << msg << "\n";
@@ -33,7 +38,7 @@ bool Dispatcher::handle(char *msg)
 
     for (auto& handler : handlers_)
     {
-        if (handler->match(cmd, arg))
+        if (handler->accept(cmd, arg))
         {
             logger_.info() << "Handler " << handler->getName() 
                 << " accepted execution";

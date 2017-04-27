@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <memory>
 
+#include "memoryHelpers.hpp"
 #include "utils.hpp"
 
 #define SPACE_SIZE 40
@@ -28,15 +29,6 @@ enum class Output
     STDOUT,
     FILE,
     NONE
-};
-
-struct Deleter
-{
-    template <typename T>
-    void operator()(T *obj)
-    {
-        free(obj);
-    }
 };
 
 class Logger
