@@ -26,7 +26,10 @@ file(GLOB STM32_SOURCES ${SOURCES_DIR}/misc.c
                         ${SOURCES_DIR}/stm32f10x_flash.c
                         ${SOURCES_DIR}/stm32f10x_usart.c
                         ${SOURCES_DIR}/stm32f10x_rcc.c
-                        ${SOURCES_DIR}/stm32f10x_tim.c)
+                        ${SOURCES_DIR}/stm32f10x_tim.c
+                        ${SOURCES_DIR}/stm32f10x_rtc.c
+                        ${SOURCES_DIR}/stm32f10x_pwr.c
+                        ${SOURCES_DIR}/stm32f10x_bkp.c)
 
 find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args(CMSIS DEFAULT_MSG

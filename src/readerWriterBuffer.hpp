@@ -1,7 +1,7 @@
 #pragma once
 
 #include "buffer.hpp"
-#include "types.h"
+#include "types.hpp"
 
 template <std::size_t BUF_SIZE>
 class ReaderWriterBuffer
@@ -25,13 +25,13 @@ class ReaderWriterBuffer
     }
 
     template <typename Type>
-    void write(Type* str)
+    void write(Type *str)
     {
         writerBuf_.write(str);
     }
 
     template <typename Type>
-    void write(Type* payload, u8 size)
+    void write(Type *payload, u8 size)
     {
         for (u16 i = 0; i < size; ++i)
         {
@@ -60,7 +60,7 @@ class ReaderWriterBuffer
         return -1;
     }
 
-    bool getValue(u16 offset, u8& value)
+    bool getValue(u16 offset, u8 &value)
     {
         synchronizeBuffer();
         return readerBuf_.getValue(offset, value);

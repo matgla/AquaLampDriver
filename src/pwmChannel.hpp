@@ -2,17 +2,18 @@
 
 #include "stm32f10x_conf.h"
 
-#include <tuple>
+#include <cassert>
+#include <memory>
 
 namespace pwm
 {
 
 enum class Channels
 {
-    CH0,
-    CH1,
-    CH2,
-    CH3
+  CH0,
+  CH1,
+  CH2,
+  CH3
 };
 
 #define TIM2_CH0_PIN GPIO_Pin_0
@@ -59,102 +60,104 @@ enum class Channels
 
 class Channel
 {
-  public:
-    Channel(u32 pin, GPIO_TypeDef *port, TIM_TypeDef *timer, u32 rccPeriph, u32 rccGpio, Channels chNr);
-    virtual ~Channel();
-    void setPulse(u8 width);
+public:
+  Channel(u32 pin, GPIO_TypeDef *port, TIM_TypeDef *timer, u32 rccPeriph, u32 rccGpio, Channels chNr);
+  virtual ~Channel();
+  void setPulse(u8 width);
 
-  private:
-    void init();
-    void initGpio();
-    void initClocks();
-    void initTimer(u32 freq);
+private:
+  void init();
+  void initGpio();
+  void initClocks();
+  void initTimer(u32 freq);
 
-    u32 channelPin_;
-    GPIO_TypeDef *channelPort_;
-    TIM_TypeDef *timer_;
-    u32 rccPeriph_;
-    u32 rccGpio_;
-    Channels chNr_;
-    u32 period_;
+  u32 channelPin_;
+  GPIO_TypeDef *channelPort_;
+  TIM_TypeDef *timer_;
+  u32 rccPeriph_;
+  u32 rccGpio_;
+  Channels chNr_;
+  u32 period_;
 };
 
 class Channel0 : public Channel
 {
-  public:
-    Channel0();
+public:
+  Channel0();
 };
 
 class Channel1 : public Channel
 {
-  public:
-    Channel1();
+public:
+  Channel1();
 };
 
 class Channel2 : public Channel
 {
-  public:
-    Channel2();
+public:
+  Channel2();
 };
 
 class Channel3 : public Channel
 {
-  public:
-    Channel3();
+public:
+  Channel3();
 };
 
 class Channel4 : public Channel
 {
-  public:
-    Channel4();
+public:
+  Channel4();
 };
 
 class Channel5 : public Channel
 {
-  public:
-    Channel5();
+public:
+  Channel5();
 };
 
 class Channel6 : public Channel
 {
-  public:
-    Channel6();
+public:
+  Channel6();
 };
 
 class Channel7 : public Channel
 {
-  public:
-    Channel7();
+public:
+  Channel7();
 };
 
 class Channel8 : public Channel
 {
-  public:
-    Channel8();
+public:
+  Channel8();
 };
 
 class Channel9 : public Channel
 {
-  public:
-    Channel9();
+public:
+  Channel9();
 };
 
 class Channel10 : public Channel
 {
-  public:
-    Channel10();
+public:
+  Channel10();
 };
 
 class Channel11 : public Channel
 {
-  public:
-    Channel11();
+public:
+  Channel11();
 };
 
 class Channel12 : public Channel
 {
-  public:
-    Channel12();
+public:
+  Channel12();
 };
+
+std::unique_ptr<Channel> makeChannel(u8 nr);
 
 } // namespace pwm

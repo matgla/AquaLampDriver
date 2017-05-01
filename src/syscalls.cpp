@@ -5,18 +5,15 @@
 #include <sys/time.h>
 #include <errno.h>
 
-
 #include "usart.hpp"
+#include "rtc/rtc.hpp"
 
-
-int _gettimeofday(struct timeval* tv, void* tzvp)
+int _gettimeofday(struct timeval *tv, void *tzvp)
 {
-    tm td = {0};
-    td.tm_year = 117;
-    uint64_t t = 123000000045;
-    mktime(&td);                        // get uptime in nanoseconds
-    tv->tv_sec = t / 1000000000;           // convert to seconds
-    tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds
+    uint64_t t = rtc::Rtc::getTime();
+
+    tv->tv_sec = t;                        // convert to seconds
+    tv->tv_usec = (t % 1000000000) / 1000; // tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds
     return t;                              // return non-zero for error
 }
 
@@ -28,7 +25,7 @@ int _close(int file)
     return 0;
 }
 
-int _fstat(int file, struct stat* st)
+int _fstat(int file, struct stat *st)
 {
     return 0;
 }
@@ -43,12 +40,12 @@ int _lseek(int file, int ptr, int dir)
     return 0;
 }
 
-int _open(const char* name, int flags, int mode)
+int _open(const char *name, int flags, int mode)
 {
     return -1;
 }
 
-int _read(int file, char* ptr, int len)
+int _read(int file, char *ptr, int len)
 {
     return 0;
 }
@@ -67,12 +64,12 @@ void _exit(int code)
 {
 }
 
-char* heap_end = 0;
+char *heap_end = 0;
 caddr_t _sbrk(int incr)
 {
     extern char _heap;  /* Defined by the linker */
     extern char _eheap; /* Defined by the linker */
-    char* prev_heap_end;
+    char *prev_heap_end;
 
     if (heap_end == 0)
     {
@@ -93,7 +90,7 @@ caddr_t _sbrk(int incr)
     return (caddr_t)prev_heap_end;
 }
 
-int _write(int file, const char* ptr, int len)
+int _write(int file, const char *ptr, int len)
 {
     hw::USART<hw::USARTS::USART1_PP1>::getUsart().send(ptr, len);
 

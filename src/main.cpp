@@ -9,10 +9,13 @@
 #include "state_machine/bootloader_sm.hpp"
 #include "dispatcher/dispatcher.hpp"
 #include "dispatcher/ChannelHandler.hpp"
-#include "types.h"
+#include "dispatcher/RtcHandler.hpp"
+#include "pwm/channelsGroup.hpp"
+#include "types.hpp"
 #include "utils.hpp"
 #include "usart.hpp"
 #include "pwmChannel.hpp"
+#include "rtc/rtc.hpp"
 
 // __IO uint32_t uwAsynchPrediv = 0;
 // __IO uint32_t uwSynchPrediv = 0;
@@ -105,14 +108,15 @@ void initializeBoardLeds()
 int main(void)
 {
     SystemInit();
+    rtc::Rtc r;
+
+    rtc::Rtc::setTime(1, 5, 2017, 20, 12, 47);
     initializeBoardLeds();
     hw::USART<hw::USARTS::USART1_PP1>::getUsart().send("ready\n\0", 6);
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
     Logger logger("boot\0");
     // boost::sml::sm<BootLoaderSm> sm{logger};
     dispatcher::Dispatcher hand;
-    handler::IHandlerPtr channelHandler(new handler::ChannelHandler("ChannelHandler\0"));
-    hand.registerHandler(std::move(channelHandler));
 
     // sm.process_event(evInitialize{});
     // sm.process_event(evGetBootMode{});
@@ -120,102 +124,15 @@ int main(void)
 
     logger << Level::INFO << "Jadymy z tematem\n";
 
-    // GPIO_InitTypeDef gpio;
-    // TIM_TimeBaseInitTypeDef tim;
-    // NVIC_InitTypeDef nvic;
-    // TIM_OCInitTypeDef channel;
+    pwm::ChannelsGroup channels;
+    channels.configureChannel(0);
 
-    // RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-    // logger << Level::INFO << "Timer enabled\n";
+    handler::IHandlerPtr channelHandler(new handler::ChannelHandler("ChannelHandler\0", channels));
+    handler::IHandlerPtr rtcHandler(new handler::RtcHandler("RtcHandler\0"));
 
-    // GPIO_StructInit(&gpio);
-    // gpio.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_0 | GPIO_Pin_1;
-    // gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    // gpio.GPIO_Mode = GPIO_Mode_AF_PP;
-    // GPIO_Init(GPIOB, &gpio);
+    hand.registerHandler(std::move(channelHandler));
+    hand.registerHandler(std::move(rtcHandler));
 
-    // TIM_TimeBaseStructInit(&tim);
-    // tim.TIM_CounterMode = TIM_CounterMode_Up;
-    // tim.TIM_Prescaler = 101 - 1;
-    // tim.TIM_Period = 100 - 1;
-    // TIM_TimeBaseInit(TIM4, &tim);
-
-    // TIM_OCStructInit(&channel);
-    // channel.TIM_OCMode = TIM_OCMode_PWM1;
-    // channel.TIM_OutputState = TIM_OutputState_Enable;
-    // channel.TIM_Pulse = 50;
-    // TIM_OC1Init(TIM4, &channel);
-    // channel.TIM_Pulse = 60;
-    // TIM_OC2Init(TIM4, &channel);
-    // channel.TIM_Pulse = 70;
-    // TIM_OC3Init(TIM4, &channel);
-    // channel.TIM_Pulse = 80;
-    // TIM_OC4Init(TIM4, &channel);
-
-    // TIM_Cmd(TIM4, ENABLE);
-
-    // //
-    // RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-    // logger << Level::INFO << "Timer enabled\n";
-
-    // GPIO_StructInit(&gpio);
-    // gpio.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
-    // gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    // gpio.GPIO_Mode = GPIO_Mode_AF_PP;
-    // GPIO_Init(GPIOA, &gpio);
-
-    // TIM_TimeBaseStructInit(&tim);
-    // tim.TIM_CounterMode = TIM_CounterMode_Up;
-    // tim.TIM_Prescaler = 101 - 1;
-    // tim.TIM_Period = 100 - 1;
-    // TIM_TimeBaseInit(TIM3, &tim);
-
-    // TIM_OCStructInit(&channel);
-    // channel.TIM_OCMode = TIM_OCMode_PWM1;
-    // channel.TIM_OutputState = TIM_OutputState_Enable;
-    // channel.TIM_Pulse = 10;
-    // TIM_OC1Init(TIM3, &channel);
-    // channel.TIM_Pulse = 50;
-    // TIM_OC2Init(TIM3, &channel);
-    // channel.TIM_Pulse = 80;
-    // TIM_OC3Init(TIM3, &channel);
-    // channel.TIM_Pulse = 95;
-    // TIM_OC4Init(TIM3, &channel);
-
-    // TIM_Cmd(TIM3, ENABLE);
-
-    // //
-
-    // RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-    // logger << Level::INFO << "Timer enabled\n";
-
-    // GPIO_StructInit(&gpio);
-    // gpio.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
-    // gpio.GPIO_Speed = GPIO_Speed_50MHz;
-    // gpio.GPIO_Mode = GPIO_Mode_AF_PP;
-    // GPIO_Init(GPIOA, &gpio);
-
-    // TIM_TimeBaseStructInit(&tim);
-    // tim.TIM_CounterMode = TIM_CounterMode_Up;
-    // tim.TIM_Prescaler = 101 - 1;
-    // tim.TIM_Period = 100 - 1;
-    // TIM_TimeBaseInit(TIM2, &tim);
-
-    // TIM_OCStructInit(&channel);
-    // channel.TIM_OCMode = TIM_OCMode_PWM1;
-    // channel.TIM_OutputState = TIM_OutputState_Enable;
-    // channel.TIM_Pulse = 10;
-    // TIM_OC1Init(TIM2, &channel);
-    // channel.TIM_Pulse = 20;
-    // TIM_OC2Init(TIM2, &channel);
-    // channel.TIM_Pulse = 30;
-    // TIM_OC3Init(TIM2, &channel);
-    // channel.TIM_Pulse = 40;
-    // TIM_OC4Init(TIM2, &channel);
-
-    // TIM_Cmd(TIM2, ENABLE);
-    pwm::Channel0 ch0;
-    ch0.setPulse(20);
     logger << Level::INFO << "Pwm Enabled\n";
     //  TIM_Cmd(TIM2, ENABLE);
     // logger << Level::INFO << "NVIC reconfigured\n";

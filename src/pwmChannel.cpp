@@ -31,7 +31,9 @@ void Channel::setPulse(u8 width)
     channel.TIM_OCMode = TIM_OCMode_PWM1;
     channel.TIM_OutputState = TIM_OutputState_Enable;
     float multiplier = (float)width / 100;
-    u32 pulse = period_ * multiplier;
+    printf("period is %d\n", period_);
+    u32 pulse = (float)period_ * multiplier;
+    printf("set pulse to: %d\n", pulse);
     channel.TIM_Pulse = pulse;
     //TIM_Cmd(timer_, DISABLE);
     switch (chNr_)
@@ -67,8 +69,8 @@ void Channel::init()
 {
     initClocks();
     initGpio();
-    // 100 KHz
-    initTimer(100000);
+    // 10 KHz
+    initTimer(10000);
 }
 
 void Channel::initGpio()
@@ -206,6 +208,50 @@ Channel11::Channel11() : Channel(GPIO_Pin_9,
                                  RCC_APB2Periph_GPIOB,
                                  Channels::CH3)
 {
+}
+
+std::unique_ptr<Channel> makeChannel(u8 nr)
+{
+    assert(nr >= 0 && nr < 12);
+    switch (nr)
+    {
+    case 0:
+        return std::unique_ptr<Channel>(new Channel0());
+        break;
+    case 1:
+        return std::unique_ptr<Channel>(new Channel1());
+        break;
+    case 2:
+        return std::unique_ptr<Channel>(new Channel2());
+        break;
+    case 3:
+        return std::unique_ptr<Channel>(new Channel3());
+        break;
+    case 4:
+        return std::unique_ptr<Channel>(new Channel4());
+        break;
+    case 5:
+        return std::unique_ptr<Channel>(new Channel5());
+        break;
+    case 6:
+        return std::unique_ptr<Channel>(new Channel6());
+        break;
+    case 7:
+        return std::unique_ptr<Channel>(new Channel7());
+        break;
+    case 8:
+        return std::unique_ptr<Channel>(new Channel8());
+        break;
+    case 9:
+        return std::unique_ptr<Channel>(new Channel9());
+        break;
+    case 10:
+        return std::unique_ptr<Channel>(new Channel10());
+        break;
+    case 11:
+        return std::unique_ptr<Channel>(new Channel11());
+        break;
+    }
 }
 
 } // namespace pwm

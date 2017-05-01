@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+#include "types.hpp"
+
 namespace dispatcher
 {
 Dispatcher::Dispatcher() : logger_("Handler\0")
@@ -27,25 +29,17 @@ bool Dispatcher::handle(char *msg)
     cmd = strtok(nullptr, " ");
     logger_.info() << "Got command: " << cmd << "\n";
 
-    int i = 0;
-    char *arg = strtok(nullptr, " ");
-    while (arg != nullptr)
+    u8 nrOfSpaces = 2;
+    char *args = msg + strlen(part) + strlen(cmd) + nrOfSpaces;
+    for (auto &handler : handlers_)
     {
-        logger_.info() << "Get arg " << i << ": " << arg << "\n";
-        ++i;
-        arg = strtok(nullptr, " ");
-    }
-
-    for (auto& handler : handlers_)
-    {
-        if (handler->accept(cmd, arg))
+        if (handler->accept(cmd, args))
         {
-            logger_.info() << "Handler " << handler->getName() 
-                << " accepted execution";
-            handler->handle(cmd, arg);
+            logger_.info() << "Handler " << handler->getName()
+                           << " accepted execution\n";
+            handler->handle(cmd, args);
         }
     }
 }
-
 
 } // namespace handler

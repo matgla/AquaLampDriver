@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "types.h"
+#include "types.hpp"
 
 template <std::size_t BUF_SIZE>
 class Buffer
@@ -40,7 +40,7 @@ class Buffer
     }
 
     template <typename Type>
-    void write(Type* str)
+    void write(Type *str)
     {
         for (int i = 0; i < strlen(str); ++i)
         {
@@ -62,7 +62,7 @@ class Buffer
         return 0;
     }
 
-    bool getValue(u16 offset, u8& value)
+    bool getValue(u16 offset, u8 &value)
     {
         if (offset >= size_)
         {
@@ -117,7 +117,7 @@ class Buffer
         return false;
     }
 
-    u8* getData()
+    u8 *getData()
     {
         return buffer_;
     }

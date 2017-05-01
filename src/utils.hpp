@@ -1,9 +1,8 @@
 #pragma once
 
-#include "types.h"
+#include "types.hpp"
 #include <cstring>
 #include <stdint.h>
-
 
 void DelayInit(u32 systemCoreClock) __attribute__((optimize("-O0")));
 void Delay(u32 delay_ms) __attribute__((optimize("-O0")));
@@ -19,8 +18,5 @@ char getNumber(int n);
 
 namespace utils
 {
-void itoa(int n, char * s, int base_n);
+void itoa(int n, char *s, int base_n);
 }
-
-
- 
