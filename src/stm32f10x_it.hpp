@@ -2,7 +2,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 #include <stm32f10x.h>
 
@@ -13,9 +13,9 @@ void BusFault_Handler(void);
 void UsageFault_Handler(void);
 void SVC_Handler(void);
 void DebugMon_Handler(void);
-void PendSV_Handler(void) __attribute__ ( ( isr, naked ) );
-void SysTick_Handler(void) __attribute__ ( ( isr) );
+void PendSV_Handler(void) __attribute__((isr, naked));
+void SysTick_Handler(void) __attribute__((isr));
 
 #ifdef __cplusplus
 }
-#endif 
+#endif

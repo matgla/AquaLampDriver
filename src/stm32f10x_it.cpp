@@ -1,14 +1,17 @@
-#include "stm32f10x_it.h"
-#include <stm32f10x_gpio.h>
+#include "stm32f10x_it.hpp"
+#include "utils.hpp"
 #include <assert.h>
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
+#include <stm32f10x_gpio.h>
+#include <unistd.h>
 /** @addtogroup STM32F4_Discovery_Peripheral_Examples
   * @{
   */
 
 /** @addtogroup IO_Toggle
   * @{
-  */ 
+  */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -37,12 +40,12 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-  assert(1 && "HARD fault");
-  printf("hard fault \n");
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
+    assert(1 && "HARD fault");
+    printf("hard fault \n");
+    /* Go to infinite loop when Hard Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -52,13 +55,13 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
-  
-      assert(1 && "Mem fault");
 
-  /* Go to infinite loop when Memory Manage exception occurs */
-  while (1)
-  {
-  }
+    assert(1 && "Mem fault");
+
+    /* Go to infinite loop when Memory Manage exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -68,12 +71,12 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
-      assert(1 && "Bus fault");
+    assert(1 && "Bus fault");
 
-  /* Go to infinite loop when Bus Fault exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Bus Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -83,13 +86,13 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-  printf("usage fault \n");
-      assert(1 && "Usage fault");
+    printf("usage fault \n");
+    assert(1 && "Usage fault");
 
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Usage Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -99,8 +102,8 @@ void UsageFault_Handler(void)
   */
 void SVC_Handler(void)
 {
-  printf("svc\n");
-  SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    printf("svc\n");
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 
 /**
@@ -131,10 +134,23 @@ void DebugMon_Handler(void)
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-  */ 
+  */
+
+void assert_failed(u8* file, u32 line)
+{
+    write(0, file, strlen((char*)file));
+    write(0, ":", 1);
+    char buf[10];
+    utils::itoa(line, buf, 10);
+    write(0, buf, strlen(buf));
+    write(0, " assertion failed!", 18);
+    while (true)
+    {
+    }
+}
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

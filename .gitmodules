@@ -1,0 +1,18 @@
+[submodule "test/lib/googletest"]
+	path = test/lib/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lib/json/json"]
+	path = lib/json/json
+	url = https://github.com/bblanchon/ArduinoJson.git
+[submodule "lib/boost/sml"]
+	path = lib/boost/sml
+	url = https://github.com/boost-experimental/sml.git
+[submodule "lib/CRCpp/CRCpp"]
+	path = lib/CRCpp/CRCpp
+	url = https://github.com/d-bahr/CRCpp.git
+[submodule "lib/gsl/gsl"]
+	path = lib/gsl/gsl
+	url = https://github.com/Microsoft/GSL.git
+[submodule "lib/boost/beast"]
+	path = lib/boost/beast
+	url = https://github.com/boostorg/beast.git

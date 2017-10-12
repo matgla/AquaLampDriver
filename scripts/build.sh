@@ -7,6 +7,7 @@ if [ $RC -ne 0 ]; then
 fi
 
 echo "2. Make target"
+mkdir -p ../bin
 cd ../bin
 make -j4 -l4
 RC="$?"
