@@ -1,12 +1,21 @@
 set(COMMON_SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
+set(common_porting_sources
+    ${COMMON_SRC_DIR}/main.cpp
+    ${COMMON_SRC_DIR}/logger/logger.cpp
+)
+
+set(common_porting_includes
+    ${COMMON_SRC_DIR}/hal/serial/serial.hpp
+    ${COMMON_SRC_DIR}/logger/logger.hpp
+)
+
 set(common_srcs
     ${COMMON_SRC_DIR}/dispatcher/ChannelHandler.cpp
     ${COMMON_SRC_DIR}/dispatcher/dispatcher.cpp
     ${COMMON_SRC_DIR}/dispatcher/handlerBase.cpp
     ${COMMON_SRC_DIR}/dispatcher/RtcHandler.cpp
     ${COMMON_SRC_DIR}/pwm/channelsGroup.cpp
-    ${COMMON_SRC_DIR}/rtc/rtc.cpp
     ${COMMON_SRC_DIR}/logger.cpp
     ${COMMON_SRC_DIR}/main.cpp
     ${COMMON_SRC_DIR}/pwmChannel.cpp

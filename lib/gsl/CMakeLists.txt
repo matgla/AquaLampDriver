@@ -6,4 +6,4 @@ set(Gsl_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/gsl/gsl/include" CACHE STRING "pa
 
 add_library(gsl INTERFACE)
 target_sources(gsl INTERFACE ${gsl_srcs})
-target_include_directories(gsl SYSTEM INTERFACE ${Gsl_INCLUDE_DIR})
+target_include_directories(gsl INTERFACE ${Gsl_INCLUDE_DIR})

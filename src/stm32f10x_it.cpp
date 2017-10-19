@@ -153,4 +153,7 @@ void assert_failed(u8* file, u32 line)
     }
 }
 
+void* __dso_handle;
+
+
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

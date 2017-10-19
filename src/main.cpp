@@ -1,21 +1,21 @@
-#include "dispatcher/ChannelHandler.hpp"
-#include "dispatcher/RtcHandler.hpp"
-#include "dispatcher/dispatcher.hpp"
-#include "logger.hpp"
-#include "pwm/channelsGroup.hpp"
-#include "pwmChannel.hpp"
-#include "rtc/rtc.hpp"
-#include "state_machine/bootloader_sm.hpp"
-#include "stm32includes.hpp"
-#include "types.hpp"
-#include "usart.hpp"
-#include "utils.hpp"
-#include <boost/sml.hpp>
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-#include <memory>
-#include <unistd.h>
+// #include "dispatcher/ChannelHandler.hpp"
+// #include "dispatcher/RtcHandler.hpp"
+// #include "dispatcher/dispatcher.hpp"
+// #include "logger.hpp"
+// #include "pwm/channelsGroup.hpp"
+// #include "pwmChannel.hpp"
+// #include "rtc/rtc.hpp"
+// #include "state_machine/bootloader_sm.hpp"
+// #include "stm32includes.hpp"
+// #include "types.hpp"
+// #include "usart.hpp"
+// #include "utils.hpp"
+// #include <boost/sml.hpp>
+// #include <cassert>
+// #include <cstdlib>
+// #include <cstring>
+// #include <memory>
+// #include <unistd.h>
 
 // __IO uint32_t uwAsynchPrediv = 0;
 // __IO uint32_t uwSynchPrediv = 0;
@@ -90,7 +90,7 @@ TIM3_CH2 PA7
 TIM3_CH3 PB0
 TIM4_CH4 PB1
 
-TIM2_CH1 PA0
+TIM2_CH1 PA0h
 TIM2_CH2 PA1
 TIM2_CH3 PA2
 TIM2_CH4 PA3
@@ -105,8 +105,18 @@ TIM2_CH4 PA3
 //     GPIO_Init(GPIOB, &GPIO_InitStructure);
 // }
 
+#include "hal/serial/serial.hpp"
+#include "logger/logger.hpp"
+
 int main(void)
 {
+    logger::Logger logger("logger");
+
+    logger.info() << "Booting system";
+    // hal::serial::Serial serial("COM3", 57600);
+    hal::serial::primarySerial.write("No hej:)");
+    logger.info() << "Serial enabled";
+
     // SystemInit();
     // rtc::Rtc r;
 
@@ -167,4 +177,3 @@ int main(void)
     //     // sm.process_event(evInitialize{});
     // }
 }
-
