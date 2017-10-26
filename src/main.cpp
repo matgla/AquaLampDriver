@@ -1,21 +1,21 @@
-// #include "dispatcher/ChannelHandler.hpp"
-// #include "dispatcher/RtcHandler.hpp"
-// #include "dispatcher/dispatcher.hpp"
-// #include "logger.hpp"
-// #include "pwm/channelsGroup.hpp"
-// #include "pwmChannel.hpp"
-// #include "rtc/rtc.hpp"
-// #include "state_machine/bootloader_sm.hpp"
-// #include "stm32includes.hpp"
-// #include "types.hpp"
-// #include "usart.hpp"
-// #include "utils.hpp"
-// #include <boost/sml.hpp>
-// #include <cassert>
-// #include <cstdlib>
-// #include <cstring>
-// #include <memory>
-// #include <unistd.h>
+#include "dispatcher/ChannelHandler.hpp"
+#include "dispatcher/RtcHandler.hpp"
+#include "dispatcher/dispatcher.hpp"
+#include "logger/logger.hpp"
+#include "pwm/channelsGroup.hpp"
+#include "pwmChannel.hpp"
+#include "rtc/rtc.hpp"
+#include "state_machine/bootloader_sm.hpp"
+#include "stm32includes.hpp"
+#include "types.hpp"
+#include "usart.hpp"
+#include "utils.hpp"
+#include <boost/sml.hpp>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <memory>
+#include <unistd.h>
 
 // __IO uint32_t uwAsynchPrediv = 0;
 // __IO uint32_t uwSynchPrediv = 0;
@@ -90,90 +90,83 @@ TIM3_CH2 PA7
 TIM3_CH3 PB0
 TIM4_CH4 PB1
 
-TIM2_CH1 PA0h
+TIM2_CH1 PA0
 TIM2_CH2 PA1
 TIM2_CH3 PA2
 TIM2_CH4 PA3
-// */
-// void initializeBoardLeds()
-// {
-//     GPIO_InitTypeDef GPIO_InitStructure;
-//     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA, ENABLE);
-//     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-//     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-//     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-//     GPIO_Init(GPIOB, &GPIO_InitStructure);
-// }
-
-#include "hal/serial/serial.hpp"
-#include "logger/logger.hpp"
+*/
+void initializeBoardLeds()
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
 
 int main(void)
 {
-    logger::Logger logger("logger");
-
-    logger.info() << "Booting system";
-    // hal::serial::Serial serial("COM3", 57600);
-    hal::serial::primarySerial.write("No hej:)");
-    logger.info() << "Serial enabled";
-
-    // SystemInit();
+    SystemInit();
     // rtc::Rtc r;
 
     // rtc::Rtc::setTime(1, 5, 2017, 20, 12, 47);
-    // initializeBoardLeds();
-    // hw::USART<hw::USARTS::USART1_PP1>::getUsart().send("ready\n\0", 6);
-    // GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-    // Logger logger("boot\0");
-    // // boost::sml::sm<BootLoaderSm> sm{logger};
-    // dispatcher::Dispatcher hand;
+    initializeBoardLeds();
+    // GPIO_ResetBits(GPIOA, GPIO_Pin_5);
+    GPIO_SetBits(GPIOA, GPIO_Pin_5);
+    hw::USART<hw::USARTS::USART2_PP1>::getUsart().send("ready\n\0", 6);
+    logger::Logger logger("boot");
+    // boost::sml::sm<BootLoaderSm> sm{logger};
+    dispatcher::Dispatcher hand;
 
-    // // sm.process_event(evInitialize{});
-    // // sm.process_event(evGetBootMode{});
-    // // sm.process_event(evBoot{});
+    // sm.process_event(evInitialize{});
+    // sm.process_event(evGetBootMode{});
+    // sm.process_event(evBoot{});
 
-    // logger << Level::INFO << "Jadymy z tematem\n";
+    logger.info() << "Jadymy z tematem";
 
-    // pwm::ChannelsGroup channels;
-    // channels.configureChannel(0);
+    // SPI_InitStructure.
 
-    // handler::IHandlerPtr channelHandler(new handler::ChannelHandler("ChannelHandler\0", channels));
-    // handler::IHandlerPtr rtcHandler(new handler::RtcHandler("RtcHandler\0"));
+    pwm::ChannelsGroup channels;
+    channels.configureChannel(0);
 
-    // hand.registerHandler(std::move(channelHandler));
-    // hand.registerHandler(std::move(rtcHandler));
+    handler::IHandlerPtr channelHandler(new handler::ChannelHandler("ChannelHandler\0", channels));
+    handler::IHandlerPtr rtcHandler(new handler::RtcHandler("RtcHandler\0"));
 
-    // logger << Level::INFO << "Pwm Enabled\n";
-    // //  TIM_Cmd(TIM2, ENABLE);
-    // // logger << Level::INFO << "NVIC reconfigured\n";
-    // char msg[100];
-    // int i = 0;
-    // while (1)
-    // {
-    //     if (hw::USART<hw::USARTS::USART1_PP1>::getUsart().size())
-    //     {
-    //         while (hw::USART<hw::USARTS::USART1_PP1>::getUsart().size())
-    //         {
-    //             char c = hw::USART<hw::USARTS::USART1_PP1>::getUsart().read();
-    //             if (c == '\n')
-    //             {
-    //                 msg[i] = 0;
-    //                 hand.handle(msg);
-    //                 i = 0;
-    //                 logger.info() << "event proceeded\n";
-    //             }
-    //             else
-    //             {
-    //                 msg[i++] = c;
-    //             }
-    //         }
-    //         if (i > 100)
-    //         {
-    //             logger.info() << "Buffer overflow!\n";
-    //             i = 0;
-    //             continue;
-    //         }
-    //     }
-    //     // sm.process_event(evInitialize{});
-    // }
+    hand.registerHandler(std::move(channelHandler));
+    hand.registerHandler(std::move(rtcHandler));
+
+    logger.info() << "Pwm Enabled";
+    //  TIM_Cmd(TIM2, ENABLE);
+    // logger << Level::INFO << "NVIC reconfigured\n";
+    char msg[100];
+    int i = 0;
+    while (1)
+    {
+        if (hw::USART<hw::USARTS::USART1_PP1>::getUsart().size())
+        {
+            while (hw::USART<hw::USARTS::USART1_PP1>::getUsart().size())
+            {
+                char c = hw::USART<hw::USARTS::USART1_PP1>::getUsart().read();
+                if (c == '\n')
+                {
+                    msg[i] = 0;
+                    hand.handle(msg);
+                    i = 0;
+                    logger.info() << "event proceeded";
+                }
+                else
+                {
+                    msg[i++] = c;
+                }
+            }
+            if (i > 100)
+            {
+                logger.info() << "Buffer overflow!";
+                i = 0;
+                continue;
+            }
+        }
+        //     // sm.process_event(evInitialize{});
+    }
 }

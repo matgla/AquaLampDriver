@@ -140,6 +140,9 @@ void DebugMon_Handler(void)
   * @}
   */
 
+
+/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+
 void assert_failed(u8* file, u32 line)
 {
     write(0, file, strlen((char*)file));
@@ -152,8 +155,3 @@ void assert_failed(u8* file, u32 line)
     {
     }
 }
-
-void* __dso_handle;
-
-
-/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

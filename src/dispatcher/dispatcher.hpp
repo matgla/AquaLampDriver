@@ -1,6 +1,6 @@
 #pragma once
 
-#include "logger.hpp"
+#include "logger/logger.hpp"
 
 #include <functional>
 #include <vector>
@@ -13,12 +13,12 @@ class Dispatcher
 {
   public:
     Dispatcher();
-    bool handle(char *msg);
+    bool handle(char* msg);
     bool registerHandler(handler::IHandlerPtr handler);
 
   private:
-    void dispatch(char *cmd, char *arg);
-    Logger logger_;
+    void dispatch(char* cmd, char* arg);
+    logger::Logger logger_;
     std::vector<handler::IHandlerPtr> handlers_;
 };
 } // namespace handler

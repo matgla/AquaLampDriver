@@ -9,13 +9,19 @@ set(ARM_TOOLCHAIN_PATH ${ARM_TOOLCHAIN_PATH_CONVERTED} CACHE PATH "Path to ARM t
 message("-- ARM toolchain: ${ARM_TOOLCHAIN_PATH_CONVERTED}")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-
-set(CMAKE_ASM_COMPILER  "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc")
-set(CMAKE_C_COMPILER    "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc")
-set(CMAKE_CXX_COMPILER  "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-g++")
-set(CMAKE_OBJCOPY       "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-objcopy")
-set(CMAKE_OBJDUMP       "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-objdump")
-
+if (WIN32)
+    set(CMAKE_ASM_COMPILER  "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc.exe")
+    set(CMAKE_C_COMPILER    "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc.exe")
+    set(CMAKE_CXX_COMPILER  "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-g++.exe")
+    set(CMAKE_OBJCOPY       "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-objcopy.exe")
+    set(CMAKE_OBJDUMP       "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-objdump.exe")
+else (LINUX)
+    set(CMAKE_ASM_COMPILER  "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc")
+    set(CMAKE_C_COMPILER    "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-gcc")
+    set(CMAKE_CXX_COMPILER  "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-g++")
+    set(CMAKE_OBJCOPY       "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-objcopy")
+    set(CMAKE_OBJDUMP       "${ARM_TOOLCHAIN_PATH}/bin/arm-none-eabi-objdump")
+endif (WIN32)
 set(TOOCHAIN_LIB_DIR "${ARM_TOOLCHAIN}/lib")
 
 SET(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m4 -fno-builtin -Wall -std=gnu99 -fdata-sections -ffunction-sections -mfloat-abi=soft -s -Os" CACHE INTERNAL "c compiler flags")

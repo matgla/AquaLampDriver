@@ -1,9 +1,9 @@
 #pragma once
 
-#include "pwmChannel.hpp"
+#include "logger/logger.hpp"
 #include "memoryHelpers.hpp"
+#include "pwmChannel.hpp"
 #include "types.hpp"
-#include "logger.hpp"
 
 #define NR_OF_PWM_CHANNELS 12
 
@@ -20,7 +20,7 @@ class ChannelsGroup
 
   private:
     std::unique_ptr<Channel> channels_[NR_OF_PWM_CHANNELS];
-    Logger logger_;
+    logger::Logger logger_;
 };
 
 } // namespace pwm

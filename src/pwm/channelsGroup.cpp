@@ -3,7 +3,8 @@
 
 namespace pwm
 {
-ChannelsGroup::ChannelsGroup() : logger_("ChannelsGroup\0")
+ChannelsGroup::ChannelsGroup()
+    : logger_("ChannelsGroup")
 {
 }
 
@@ -25,18 +26,18 @@ bool ChannelsGroup::setChannelPulse(u8 channelNr, u8 value)
 {
     if (channelNr < 0 || channelNr > 11)
     {
-        logger_.error() << "Wrong channel nr: " << channelNr << " 0 <= n < 12\n";
+        logger_.error() << "Wrong channel nr: " << channelNr << " 0 <= n < 12";
         return false;
     }
     if (value < 0 || value > 100)
     {
-        logger_.error() << "Wrong value: " << channelNr << " (0 <= v <= 100)\n";
+        logger_.error() << "Wrong value: " << channelNr << " (0 <= v <= 100)";
         return false;
     }
 
     if (nullptr == channels_[channelNr])
     {
-        logger_.error() << "Channel " << channelNr << " isn't configured\n";
+        logger_.error() << "Channel " << channelNr << " isn't configured";
         return false;
     }
     channels_[channelNr]->setPulse(value);

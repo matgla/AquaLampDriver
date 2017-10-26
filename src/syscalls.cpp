@@ -7,16 +7,16 @@
 
 #include <gsl/span>
 
-#include "hal/serial/serial.hpp"
 #include "rtc/rtc.hpp"
+#include "usart.hpp"
 
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
     uint64_t t = rtc::Rtc::getTime();
 
-    tv->tv_sec = t; // convert to seconds
+    tv->tv_sec = t;                        // convert to seconds
     tv->tv_usec = (t % 1000000000) / 1000; // tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds
-    return t; // return non-zero for error
+    return t;                              // return non-zero for error
 }
 
 #undef errno
@@ -69,7 +69,7 @@ void _exit(int code)
 char* heap_end = 0;
 caddr_t _sbrk(int incr)
 {
-    extern char _heap; /* Defined by the linker */
+    extern char _heap;  /* Defined by the linker */
     extern char _eheap; /* Defined by the linker */
     char* prev_heap_end;
 
@@ -94,7 +94,6 @@ caddr_t _sbrk(int incr)
 
 int _write(int file, const char* ptr, int len)
 {
-    hal::serial::primarySerial.write(BufferSpan{reinterpret_cast<const u8*>(ptr), static_cast<BufferIndexType>(len)});
-
+    hw::USART<hw::USARTS::USART2_PP1>::getUsart().send(ptr, len);
     return len;
 }

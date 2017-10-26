@@ -1,9 +1,9 @@
 #pragma once
 
-#include "utils.hpp"
-#include <cstdint>
 #include "stm32includes.hpp"
 #include "system_stm32f10x.h"
+#include "utils.hpp"
+#include <cstdint>
 
 #include "readerWriterBuffer.hpp"
 
@@ -76,4 +76,3 @@ class USART
     ReaderWriterBuffer<BUFFER_SIZE> buffer_;
 };
 }
-

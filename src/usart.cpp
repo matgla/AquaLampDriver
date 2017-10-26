@@ -1,5 +1,4 @@
 #include "usart.hpp"
-#include "logger.hpp"
 #include "utils.hpp"
 
 #include <cstdint>
@@ -46,7 +45,7 @@ ReaderWriterBuffer<BUFFER_SIZE>& USART<UsartNumber>::getBuffer()
 template <USARTS UsartNumber>
 void USART<UsartNumber>::send(char ch)
 {
-    wait();
+    // wait();
     USART_SendData(USARTx_, ch);
     wait();
 }
@@ -90,43 +89,6 @@ u8 USART<UsartNumber>::read()
     return buffer_.getByte();
 }
 
-// template <USARTS UsartNumber>
-// void USART<UsartNumber>::sendMessage(u8* payload, u8 size)
-// {
-//     send(size);
-//     send(payload, size);
-//     waitForAck(10);
-// }
-
-// template <USARTS UsartNumber>
-// u8 USART<UsartNumber>::getMessage(u8* buffer)
-// {
-//     Logger logger("USART");
-//     u8 msgSize = 1;
-//     int index = 0;
-//     bool receivedSize = false;
-//     while (index < msgSize)
-//     {
-//         if (getBuffer().size())
-//         {
-//             if (!receivedSize)
-//             {
-//                 msgSize = getBuffer().getByte();
-//                 logger << Level::INFO << "Received size: " << msgSize << "\n";
-//                 logger << Level::INFO << "Data: ";
-//                 receivedSize = true;
-//             }
-//             else
-//             {
-//                 buffer[index++] = getBuffer().getByte();
-//                 logger << buffer[index - 1];
-//             }
-//         }
-//     }
-//     logger << " \n";
-//     return msgSize;
-// }
-
 template <USARTS UsartNumber>
 USART<UsartNumber>::USART()
 {
@@ -146,7 +108,7 @@ void USART<UsartNumber>::init()
     USART_DeInit(USARTx_);
     InitClocks();
     GPIOInit(gpioPinTx_, gpioPortTx_);
-   // GPIOInit(gpioPinRx_, gpioPortRx_);
+    GPIOInit(gpioPinRx_, gpioPortRx_);
     NVICInit();
     USARTInit();
 }
@@ -156,7 +118,7 @@ void USART<UsartNumber>::GPIOInit(u16 pin, GPIO_TypeDef* port)
 {
     GPIO_InitTypeDef gpioInit;
 
-   // GPIO_PinAFConfig(port, pinSource, afUsart);
+    // GPIO_PinAFConfig(port, pinSource, afUsart);
 
     gpioInit.GPIO_Pin = gpioPinRx_;
     gpioInit.GPIO_Mode = GPIO_Mode_IN_FLOATING; // GPIO_Mode_AF stm32f4xx
@@ -184,7 +146,7 @@ template <USARTS UsartNumber>
 void USART<UsartNumber>::NVICInit()
 {
     NVIC_InitTypeDef init;
-    
+
     init.NVIC_IRQChannel = usartIrqn_;
     init.NVIC_IRQChannelCmd = ENABLE;
     init.NVIC_IRQChannelSubPriority = getSubPriority(USARTx_);
@@ -204,6 +166,8 @@ void USART<UsartNumber>::USARTInit()
     USART_Init(USARTx_, &USART_InitStruct);
     USART_ITConfig(USARTx_, USART_IT_RXNE, ENABLE);
     USART_Cmd(USARTx_, ENABLE);
+    USARTx_->SR = 1 & USART_FLAG_TC;
+    USART_ClearFlag(USARTx_, USART_FLAG_TC);
 }
 
 template <USARTS UsartNumber>
@@ -215,9 +179,10 @@ void USART<UsartNumber>::InitClocks()
 template <USARTS UsartNumber>
 void USART<UsartNumber>::wait()
 {
+    auto status = USART_GetFlagStatus(USARTx_, USART_FLAG_TC);
     while (USART_GetFlagStatus(USARTx_, USART_FLAG_TC) == RESET)
     {
-    };
+    }
 }
 
 // template <USARTS UsartNumber>
@@ -367,4 +332,4 @@ void USART1_IRQHandler(void)
     }
 }
 
-}  // namespace hw
+} // namespace hw

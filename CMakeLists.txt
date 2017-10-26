@@ -22,6 +22,9 @@ endif (${ARCH} STREQUAL "STM32")
 
 project(AquaLampDriver CXX C ASM)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+
 if (ASAN_ENABLED)
     if (${ARCH} STREQUAL "STM32")
         message(WARNING "STM32 not support undefined behaviour sanitizer")

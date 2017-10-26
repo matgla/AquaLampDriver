@@ -23,6 +23,12 @@ class Logger
         return *this;
     }
 
+    Logger& operator<<(int data)
+    {
+        printf("%d", data);
+        return *this;
+    }
+
     Logger debug();
     Logger info();
     Logger warning();
