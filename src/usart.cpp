@@ -32,14 +32,14 @@ template <USARTS UsartNumber>
 USART<UsartNumber>& USART<UsartNumber>::getUsart()
 {
     static_assert(sizeof(UsartNumber) == 0, "Method needs to be specialized");
-    static USART s;
-    return s;
+    //  static USART s;
+    //  return s;
 }
 
 template <USARTS UsartNumber>
 ReaderWriterBuffer<BUFFER_SIZE>& USART<UsartNumber>::getBuffer()
 {
-    return buffer_;
+    return this->buffer_;
 }
 
 template <USARTS UsartNumber>
@@ -80,13 +80,14 @@ void USART<UsartNumber>::send(const char* str, int size)
 template <USARTS UsartNumber>
 u32 USART<UsartNumber>::size()
 {
-    return buffer_.size();
+    //printf("Buffer size: %d", buffer_.size());
+    return this->buffer_.size();
 }
 
 template <USARTS UsartNumber>
 u8 USART<UsartNumber>::read()
 {
-    return buffer_.getByte();
+    return this->buffer_.getByte();
 }
 
 template <USARTS UsartNumber>
@@ -157,7 +158,7 @@ template <USARTS UsartNumber>
 void USART<UsartNumber>::USARTInit()
 {
     USART_InitTypeDef USART_InitStruct;
-    USART_InitStruct.USART_BaudRate = 115200;
+    USART_InitStruct.USART_BaudRate = 9600;
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStruct.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
     USART_InitStruct.USART_Parity = USART_Parity_No;
@@ -166,8 +167,6 @@ void USART<UsartNumber>::USARTInit()
     USART_Init(USARTx_, &USART_InitStruct);
     USART_ITConfig(USARTx_, USART_IT_RXNE, ENABLE);
     USART_Cmd(USARTx_, ENABLE);
-    USARTx_->SR = 1 & USART_FLAG_TC;
-    USART_ClearFlag(USARTx_, USART_FLAG_TC);
 }
 
 template <USARTS UsartNumber>
@@ -179,10 +178,13 @@ void USART<UsartNumber>::InitClocks()
 template <USARTS UsartNumber>
 void USART<UsartNumber>::wait()
 {
-    auto status = USART_GetFlagStatus(USARTx_, USART_FLAG_TC);
+    // auto status = USART_GetFlagStatus(USARTx_, USART_FLAG_TC);
     while (USART_GetFlagStatus(USARTx_, USART_FLAG_TC) == RESET)
     {
     }
+    // while (!(USARTx_->SR & 0x00000040))
+    // {
+    // }
 }
 
 // template <USARTS UsartNumber>
@@ -289,7 +291,18 @@ USART<USARTS::USART1_PP1>::USART()
     init();
 }
 
+template <>
+USART<USARTS::USART2_PP1>::USART()
+    : gpioPortRx_(GPIOA), gpioPortTx_(GPIOA), gpioPinRx_(GPIO_Pin_3), gpioPinTx_(GPIO_Pin_2),
+      usartIrqn_(USART2_IRQn), transmissionOngoing_(false)
+{
+    USARTx_ = USART2;
+    init();
+    send(' ');
+}
+
 bool wasUsart1Initialized = false;
+bool wasUsart2Initialized = false;
 
 bool returnTrue()
 {
@@ -299,10 +312,19 @@ bool returnTrue()
 template <>
 USART<USARTS::USART1_PP1>& USART<USARTS::USART1_PP1>::getUsart()
 {
-    static USART s1;
-    wasUsart1Initialized = true;
-    return s1;
+    // static USART s1;
+    // wasUsart1Initialized = true;
+    //  return s1;
 }
+
+template <>
+USART<USARTS::USART2_PP1>& USART<USARTS::USART2_PP1>::getUsart()
+{
+    static USART s2;
+    wasUsart2Initialized = true;
+    return s2;
+}
+
 
 template <>
 bool USART<USARTS::USART1_PP1>::initialized()
@@ -311,25 +333,40 @@ bool USART<USARTS::USART1_PP1>::initialized()
 }
 
 template <>
+bool USART<USARTS::USART2_PP1>::initialized()
+{
+    return wasUsart2Initialized;
+}
+
+template <>
 void USART<USARTS::USART1_PP1>::InitClocks()
 {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1, ENABLE);
 }
 
-template class USART<USARTS::USART1_PP1>;
+template <>
+void USART<USARTS::USART2_PP1>::InitClocks()
+{
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+}
+
+template class USART<USARTS::USART2_PP1>;
+
 
 extern "C" {
-void USART1_IRQHandler(void);
+void USART2_IRQHandler(void);
 }
 
-void USART1_IRQHandler(void)
+void USART2_IRQHandler(void)
 {
-    if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
+    if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
     {
-        char c = USART1->DR;
-        hw::USART<hw::USARTS::USART1_PP1>::getUsart().send(c);
-        hw::USART<hw::USARTS::USART1_PP1>::getUsart().receive(c);
+        char c = USART2->DR;
+        hw::USART<hw::USARTS::USART2_PP1>::getUsart().send(c);
+        hw::USART<hw::USARTS::USART2_PP1>::getUsart().receive(c);
     }
 }
+
 
 } // namespace hw

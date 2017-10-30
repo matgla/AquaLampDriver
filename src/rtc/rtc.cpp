@@ -1,7 +1,7 @@
 #include "rtc/rtc.hpp"
 
-#include <ctime>
 #include <cstdio>
+#include <ctime>
 
 #include "stm32f10x_conf.h"
 
@@ -59,7 +59,7 @@ void Rtc::setTime(u32 day, u32 month, u32 year, u32 hours, u32 minutes, u32 seco
     t.tm_sec = seconds;
     time_t timeSinceEpoch = mktime(&t);
     RTC_WaitForLastTask();
-    printf("Set time to: %d\n", timeSinceEpoch);
+    //printf("Set time to: %d\n", timeSinceEpoch);
     RTC_SetCounter(timeSinceEpoch);
     RTC_WaitForLastTask();
 }

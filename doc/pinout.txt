@@ -1,0 +1,63 @@
+PC13 - wolny -
+PC14 - wolny -
+PC15 - wolny -
+PD0 - wolny -
+PD1 - wolny -
+PA0 - TIM2_CH1 
+PA1 - TIM2_CH2
+PA2 - USART2 TX
+
+PA3 - USART2 RX
+PA4 - wolny
+PA5 - wolny
+PA6 - TIM3_CH1
+PA7 - TIM3_CH2
+PB0 - TIM3_CH3
+PB1 - TIM3_CH4
+PB2 - wolny -
+PB10 - I2C2_SCL
+PB11 - I2C2_SDA
+
+PB12 - wolny // led
+PB13 - SPI2_SCK
+PB14 - SPI2_MISO
+PB15 - SPI2_MOSI
+PA8 - TIM1_CH1
+PA9 - TIM1_CH2
+PA10 - TIM1_CH3
+PA11 - TIM1_CH4
+PA12 - wolny
+PA13 - wolny -
+
+PA14 - wolny -
+PA15 - wolny // spi
+PB3 - SPI1_SCK
+PB4 - wolny // spi
+PB5 - SPI1_MOSI
+PB6 - TIM4_CH1
+PB7 - TIM4_CH2
+PB8 - TIM4_CH3
+PB9 - TIM4_CH4
+
+
+Potrzebuje
+
+1) USART2   RX   TX
+	        PA3  PA2
+2) SPI      RST   D/C  DN   SCLK 
+                       MOSI SCK
+	        PA15 PB4   PB5  PB3
+3) 14 x timer
+    TIM1 - PA8, PA9, PA10, PA11
+	TIM2 - PA0, PA1
+	TIM3 - PA6, PA7, PB0, PB1
+	TIM4 - PB6, PB7, PB8, PB9
+	
+4) termometry i2c
+   SCL   SDA
+   PB10, PB11
+5) przyciski
+   L    P    G    D    1    2
+   PA4  PA5 PB15  PA12 PB13 PB14
+   
+	

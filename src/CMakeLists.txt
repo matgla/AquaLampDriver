@@ -1,11 +1,9 @@
 include(cmake/common_sources.cmake)
 
-set(production_srcs ${common_porting_sources} ${common_porting_includes} main.cpp)
+set(production_srcs ${common_porting_sources} ${common_porting_includes})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
-
-set(target_libs ${target_libs} ArduinoJson sml crcpp gsl)
+set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl)
 set(target_name AquaLampDriver)
 set(target_name_lib Firmware)
 
@@ -41,17 +39,20 @@ elseif (${ARCH} STREQUAL "STM32")
     endif (DEBUG)
 
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${CMAKE_SOURCE_DIR}/lkr/stm32f103_128k.ld --specs=nano.specs")
-
-    add_library(stm32lib ${STM32_SOURCES} ${STM32_STARTUP_SOURCE})
-
+    add_library(stm32lib ${STM32_SOURCES})
     add_executable(${target_name} ${production_srcs})
+    message("prod ${production_srcs}")
     target_link_libraries(${target_name} stm32lib ${STM32_LIBRARIES} ${target_libs})
 
-    add_custom_command(TARGET  POST_BUILD ${target_name}
+    install(TARGETS ${target_name} DESTINATION ${CMAKE_BINARY_DIR})
+    add_custom_command(TARGET POST_BUILD ${target_name}
         COMMAND ${ARM_TOOLCHAIN}/bin/arm-none-eabi-size --format=berkeley "${target_name}.elf")
 
-    add_custom_target(${target_name}.hex DEPENDS ${target_name} COMMAND ${CMAKE_OBJCOPY} -Oihex ${target_name} ${target_name}.hex)
-    add_custom_target(${target_name}.bin DEPENDS ${target_name} COMMAND ${CMAKE_OBJCOPY} -Obinary ${target_name} ${target_name}.bin)
+    add_custom_target(${target_name}.hex DEPENDS ${target_name} COMMAND ${CMAKE_OBJCOPY} -Oihex ${target_name}.elf ${target_name}.hex)
+    file(TO_CMAKE_PATH "${CMAKE_OBJCOPY}" OBJCPY)
+    message("command ${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin")
+
+    add_custom_target(${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin)
 
     # If STM32 ST-Link Utility is found, add a make target to program the chip
     if(DEFINED STM32_STLINK_CLI_EXECUTABLE)

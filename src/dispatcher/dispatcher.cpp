@@ -18,7 +18,7 @@ bool Dispatcher::registerHandler(handler::IHandlerPtr handler)
 
 bool Dispatcher::handle(char* msg)
 {
-    logger_.info() << "Handle message: " << msg;
+    logger_.info() << "Handle message: " << msg << "\n";
     char* part;
     part = strtok(msg, " ");
     if (strcmp(part, "CMD") != 0)
@@ -28,7 +28,7 @@ bool Dispatcher::handle(char* msg)
     }
     char* cmd;
     cmd = strtok(nullptr, " ");
-    logger_.info() << "Got command: " << cmd;
+    logger_.info() << "Got command: " << cmd << "\n";
 
     u8 nrOfSpaces = 2;
     char* args = msg + strlen(part) + strlen(cmd) + nrOfSpaces;
@@ -37,7 +37,7 @@ bool Dispatcher::handle(char* msg)
         if (handler->accept(cmd, args))
         {
             logger_.info() << "Handler " << handler->getName()
-                           << " accepted execution";
+                           << " accepted execution\n";
             handler->handle(cmd, args);
         }
     }

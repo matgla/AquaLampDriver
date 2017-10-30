@@ -41,7 +41,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
     assert(1 && "HARD fault");
-    printf("hard fault \n");
+    write(1, "hard fault\n", 11);
     /* Go to infinite loop when Hard Fault exception occurs */
     while (1)
     {

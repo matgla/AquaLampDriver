@@ -2,7 +2,6 @@ set(COMMON_SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
 set(stm32_sources
     ${COMMON_SRC_DIR}/stm32f10x_it.cpp
-    ${COMMON_SRC_DIR}/stm32f10x_it.cpp
     ${COMMON_SRC_DIR}/system_stm32f10x.c
 
     ${COMMON_SRC_DIR}/syscalls.cpp

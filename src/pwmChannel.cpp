@@ -6,16 +6,20 @@
 namespace pwm
 {
 Channel::Channel(u32 pin,
-                 GPIO_TypeDef *port,
-                 TIM_TypeDef *timer,
+                 GPIO_TypeDef* port,
+                 TIM_TypeDef* timer,
                  u32 rccPeriph,
                  u32 rccGpio,
-                 Channels chNr) : channelPin_(pin),
-                                  channelPort_(port),
-                                  timer_(timer),
-                                  rccPeriph_(rccPeriph),
-                                  rccGpio_(rccGpio),
-                                  chNr_(chNr)
+                 Channels chNr,
+                 bool alternate)
+    : channelPin_(pin),
+      channelPort_(port),
+      timer_(timer),
+      rccPeriph_(rccPeriph),
+      rccGpio_(rccGpio),
+      chNr_(chNr),
+      alternate_(alternate),
+      pulse_(0)
 {
     init();
 }
@@ -31,38 +35,42 @@ void Channel::setPulse(u8 width)
     channel.TIM_OCMode = TIM_OCMode_PWM1;
     channel.TIM_OutputState = TIM_OutputState_Enable;
     float multiplier = (float)width / 100;
-    printf("period is %d\n", period_);
     u32 pulse = (float)period_ * multiplier;
-    printf("set pulse to: %d\n", pulse);
     channel.TIM_Pulse = pulse;
     //TIM_Cmd(timer_, DISABLE);
     switch (chNr_)
     {
-    case Channels::CH0:
-    {
-        TIM_OC1Init(timer_, &channel);
-    }
-    break;
+        case Channels::CH0:
+        {
+            TIM_OC1Init(timer_, &channel);
+        }
+        break;
 
-    case Channels::CH1:
-    {
-        TIM_OC2Init(timer_, &channel);
-    }
-    break;
+        case Channels::CH1:
+        {
+            TIM_OC2Init(timer_, &channel);
+        }
+        break;
 
-    case Channels::CH2:
-    {
-        TIM_OC3Init(timer_, &channel);
-    }
-    break;
+        case Channels::CH2:
+        {
+            TIM_OC3Init(timer_, &channel);
+        }
+        break;
 
-    case Channels::CH3:
-    {
-        TIM_OC4Init(timer_, &channel);
-    }
-    break;
+        case Channels::CH3:
+        {
+            TIM_OC4Init(timer_, &channel);
+        }
+        break;
     }
     TIM_Cmd(timer_, ENABLE);
+    pulse_ = pulse;
+}
+
+u8 Channel::getPulse()
+{
+    return pulse_;
 }
 
 void Channel::init()
@@ -85,8 +93,18 @@ void Channel::initGpio()
 
 void Channel::initClocks()
 {
-    RCC_APB1PeriphClockCmd(rccPeriph_, ENABLE);
-    RCC_APB2PeriphClockCmd(rccGpio_, ENABLE);
+
+    if (RCC_APB2Periph_TIM1 == rccPeriph_)
+    {
+        printf("Enabling priph for TIM1\n");
+        RCC_APB2PeriphClockCmd(rccPeriph_, ENABLE);
+        TIM_CtrlPWMOutputs(TIM1, ENABLE);
+    }
+    else
+    {
+        RCC_APB1PeriphClockCmd(rccPeriph_, ENABLE);
+    }
+    RCC_APB2PeriphClockCmd(rccGpio_ | RCC_APB2Periph_AFIO, ENABLE);
 }
 
 void Channel::initTimer(u32 freq)
@@ -102,155 +120,207 @@ void Channel::initTimer(u32 freq)
     setPulse(0);
 }
 
-Channel0::Channel0() : Channel(GPIO_Pin_0,
-                               GPIOA,
-                               TIM2,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOA,
-                               Channels::CH0)
+Channel0::Channel0()
+    : Channel(GPIO_Pin_8,
+              GPIOA,
+              TIM1,
+              RCC_APB2Periph_TIM1,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH0,
+              false)
 {
 }
 
-Channel1::Channel1() : Channel(GPIO_Pin_1,
-                               GPIOA,
-                               TIM2,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOA,
-                               Channels::CH1)
+Channel1::Channel1()
+    : Channel(GPIO_Pin_9,
+              GPIOA,
+              TIM1,
+              RCC_APB2Periph_TIM1,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH1,
+              false)
 {
 }
 
-Channel2::Channel2() : Channel(GPIO_Pin_2,
-                               GPIOA,
-                               TIM2,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOA,
-                               Channels::CH2)
+Channel2::Channel2()
+    : Channel(GPIO_Pin_10,
+              GPIOA,
+              TIM1,
+              RCC_APB2Periph_TIM1,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH2,
+              false)
 {
 }
 
-Channel3::Channel3() : Channel(GPIO_Pin_3,
-                               GPIOA,
-                               TIM2,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOA,
-                               Channels::CH3)
+Channel3::Channel3()
+    : Channel(GPIO_Pin_11,
+              GPIOA,
+              TIM1,
+              RCC_APB2Periph_TIM1,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH3,
+              false)
 {
 }
 
-Channel4::Channel4() : Channel(GPIO_Pin_6,
-                               GPIOA,
-                               TIM3,
-                               RCC_APB1Periph_TIM3,
-                               RCC_APB2Periph_GPIOA,
-                               Channels::CH0)
+Channel4::Channel4()
+    : Channel(GPIO_Pin_0,
+              GPIOA,
+              TIM2,
+              RCC_APB1Periph_TIM2,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH0,
+              false)
 {
 }
 
-Channel5::Channel5() : Channel(GPIO_Pin_7,
-                               GPIOA,
-                               TIM3,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOA,
-                               Channels::CH1)
+Channel5::Channel5()
+    : Channel(GPIO_Pin_1,
+              GPIOA,
+              TIM2,
+              RCC_APB1Periph_TIM2,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH1,
+              false)
 {
 }
 
-Channel6::Channel6() : Channel(GPIO_Pin_0,
-                               GPIOB,
-                               TIM3,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOB,
-                               Channels::CH2)
+Channel6::Channel6()
+    : Channel(GPIO_Pin_6,
+              GPIOA,
+              TIM3,
+              RCC_APB1Periph_TIM3,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH0,
+              true)
 {
 }
 
-Channel7::Channel7() : Channel(GPIO_Pin_1,
-                               GPIOB,
-                               TIM3,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOB,
-                               Channels::CH3)
+Channel7::Channel7()
+    : Channel(GPIO_Pin_7,
+              GPIOA,
+              TIM3,
+              RCC_APB1Periph_TIM3,
+              RCC_APB2Periph_GPIOA,
+              Channels::CH1,
+              true)
 {
 }
 
-Channel8::Channel8() : Channel(GPIO_Pin_6,
-                               GPIOB,
-                               TIM4,
-                               RCC_APB1Periph_TIM2,
-                               RCC_APB2Periph_GPIOB,
-                               Channels::CH0)
+Channel8::Channel8()
+    : Channel(GPIO_Pin_0,
+              GPIOB,
+              TIM3,
+              RCC_APB1Periph_TIM3,
+              RCC_APB2Periph_GPIOB,
+              Channels::CH2,
+              false)
 {
 }
 
-Channel9::Channel9() : Channel(GPIO_Pin_7,
-                               GPIOB,
-                               TIM4,
-                               RCC_APB1Periph_TIM4,
-                               RCC_APB2Periph_GPIOB,
-                               Channels::CH1)
+Channel9::Channel9()
+    : Channel(GPIO_Pin_1,
+              GPIOB,
+              TIM3,
+              RCC_APB1Periph_TIM3,
+              RCC_APB2Periph_GPIOB,
+              Channels::CH3,
+              false)
 {
 }
 
-Channel10::Channel10() : Channel(GPIO_Pin_8,
-                                 GPIOB,
-                                 TIM4,
-                                 RCC_APB1Periph_TIM4,
-                                 RCC_APB2Periph_GPIOB,
-                                 Channels::CH2)
+Channel10::Channel10()
+    : Channel(GPIO_Pin_6,
+              GPIOB,
+              TIM4,
+              RCC_APB1Periph_TIM4,
+              RCC_APB2Periph_GPIOB,
+              Channels::CH0,
+              true)
 {
 }
 
-Channel11::Channel11() : Channel(GPIO_Pin_9,
-                                 GPIOB,
-                                 TIM4,
-                                 RCC_APB1Periph_TIM4,
-                                 RCC_APB2Periph_GPIOB,
-                                 Channels::CH3)
+Channel11::Channel11()
+    : Channel(GPIO_Pin_7,
+              GPIOB,
+              TIM4,
+              RCC_APB1Periph_TIM4,
+              RCC_APB2Periph_GPIOB,
+              Channels::CH1,
+              true)
+{
+}
+
+Channel12::Channel12()
+    : Channel(GPIO_Pin_8,
+              GPIOB,
+              TIM4,
+              RCC_APB1Periph_TIM4,
+              RCC_APB2Periph_GPIOB,
+              Channels::CH2,
+              true)
+{
+}
+
+Channel13::Channel13()
+    : Channel(GPIO_Pin_9,
+              GPIOB,
+              TIM4,
+              RCC_APB1Periph_TIM4,
+              RCC_APB2Periph_GPIOB,
+              Channels::CH3,
+              true)
 {
 }
 
 std::unique_ptr<Channel> makeChannel(u8 nr)
 {
-    assert(nr >= 0 && nr < 12);
+    assert(nr >= 0 && nr < 14);
     switch (nr)
     {
-    case 0:
-        return std::unique_ptr<Channel>(new Channel0());
-        break;
-    case 1:
-        return std::unique_ptr<Channel>(new Channel1());
-        break;
-    case 2:
-        return std::unique_ptr<Channel>(new Channel2());
-        break;
-    case 3:
-        return std::unique_ptr<Channel>(new Channel3());
-        break;
-    case 4:
-        return std::unique_ptr<Channel>(new Channel4());
-        break;
-    case 5:
-        return std::unique_ptr<Channel>(new Channel5());
-        break;
-    case 6:
-        return std::unique_ptr<Channel>(new Channel6());
-        break;
-    case 7:
-        return std::unique_ptr<Channel>(new Channel7());
-        break;
-    case 8:
-        return std::unique_ptr<Channel>(new Channel8());
-        break;
-    case 9:
-        return std::unique_ptr<Channel>(new Channel9());
-        break;
-    case 10:
-        return std::unique_ptr<Channel>(new Channel10());
-        break;
-    case 11:
-        return std::unique_ptr<Channel>(new Channel11());
-        break;
+        case 0:
+            return std::unique_ptr<Channel>(new Channel0());
+            break;
+        case 1:
+            return std::unique_ptr<Channel>(new Channel1());
+            break;
+        case 2:
+            return std::unique_ptr<Channel>(new Channel2());
+            break;
+        case 3:
+            return std::unique_ptr<Channel>(new Channel3());
+            break;
+        case 4:
+            return std::unique_ptr<Channel>(new Channel4());
+            break;
+        case 5:
+            return std::unique_ptr<Channel>(new Channel5());
+            break;
+        case 6:
+            return std::unique_ptr<Channel>(new Channel6());
+            break;
+        case 7:
+            return std::unique_ptr<Channel>(new Channel7());
+            break;
+        case 8:
+            return std::unique_ptr<Channel>(new Channel8());
+            break;
+        case 9:
+            return std::unique_ptr<Channel>(new Channel9());
+            break;
+        case 10:
+            return std::unique_ptr<Channel>(new Channel10());
+            break;
+        case 11:
+            return std::unique_ptr<Channel>(new Channel11());
+            break;
+        case 12:
+            return std::unique_ptr<Channel>(new Channel12());
+            break;
+        case 13:
+            return std::unique_ptr<Channel>(new Channel13());
+            break;
     }
 }
 

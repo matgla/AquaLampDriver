@@ -2,7 +2,7 @@ set(COMMON_SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
 set(common_porting_sources
     ${COMMON_SRC_DIR}/main.cpp
-    ${COMMON_SRC_DIR}/usart.cpp  
+    ${COMMON_SRC_DIR}/usart.cpp
     ${COMMON_SRC_DIR}/utils.cpp
     ${COMMON_SRC_DIR}/dispatcher/ChannelHandler.cpp
     ${COMMON_SRC_DIR}/dispatcher/dispatcher.cpp
@@ -10,13 +10,13 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/dispatcher/RtcHandler.cpp
     ${COMMON_SRC_DIR}/pwm/channelsGroup.cpp
     ${COMMON_SRC_DIR}/pwmChannel.cpp
-    ${COMMON_SRC_DIR}/logger/logger.cpp
+    ${COMMON_SRC_DIR}/logger.cpp
 )
 
 set(common_porting_includes
     ${COMMON_SRC_DIR}/usart.hpp
     ${COMMON_SRC_DIR}/utils.hpp
-    ${COMMON_SRC_DIR}/logger/logger.hpp
+    ${COMMON_SRC_DIR}/logger.hpp
     ${COMMON_SRC_DIR}/dispatcher/ChannelHandler.hpp
     ${COMMON_SRC_DIR}/dispatcher/dispatcher.hpp
     ${COMMON_SRC_DIR}/dispatcher/fwd.hpp
@@ -37,7 +37,7 @@ set(common_srcs
 
     ${COMMON_SRC_DIR}/logger.cpp
     ${COMMON_SRC_DIR}/main.cpp
-    
+
     ${COMMON_SRC_DIR}/stm32f10x_it.cpp
     ${COMMON_SRC_DIR}/syscalls.cpp
     ${COMMON_SRC_DIR}/system_stm32f10x.c

@@ -5,19 +5,19 @@
 
 namespace handler
 {
-RtcHandler::RtcHandler(char *name)
+RtcHandler::RtcHandler(char* name)
     : HandlerBase(name)
 {
 }
 
-bool RtcHandler::accept(char *cmd, char *arg)
+bool RtcHandler::accept(char* cmd, char* arg)
 {
     return strcmp(cmd, "RTC") == 0;
 }
 
-void RtcHandler::handle(char *cmd, char *arg)
+void RtcHandler::handle(char* cmd, char* arg)
 {
-    char *command = strtok(arg, " ");
+    char* command = strtok(arg, " ");
     if (!command)
     {
         logger_.error() << "Didn't receive command\n";
@@ -32,14 +32,14 @@ void RtcHandler::handle(char *cmd, char *arg)
         return;
     }
 
-    char *day = strtok(nullptr, " ");
-    char *month = strtok(nullptr, " ");
-    char *year = strtok(nullptr, " ");
-    char *hour = strtok(nullptr, " ");
-    char *minute = strtok(nullptr, " ");
-    char *second = strtok(nullptr, " ");
+    char* day = strtok(nullptr, " ");
+    char* month = strtok(nullptr, " ");
+    char* year = strtok(nullptr, " ");
+    char* hour = strtok(nullptr, " ");
+    char* minute = strtok(nullptr, " ");
+    char* second = strtok(nullptr, " ");
 
-    const char *format = "Please set date in format DD MM YYYY HH MM SS\n";
+    const char* format = "Please set date in format DD MM YYYY HH MM SS\n";
 
     if (nullptr == day)
     {

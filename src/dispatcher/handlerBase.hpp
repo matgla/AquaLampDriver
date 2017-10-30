@@ -1,7 +1,7 @@
 #pragma once
 
 #include "dispatcher/IHandler.hpp"
-#include "logger/logger.hpp"
+#include "logger.hpp"
 #include "memoryHelpers.hpp"
 
 namespace handler
@@ -14,6 +14,6 @@ class HandlerBase : public IHandler
 
   protected:
     std::unique_ptr<char, Deleter> name_;
-    logger::Logger logger_;
+    Logger logger_;
 };
 } // namespace handler

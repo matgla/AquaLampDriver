@@ -26,6 +26,7 @@ Logger Logger::debug()
 
 Logger Logger::info()
 {
+    auto size = getFormatedDateAndTime().length();
     printf("<%s> INF/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
 
     return Logger(name_, true);
@@ -47,7 +48,7 @@ Logger Logger::error()
 
 std::string Logger::getFormatedDateAndTime()
 {
-    const int TIME_BUFFER_SIZE = 18;
+    const int TIME_BUFFER_SIZE = 80;
     char buffer[TIME_BUFFER_SIZE];
     auto t = std::time(nullptr);
     struct tm* currentTime = std::localtime(&t);

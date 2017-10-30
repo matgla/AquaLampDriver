@@ -13,7 +13,7 @@
         while (!((USARTx)->SR & USART_FLAG_TXE)) \
             ;                                    \
     } while (0)
-#define BUFFER_SIZE 1000
+#define BUFFER_SIZE 50
 
 void USART_GPIO_init(void);
 void USART_NVIC_init(void);
@@ -23,6 +23,7 @@ void usart_put(USART_TypeDef* USARTx, const char* str);
 namespace hw
 {
 extern bool wasUsart1Initialized;
+extern bool wasUsart2Initialized;
 enum class USARTS
 {
     USART1_PP1,
