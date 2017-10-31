@@ -55,6 +55,14 @@ class Logger
         return *this;
     }
 
+    Logger& operator<<(u16 ch)
+    {
+        char text[4];
+        utils::itoa(ch, text, 10);
+        write(fd_, text, strlen(text));
+        return *this;
+    }
+
     Logger& operator<<(u32 ch)
     {
         char text[40];

@@ -33,6 +33,7 @@ file(GLOB STM32_SOURCES ${SOURCES_DIR}/misc.c
                         ${SOURCES_DIR}/stm32f10x_rtc.c
                         ${SOURCES_DIR}/stm32f10x_pwr.c
                         ${SOURCES_DIR}/stm32f10x_bkp.c
+                        ${SOURCES_DIR}/stm32f10x_exti.c
                         ${STM32_STARTUP_SOURCE})
 
 find_package(PackageHandleStandardArgs)

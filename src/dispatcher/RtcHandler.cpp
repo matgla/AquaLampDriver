@@ -17,6 +17,7 @@ bool RtcHandler::accept(char* cmd, char* arg)
 
 void RtcHandler::handle(char* cmd, char* arg)
 {
+    logger_.info() << "handle rtc\n";
     char* command = strtok(arg, " ");
     if (!command)
     {
@@ -26,7 +27,8 @@ void RtcHandler::handle(char* cmd, char* arg)
 
     logger_.info() << "Command " << cmd << " with arg: " << command << "\n";
 
-    if (strcmp(command, "SET") != 0)
+    const char* expected = "SET";
+    if (strncmp(command, expected, 3) != 0)
     {
         logger_.error() << "Only SET command is currently supported\n";
         return;
@@ -71,7 +73,6 @@ void RtcHandler::handle(char* cmd, char* arg)
         logger_.error() << "Second isn't passed. " << format;
         return;
     }
-
     rtc::Rtc::setTime(atoi(day), atoi(month), atoi(year), atoi(hour), atoi(minute), atoi(second));
 }
 

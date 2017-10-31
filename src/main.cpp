@@ -17,6 +17,19 @@
 #include <memory>
 #include <unistd.h>
 
+extern uint32_t SystemCoreClock;
+
+u8 initializeSysTick(u32 time_us)
+{
+    if (time_us == 0)
+        return false;
+    printf("Core clock: %d", SystemCoreClock);
+    if (SysTick_Config(SystemCoreClock / 1000000 * time_us) != 0)
+    {
+        return false;
+    }
+    return true;
+}
 
 void initializeBoardLeds()
 {
@@ -31,7 +44,7 @@ void initializeBoardLeds()
 void initializeButtons()
 {
     GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_4 | GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4 | GPIO_Pin_5;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -43,13 +56,38 @@ void initializeButtons()
 int main(void)
 {
     SystemInit();
-    rtc::Rtc r;
-    rtc::Rtc::setTime(1, 5, 2017, 20, 12, 47);
+
+    Logger logger("boot\0");
+
+    logger.info() << "Before: " << BKP_ReadBackupRegister(BKP_DR1) << "\n";
+    if (BKP_ReadBackupRegister(BKP_DR1) != 0xabcd)
+    {
+        rtc::Rtc r;
+        logger.info() << "set time\n";
+        rtc::Rtc::setTime(1, 5, 2017, 20, 12, 47);
+        BKP_WriteBackupRegister(BKP_DR1, 0xabcd);
+        logger.info() << "Wrote: " << 0xabcd << " Read: " << BKP_ReadBackupRegister(BKP_DR1) << "\n";
+    }
+    else
+    {
+        RTC_WaitForSynchro();
+        RTC_ITConfig(RTC_IT_SEC, ENABLE);
+        RTC_WaitForLastTask();
+
+        NVIC_InitTypeDef nvic;
+        NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+        nvic.NVIC_IRQChannel = RTC_IRQn;
+        nvic.NVIC_IRQChannelPreemptionPriority = 1;
+        nvic.NVIC_IRQChannelSubPriority = 0;
+        nvic.NVIC_IRQChannelCmd = ENABLE;
+        NVIC_Init(&nvic);
+    }
+
+
     initializeBoardLeds();
     initializeButtons();
-    hw::USART<hw::USARTS::USART2_PP1>::getUsart().send("ready\n\0", 6);
+    initializeSysTick(1000);
     GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-    Logger logger("boot\0");
     dispatcher::Dispatcher hand;
 
 
@@ -58,20 +96,84 @@ int main(void)
     pwm::ChannelsGroup channels;
     channels.configureAllChannels();
 
-    channels.setChannelPulse(0, 100);
-    channels.setChannelPulse(1, 100);
-    channels.setChannelPulse(2, 100);
-    channels.setChannelPulse(3, 100);
-    channels.setChannelPulse(4, 100);
-    channels.setChannelPulse(5, 100);
-    channels.setChannelPulse(6, 100);
-    channels.setChannelPulse(7, 100);
-    channels.setChannelPulse(8, 100);
-    channels.setChannelPulse(9, 100);
-    channels.setChannelPulse(10, 100);
-    channels.setChannelPulse(11, 100);
-    channels.setChannelPulse(12, 100);
-    channels.setChannelPulse(13, 100);
+    u8 power = 0;
+    bool rise = true;
+    bool shine = false;
+    rtc::Rtc::setHandler([&channels, &power, &logger, &shine, &rise]() {
+        if (rise)
+        {
+            if (power == 100)
+            {
+                rise = false;
+                rtc::Rtc::setAlarm(rtc::Rtc::getTime() + 10);
+                return;
+            }
+            logger.info() << "more light\n";
+            power += 5;
+            channels.setChannelPulse(0, power);
+            channels.setChannelPulse(1, power);
+            channels.setChannelPulse(2, power);
+            channels.setChannelPulse(3, power);
+            channels.setChannelPulse(4, power);
+            channels.setChannelPulse(5, power);
+            channels.setChannelPulse(6, power);
+            channels.setChannelPulse(7, power);
+            channels.setChannelPulse(8, power);
+            channels.setChannelPulse(9, power);
+            channels.setChannelPulse(10, power);
+            channels.setChannelPulse(11, power);
+            channels.setChannelPulse(12, power);
+            channels.setChannelPulse(13, power);
+            rtc::Rtc::setAlarm(rtc::Rtc::getTime() + 1);
+        }
+        if (!rise && !shine)
+        {
+            shine = true;
+            rtc::Rtc::setAlarm(rtc::Rtc::getTime() + 1);
+            return;
+        }
+        if (shine)
+        {
+            if (power == 0)
+            {
+                return;
+            }
+            logger.info() << "less light\n";
+            power -= 5;
+            channels.setChannelPulse(0, power);
+            channels.setChannelPulse(1, power);
+            channels.setChannelPulse(2, power);
+            channels.setChannelPulse(3, power);
+            channels.setChannelPulse(4, power);
+            channels.setChannelPulse(5, power);
+            channels.setChannelPulse(6, power);
+            channels.setChannelPulse(7, power);
+            channels.setChannelPulse(8, power);
+            channels.setChannelPulse(9, power);
+            channels.setChannelPulse(10, power);
+            channels.setChannelPulse(11, power);
+            channels.setChannelPulse(12, power);
+            channels.setChannelPulse(13, power);
+            rtc::Rtc::setAlarm(rtc::Rtc::getTime() + 1);
+        }
+
+    });
+    rtc::Rtc::setAlarm(rtc::Rtc::getTime() + 1);
+
+    // channels.setChannelPulse(0, 100);
+    // channels.setChannelPulse(1, 100);
+    // channels.setChannelPulse(2, 100);
+    // channels.setChannelPulse(3, 100);
+    // channels.setChannelPulse(4, 100);
+    // channels.setChannelPulse(5, 100);
+    // channels.setChannelPulse(6, 100);
+    // channels.setChannelPulse(7, 100);
+    // channels.setChannelPulse(8, 100);
+    // channels.setChannelPulse(9, 100);
+    // channels.setChannelPulse(10, 100);
+    // channels.setChannelPulse(11, 100);
+    // channels.setChannelPulse(12, 100);
+    // channels.setChannelPulse(13, 100);
 
     handler::IHandlerPtr channelHandler(new handler::ChannelHandler("ChannelHandler\0", channels));
     handler::IHandlerPtr rtcHandler(new handler::RtcHandler("RtcHandler\0"));
@@ -127,12 +229,13 @@ int main(void)
                 --ch;
             }
             logger.info() << "Current channel = " << ch << "\n";
+            delay(100);
         }
         // buttom up
         if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_15))
         {
             logger.info() << "Pressed button up\n";
-            
+
             if (ch == 13)
             {
                 ch = 0;
@@ -142,12 +245,13 @@ int main(void)
                 ++ch;
             }
             logger.info() << "Current channel = " << ch << "\n";
+            delay(100);
         }
         // buttom left
         if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4))
         {
             logger.info() << "Pressed button left\n";
-            
+
             auto pulse = channels.getChannelPulse(ch);
             if (pulse < 20)
             {
@@ -158,12 +262,13 @@ int main(void)
                 pulse -= 20;
             }
             channels.setChannelPulse(ch, pulse);
+            delay(100);
         }
         // buttom right
         if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_5))
         {
             logger.info() << "Pressed button right\n";
-            
+
             auto pulse = channels.getChannelPulse(ch);
             if (pulse > 80)
             {
@@ -174,6 +279,7 @@ int main(void)
                 pulse += 20;
             }
             channels.setChannelPulse(ch, pulse);
+            delay(100);
         }
         // sm.process_event(evInitialize{});
     }
