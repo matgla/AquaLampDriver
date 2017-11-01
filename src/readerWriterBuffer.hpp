@@ -1,7 +1,7 @@
 #pragma once
 
 #include "buffer.hpp"
-#include "types.hpp"
+#include "utils/types.hpp"
 
 template <std::size_t BUF_SIZE>
 class ReaderWriterBuffer

@@ -11,6 +11,15 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/pwm/channelsGroup.cpp
     ${COMMON_SRC_DIR}/pwmChannel.cpp
     ${COMMON_SRC_DIR}/logger.cpp
+    ${COMMON_SRC_DIR}/logger/logger.cpp
+    ${COMMON_SRC_DIR}/app.cpp
+    ${COMMON_SRC_DIR}/timer/intervalTimer.cpp
+    ${COMMON_SRC_DIR}/timer/manager.cpp
+    ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
+    ${COMMON_SRC_DIR}/board.cpp
+    
+    
+    
 )
 
 set(common_porting_includes
@@ -31,6 +40,19 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/memoryHelpers.hpp
     ${COMMON_SRC_DIR}/pwmChannel.hpp
     ${COMMON_SRC_DIR}/readerWriterBuffer.hpp
+
+    ${COMMON_SRC_DIR}/logger/logger.hpp
+    ${COMMON_SRC_DIR}/app.hpp
+    ${COMMON_SRC_DIR}/timer/IManager.hpp
+    ${COMMON_SRC_DIR}/timer/intervalTimer.hpp
+    ${COMMON_SRC_DIR}/timer/ITimer.hpp
+    ${COMMON_SRC_DIR}/timer/manager.hpp
+    ${COMMON_SRC_DIR}/timer/timeoutTimer.hpp
+
+    ${COMMON_SRC_DIR}/hal/time/time.hpp
+    ${COMMON_SRC_DIR}/hal/time/sleep.hpp
+    ${COMMON_SRC_DIR}/board.hpp
+    
 )
 
 set(common_srcs
@@ -51,7 +73,7 @@ set(common_incs
     ${COMMON_SRC_DIR}/stm32f10x_it.hpp
     ${COMMON_SRC_DIR}/stm32includes.hpp
     ${COMMON_SRC_DIR}/syscall.hpp
-    ${COMMON_SRC_DIR}/types.hpp
+    ${COMMON_SRC_DIR}/a/types.hpp
     ${COMMON_SRC_DIR}/usart.hpp
     ${COMMON_SRC_DIR}/utils.hpp
 )

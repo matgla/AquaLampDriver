@@ -10,6 +10,7 @@ namespace rtc
 {
 
 static std::function<void()> timerCallback_ = nullptr;
+static std::function<void()> secondsHandler_ = nullptr;
 
 u32 alarmTime_;
 bool alarmEnabled_ = false;
@@ -22,6 +23,11 @@ Rtc::Rtc()
 void Rtc::setHandler(std::function<void()> handler)
 {
     timerCallback_ = handler;
+}
+
+void Rtc::setSecondsHandler(std::function<void()> handler)
+{
+    secondsHandler_ = handler;
 }
 
 void Rtc::init()
@@ -123,6 +129,10 @@ void RTC_IRQHandler(void)
 {
     if (RTC_GetITStatus(RTC_IT_SEC) != RESET)
     {
+        if (secondsHandler_)
+        {
+            secondsHandler_();
+        }
         if (RTC_GetCounter() >= Rtc::alarmTime())
         {
             Rtc::fire();

@@ -14,6 +14,7 @@ class Rtc
     static void setAlarm(u32 time);
     static void fire();
     static void setHandler(std::function<void()> handler);
+    static void setSecondsHandler(std::function<void()> handler);
 
   private:
     void init();

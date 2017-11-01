@@ -1,0 +1,51 @@
+@startuml
+
+state Idle {
+[*] --> DisplayInfo
+DisplayInfo --> Menu : evButtonAny
+} 
+
+state Menu {
+    [*] --> Channels
+    Channels --> Settings : evButtonUp
+    Channels --> Settings : evButtonDown
+    Settings --> Channels : evButtonUp
+    Settings --> Channels : evButtonDown
+    Menu --> Idle : evButtonBack
+    Channels -left-> ChannelSettings : evButtonSelect
+    ChannelSettings -> Menu : evButtonBack
+}
+
+
+state ChannelSettings {
+    [*] --> All
+    All --> Channel1 : evButtonDown
+    Channel1 --> Channel2 : evButtonDown
+    Channel2 --> Channel3 : evButtonDown
+    Channel3 --> Channel4 : evButtonDown
+    Channel4 --> Channel5 : evButtonDown
+    Channel5 --> Channel6 : evButtonDown
+    Channel6 --> Channel7 : evButtonDown
+    Channel7 --> Channel8 : evButtonDown
+    Channel8 --> Channel9 : evButtonDown
+    Channel9 --> Channel10 : evButtonDown
+    Channel10 --> Channel11 : evButtonDown
+    Channel11 --> Channel12 : evButtonDown
+    Channel12 --> All : evButtonDown
+
+    All --> Channel12 : evButtonUp
+    Channel1 --> All : evButtonUp
+    Channel2 --> Channel1 : evButtonUp
+    Channel3 --> Channel2 : evButtonUp
+    Channel4 --> Channel3 : evButtonUp
+    Channel5 --> Channel4 : evButtonUp
+    Channel6 --> Channel5 : evButtonUp
+    Channel7 --> Channel6 : evButtonUp
+    Channel8 --> Channel7 : evButtonUp
+    Channel9 --> Channel8 : evButtonUp
+    Channel10 --> Channel9 : evButtonUp
+    Channel11 --> Channel10 : evButtonUp
+    Channel12 --> Channel11 : evButtonUp
+}
+
+@enduml

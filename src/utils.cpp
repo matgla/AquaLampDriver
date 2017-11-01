@@ -48,34 +48,3 @@ void itoa(int n, char* s, int base_n)
     reverse(s);
 }
 }
-
-
-volatile u64 ticks;
-
-extern "C" {
-void SysTick_Handler();
-}
-
-void SysTick_Handler()
-{
-    ticks++;
-}
-
-
-volatile u64 getTicks()
-{
-    return ticks;
-}
-
-void delay(u32 time_ms)
-{
-    u64 prev = getTicks();
-    while (getTicks() < prev + time_ms)
-    {
-    }
-}
-
-void delayS(u32 time)
-{
-    delay(1000 * time);
-}

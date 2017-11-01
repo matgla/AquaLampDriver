@@ -3,7 +3,7 @@
 #include "logger.hpp"
 #include "memoryHelpers.hpp"
 #include "pwmChannel.hpp"
-#include "types.hpp"
+#include "utils/types.hpp"
 
 #define NR_OF_PWM_CHANNELS 14
 
