@@ -24,8 +24,8 @@ else (LINUX)
 endif (WIN32)
 set(TOOCHAIN_LIB_DIR "${ARM_TOOLCHAIN}/lib")
 
-SET(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m4 -fno-builtin -Wall -std=gnu99 -fdata-sections -ffunction-sections -mfloat-abi=soft -s" CACHE INTERNAL "c compiler flags")
-SET(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m4 -fno-builtin -Wall -std=c++1y -fdata-sections -ffunction-sections -mfloat-abi=soft -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics" CACHE INTERNAL "cxx compiler flags")
+SET(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m4 -fno-builtin -Wall -std=gnu99 -fdata-sections -ffunction-sections -mfloat-abi=soft " CACHE INTERNAL "c compiler flags")
+SET(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m4 -fno-builtin -Wall -std=c++1y -fdata-sections -ffunction-sections -mfloat-abi=soft -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics -flto" CACHE INTERNAL "cxx compiler flags")
 SET(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m4" CACHE INTERNAL "asm compiler flags")
 
 SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m4 -flto " CACHE INTERNAL "exe link flags")
