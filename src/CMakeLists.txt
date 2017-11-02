@@ -34,8 +34,11 @@ elseif (${ARCH} STREQUAL "STM32")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD")
 
     if (DEBUG)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_FULL_ASSERT -g -Og")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_FULL_ASSERT -g -Og")
+    else (DEBUG)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
     endif (DEBUG)
 
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${CMAKE_SOURCE_DIR}/lkr/stm32f103_128k.ld --specs=nano.specs")
