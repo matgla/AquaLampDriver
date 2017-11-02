@@ -20,7 +20,7 @@ enum class Leds
     Led1
 };
 
-#define GPIO_IN_READ_DELAY 300
+#define GPIO_IN_READ_DELAY 200
 #define TIME_TO_LONG_PUSH 1000
 
 template <Buttons button>

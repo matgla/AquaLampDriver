@@ -70,7 +70,12 @@ struct ChannelSettingsSm
         // clang-format off
         return make_transition_table(
             *state<Init> / [] { printf("\e[2JChannel configuration:\n"); } = state<ChannelSettings>,
-            state<ChannelSettings> + on_entry<_> / [](ChannelSetting& setting) { printf("CH %2d : %3d %%\n", setting.index, setting.power[setting.index]); },
+            state<ChannelSettings> + on_entry<_> / 
+            [](ChannelSetting& setting) 
+            {  
+                printf("\e[2JChannel configuration:\n");
+                printf("CH %2d : %3d %%\n", setting.index, setting.power[setting.index]); 
+            },
             state<ChannelSettings> + event<ButtonDown> / 
             [](ChannelSetting& setting) 
             {
@@ -141,7 +146,8 @@ struct MenuSm
         state<GeneralSettings> + event<ButtonUp> = state<TimeSettings>,
         state<EffectSettings> + event<ButtonUp> = state<GeneralSettings>,
         state<About> + event<ButtonUp> = state<EffectSettings>,
-        state<ChannelSettings> + event<ButtonSelect> = state<ChannelSettingsSm>
+        state<ChannelSettings> + event<ButtonSelect> = state<ChannelSettingsSm>,
+        state<ChannelSettingsSm> + event<ButtonBack> = state<Init>
         
         // state<ChannelSettingsSm> + event<ButtonBack> = state<Init>
         
