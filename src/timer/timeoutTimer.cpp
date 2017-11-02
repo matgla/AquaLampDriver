@@ -8,12 +8,15 @@ namespace timer
 
 TimeoutTimer::TimeoutTimer(const u64 time, TimerCallback callback)
     : callback_(std::move(callback)), startTime_(hal::time::Time::milliseconds()), time_(time),
-      enabled_(true)
+      lastTime_(startTime_), enabled_(true)
 {
 }
 
 TimeoutTimer::TimeoutTimer()
     : callback_(nullptr),
+      startTime_(0),
+      time_(0),
+      lastTime_(0),
       enabled_(false)
 {
 }
@@ -25,18 +28,38 @@ void TimeoutTimer::run()
         return;
     }
 
-    if (hal::time::Time::milliseconds() - startTime_ >= time_)
+    lastTime_ = hal::time::Time::milliseconds();
+    if (lastTime_ - startTime_ >= time_)
     {
         fire();
     }
 }
 
+u64 TimeoutTimer::elapsed()
+{
+    if (!enabled_)
+    {
+        return 0;
+    }
+    return lastTime_ - startTime_;
+}
+
 void TimeoutTimer::start(u64 time)
 {
+    callback_ = nullptr;
     time_ = time;
     startTime_ = hal::time::Time::milliseconds();
     enabled_ = true;
 }
+
+void TimeoutTimer::start(u64 time, TimerCallback callback)
+{
+    callback_ = callback;
+    time_ = time;
+    startTime_ = hal::time::Time::milliseconds();
+    enabled_ = true;
+}
+
 
 void TimeoutTimer::cancel()
 {

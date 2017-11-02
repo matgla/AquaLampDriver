@@ -7,6 +7,8 @@ set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl)
 set(target_name AquaLampDriver)
 set(target_name_lib Firmware)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=3000")
+
 if (${ARCH} STREQUAL "X86")
     include(cmake/x86_sources.cmake)
     find_package(Boost 1.58 COMPONENTS system program_options REQUIRED)
@@ -52,7 +54,6 @@ elseif (${ARCH} STREQUAL "STM32")
 
     add_custom_target(${target_name}.hex DEPENDS ${target_name} COMMAND ${CMAKE_OBJCOPY} -Oihex ${target_name}.elf ${target_name}.hex)
     file(TO_CMAKE_PATH "${CMAKE_OBJCOPY}" OBJCPY)
-
     add_custom_target(${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin)
 
     # If STM32 ST-Link Utility is found, add a make target to program the chip

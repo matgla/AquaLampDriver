@@ -12,8 +12,10 @@ class TimeoutTimer : public ITimer
     TimeoutTimer();
 
     void start(u64 time);
+    void start(u64 time, TimerCallback callback);
     void run() override;
     void cancel() override;
+    u64 elapsed();
     bool enabled() const override;
 
   protected:
@@ -22,6 +24,7 @@ class TimeoutTimer : public ITimer
     TimerCallback callback_;
     u64 startTime_;
     u64 time_;
+    u64 lastTime_;
     bool enabled_;
 };
 

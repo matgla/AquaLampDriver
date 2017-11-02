@@ -1,8 +1,8 @@
 @startuml
 
 state Idle {
-[*] --> DisplayInfo
-DisplayInfo --> Menu : evButtonAny
+    [*] --> DisplayInfo
+    DisplayInfo --> Menu : evButtonAny
 } 
 
 state Menu {

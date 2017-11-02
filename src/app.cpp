@@ -4,7 +4,9 @@
 #include "rtc/rtc.hpp"
 
 App::App(Board& board)
-    : logger_("App"),
+    : channelSettings_(board),
+      statemachine_(channelSettings_),
+      logger_("App"),
       board_(board)
 {
     logger_.info() << "Startup";
@@ -13,7 +15,7 @@ App::App(Board& board)
     });
 
     board_.led.on();
-    // board_.registers.startupDone();
+    board_.registers.startupDone();
 
     logger_.info() << "Started";
 }
@@ -52,4 +54,54 @@ void App::run()
             statemachine_.process_event(events::ButtonBack{});
         }
     }
+}
+
+void printfMenu(int selected)
+{
+    printf("\e[2J");
+    if (selected == 1)
+    {
+        printf("-> ");
+    }
+    else
+    {
+        printf("   ");
+    }
+    printf("1. Channel Settings\n");
+    if (selected == 2)
+    {
+        printf("-> ");
+    }
+    else
+    {
+        printf("   ");
+    }
+    printf("2. Time Settings\n");
+    if (selected == 3)
+    {
+        printf("-> ");
+    }
+    else
+    {
+        printf("   ");
+    }
+    printf("3. General Settings\n");
+    if (selected == 4)
+    {
+        printf("-> ");
+    }
+    else
+    {
+        printf("   ");
+    }
+    printf("4. Effect Settings\n");
+    if (selected == 5)
+    {
+        printf("-> ");
+    }
+    else
+    {
+        printf("   ");
+    }
+    printf("5. About Settings\n");
 }

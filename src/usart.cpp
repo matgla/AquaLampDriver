@@ -158,7 +158,7 @@ template <USARTS UsartNumber>
 void USART<UsartNumber>::USARTInit()
 {
     USART_InitTypeDef USART_InitStruct;
-    USART_InitStruct.USART_BaudRate = 9600;
+    USART_InitStruct.USART_BaudRate = 128000;
     USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStruct.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
     USART_InitStruct.USART_Parity = USART_Parity_No;
