@@ -4,7 +4,7 @@
 #include "rtc/rtc.hpp"
 
 App::App(Board& board)
-    : logger_("app"),
+    : logger_("App"),
       board_(board)
 {
     logger_.info() << "Startup";

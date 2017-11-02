@@ -10,7 +10,11 @@
 
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
-    uint64_t t = rtc::Rtc::get().getTime();
+    uint64_t t = 0;
+    if (rtc::Rtc::wasInitialized())
+    {
+        t = rtc::Rtc::get().getTime();
+    }
 
     tv->tv_sec = t;                        // convert to seconds
     tv->tv_usec = (t % 1000000000) / 1000; // tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds

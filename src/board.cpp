@@ -155,7 +155,8 @@ void CoreInit()
 }
 
 Board::Board()
-    : registers(hal::core::BackupRegisters::get())
+    : registers(hal::core::BackupRegisters::get()),
+      logger_("Board")
 {
     hal::core::Core::initializeClocks();
     logger_.info() << "Initialized";

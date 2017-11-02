@@ -11,26 +11,37 @@
 namespace rtc
 {
 
+static bool wasInitialized = false;
+
 Rtc& Rtc::get()
 {
     static Rtc rtc;
+    rtc::wasInitialized = true;
     return rtc;
+}
+
+bool Rtc::wasInitialized()
+{
+    return rtc::wasInitialized;
 }
 
 Rtc::Rtc()
     : timerCallback_(nullptr),
       secondsHandler_(nullptr),
       alarmTime_(0),
-      alarmEnabled_(0)
+      alarmEnabled_(0),
+      logger_("Rtc")
 {
     if (hal::core::BackupRegisters::get().isFirstStartup())
     {
         init();
+        logger_.info() << "Performed full initialization";
     }
     else
     {
         initSecondsInterrupt();
         initNvic();
+        logger_.info() << "Performed normal initialization";
     }
 }
 

@@ -33,14 +33,12 @@ class Button
         timer_.run();
         if (timer_.enabled())
         {
-            printf("Timer runs: false\n");
             return false;
         }
 
         if (isPinPressed())
         {
             timer_.start(GPIO_IN_READ_DELAY);
-            printf("button pressed\n");
             return true;
         }
         // printf("button not pressed\n");
