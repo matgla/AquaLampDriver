@@ -1,47 +1,55 @@
 #include "app.hpp"
 
-App::App()
-    : logger_("app")
+#include "board.hpp"
+#include "rtc/rtc.hpp"
+
+App::App(Board& board)
+    : logger_("app"),
+      board_(board)
 {
+    logger_.info() << "Startup";
+    rtc::Rtc::get().setSecondsHandler([this] {
+        update();
+    });
+
+    board_.led.on();
+    // board_.registers.startupDone();
+
+    logger_.info() << "Started";
 }
 
-void App::pressButton(const Buttons& button)
+void App::update()
 {
-    switch (button)
-    {
-        case Buttons::Back:
-        {
-            statemachine_.process_event(events::ButtonBack{});
-        }
-        break;
-        case Buttons::Select:
-        {
-            statemachine_.process_event(events::ButtonSelect{});
-        }
-        break;
-        case Buttons::Up:
-        {
-            statemachine_.process_event(events::ButtonUp{});
-        }
-        break;
-        case Buttons::Down:
-        {
-            statemachine_.process_event(events::ButtonDown{});
-        }
-        break;
-        case Buttons::Left:
-        {
-            statemachine_.process_event(events::ButtonLeft{});
-        }
-        break;
-        case Buttons::Right:
-        {
-            statemachine_.process_event(events::ButtonRight{});
-        }
-    }
+    statemachine_.process_event(events::Update{});
 }
 
 void App::run()
 {
-    statemachine_.process_event(events::Update{});
+    while (true)
+    {
+        if (board_.downButton.isPressed())
+        {
+            statemachine_.process_event(events::ButtonDown{});
+        }
+        if (board_.upButton.isPressed())
+        {
+            statemachine_.process_event(events::ButtonUp{});
+        }
+        if (board_.leftButton.isPressed())
+        {
+            statemachine_.process_event(events::ButtonLeft{});
+        }
+        if (board_.rightButton.isPressed())
+        {
+            statemachine_.process_event(events::ButtonRight{});
+        }
+        if (board_.selectButton.isPressed())
+        {
+            statemachine_.process_event(events::ButtonSelect{});
+        }
+        if (board_.backButton.isPressed())
+        {
+            statemachine_.process_event(events::ButtonBack{});
+        }
+    }
 }

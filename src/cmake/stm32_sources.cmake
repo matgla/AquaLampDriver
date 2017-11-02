@@ -6,6 +6,9 @@ set(stm32_sources
     ${COMMON_SRC_DIR}/system_stm32f10x.c
     ${COMMON_SRC_DIR}/syscalls.cpp
     ${COMMON_SRC_DIR}/rtc/rtc.cpp
+    
+    ${STM32_SRC_DIR}/core/core_stm32.cpp    
+    ${STM32_SRC_DIR}/core/backupRegisters_stm32.cpp    
     ${STM32_SRC_DIR}/time/sleep_stm32.cpp
     ${STM32_SRC_DIR}/time/time_stm32.cpp
 )

@@ -13,6 +13,7 @@ set(USAN_ENABLED OFF CACHE STRING "Enable undefined sanitizer")
 set(CLANG_TIDY   OFF CACHE STRING "Enable clang tidy")
 set(CPPCHECK     OFF CACHE STRING "Enable cppcheck")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(DEBUG        OFF CACHE STRING "Debug")
 
 if (${ARCH} STREQUAL "STM32")
     message("-- Include toolchain for STM32")

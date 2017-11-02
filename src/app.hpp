@@ -67,12 +67,14 @@ class AppSm
 class App
 {
   public:
-    App();
+    App(Board& board);
 
-    void pressButton(const Buttons& button);
     void run();
 
   private:
+    void update();
+
     boost::sml::sm<AppSm> statemachine_;
     logger::Logger logger_;
+    Board& board_;
 };

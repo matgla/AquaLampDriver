@@ -2,6 +2,9 @@
 
 #include "timer/timeoutTimer.hpp"
 
+#include "hal/core/backupRegisters.hpp"
+#include "logger/logger.hpp"
+
 enum class Buttons
 {
     Up,
@@ -30,14 +33,17 @@ class Button
         timer_.run();
         if (timer_.enabled())
         {
+            printf("Timer runs: false\n");
             return false;
         }
 
         if (isPinPressed())
         {
             timer_.start(GPIO_IN_READ_DELAY);
+            printf("button pressed\n");
             return true;
         }
+        // printf("button not pressed\n");
         return false;
     }
 
@@ -55,6 +61,10 @@ class Led
     static void off();
 };
 
+
+void CoreInit();
+
+
 class Board
 {
   public:
@@ -68,4 +78,9 @@ class Board
     Button<Buttons::Back> backButton;
 
     Led<Leds::Led1> led;
+
+    hal::core::BackupRegisters& registers;
+
+  private:
+    logger::Logger logger_;
 };

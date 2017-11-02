@@ -3,6 +3,9 @@
 #include <stm32f10x_gpio.h>
 #include <stm32f10x_rcc.h>
 
+#include "hal/core/core.hpp"
+#include "rtc/rtc.hpp"
+
 namespace
 {
 
@@ -128,16 +131,32 @@ Led<Leds::Led1>::Led()
 template <>
 void Led<Leds::Led1>::on()
 {
-    GPIO_SetBits(GPIOB, GPIO_Pin_12);
+    GPIO_ResetBits(GPIOB, GPIO_Pin_12);
 }
 
 template <>
 void Led<Leds::Led1>::off()
 {
-    GPIO_ResetBits(GPIOB, GPIO_Pin_12);
+    GPIO_SetBits(GPIOB, GPIO_Pin_12);
+}
+
+void CoreInit()
+{
+    SystemInit();
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA, ENABLE);
+    if (hal::core::BackupRegisters::get().isFirstStartup())
+    {
+        printf("Is first startup\n");
+    }
+    else
+    {
+        printf("Is not first starutp\n");
+    }
 }
 
 Board::Board()
+    : registers(hal::core::BackupRegisters::get())
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOA, ENABLE);
+    hal::core::Core::initializeClocks();
+    logger_.info() << "Initialized";
 }

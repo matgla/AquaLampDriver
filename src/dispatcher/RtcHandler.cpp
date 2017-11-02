@@ -73,7 +73,7 @@ void RtcHandler::handle(char* cmd, char* arg)
         logger_.error() << "Second isn't passed. " << format;
         return;
     }
-    rtc::Rtc::setTime(atoi(day), atoi(month), atoi(year), atoi(hour), atoi(minute), atoi(second));
+    rtc::Rtc::get().setTime(atoi(day), atoi(month), atoi(year), atoi(hour), atoi(minute), atoi(second));
 }
 
 } // namespace handler

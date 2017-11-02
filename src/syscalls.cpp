@@ -10,11 +10,11 @@
 
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
-    uint64_t t = rtc::Rtc::getTime();
+    uint64_t t = rtc::Rtc::get().getTime();
 
-    tv->tv_sec = t; // convert to seconds
+    tv->tv_sec = t;                        // convert to seconds
     tv->tv_usec = (t % 1000000000) / 1000; // tv->tv_usec = (t % 1000000000) / 1000; // get remaining microseconds
-    return t; // return non-zero for error
+    return t;                              // return non-zero for error
 }
 
 #undef errno
@@ -67,7 +67,7 @@ void _exit(int code)
 char* heap_end = 0;
 caddr_t _sbrk(int incr)
 {
-    extern char _heap; /* Defined by the linker */
+    extern char _heap;  /* Defined by the linker */
     extern char _eheap; /* Defined by the linker */
     char* prev_heap_end;
 

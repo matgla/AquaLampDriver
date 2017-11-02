@@ -6,18 +6,32 @@
 
 #include "stm32f10x_conf.h"
 
+#include "hal/core/backupRegisters.hpp"
+
 namespace rtc
 {
 
-static std::function<void()> timerCallback_ = nullptr;
-static std::function<void()> secondsHandler_ = nullptr;
-
-u32 alarmTime_;
-bool alarmEnabled_ = false;
-Rtc::Rtc()
+Rtc& Rtc::get()
 {
-    alarmEnabled_ = false;
-    init();
+    static Rtc rtc;
+    return rtc;
+}
+
+Rtc::Rtc()
+    : timerCallback_(nullptr),
+      secondsHandler_(nullptr),
+      alarmTime_(0),
+      alarmEnabled_(0)
+{
+    if (hal::core::BackupRegisters::get().isFirstStartup())
+    {
+        init();
+    }
+    else
+    {
+        initSecondsInterrupt();
+        initNvic();
+    }
 }
 
 void Rtc::setHandler(std::function<void()> handler)
@@ -40,30 +54,19 @@ void Rtc::init()
     {
     }
 
-    /* Select LSE as RTC Clock Source */
     RCC_RTCCLKConfig(RCC_RTCCLKSource_LSE);
-
-    /* Enable RTC Clock */
     RCC_RTCCLKCmd(ENABLE);
 
-    /* Wait for RTC registers synchronization */
-    RTC_WaitForSynchro();
+    initSecondsInterrupt();
 
-    /* Wait until last write operation on RTC registers has finished */
     RTC_WaitForLastTask();
-
-    /* Enable the RTC Second */
-    RTC_ITConfig(RTC_IT_SEC, ENABLE);
-
-    /* Wait until last write operation on RTC registers has finished */
-    RTC_WaitForLastTask();
-
-    /* Set RTC prescaler: set RTC period to 1sec */
     RTC_SetPrescaler(32767); /* RTC period = RTCCLK/RTC_PR = (32.768 KHz)/(32767+1) */
-
-    /* Wait until last write operation on RTC registers has finished */
     RTC_WaitForLastTask();
+    initNvic();
+}
 
+void Rtc::initNvic()
+{
     NVIC_InitTypeDef nvic;
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     nvic.NVIC_IRQChannel = RTC_IRQn;
@@ -71,6 +74,13 @@ void Rtc::init()
     nvic.NVIC_IRQChannelSubPriority = 0;
     nvic.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&nvic);
+}
+
+void Rtc::initSecondsInterrupt()
+{
+    RTC_WaitForSynchro();
+    RTC_WaitForLastTask();
+    RTC_ITConfig(RTC_IT_SEC, ENABLE);
 }
 
 void Rtc::setTime(u32 day, u32 month, u32 year, u32 hours, u32 minutes, u32 seconds)
@@ -120,6 +130,10 @@ u32 Rtc::getTime()
     return RTC_GetCounter();
 }
 
+std::function<void()>& Rtc::getSecondsHandler()
+{
+    return secondsHandler_;
+}
 
 extern "C" {
 void RTC_IRQHandler();
@@ -129,17 +143,16 @@ void RTC_IRQHandler(void)
 {
     if (RTC_GetITStatus(RTC_IT_SEC) != RESET)
     {
-        if (secondsHandler_)
+        if (Rtc::get().getSecondsHandler())
         {
-            secondsHandler_();
+            Rtc::get().getSecondsHandler()();
         }
-        if (RTC_GetCounter() >= Rtc::alarmTime())
+        if (RTC_GetCounter() >= Rtc::get().alarmTime())
         {
-            Rtc::fire();
+            Rtc::get().fire();
         }
         RTC_ClearITPendingBit(RTC_IT_SEC);
         RTC_WaitForLastTask();
-        // update time
     }
 }
 
