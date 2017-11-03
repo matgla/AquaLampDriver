@@ -2,9 +2,12 @@
 
 #include "timer/timeoutTimer.hpp"
 
+#define GPIO_IN_READ_DELAY 200
+#define TIME_TO_LONG_PUSH 1000
+
 namespace bsp
 {
-    
+
 enum class Buttons
 {
     Up,
@@ -19,10 +22,7 @@ template <Buttons button>
 class Button
 {
   public:
-    Button()
-    {
-        static_assert(sizeof(button) == 0, "Default constructor can't be used");
-    }
+    Button();
 
     bool isPressed()
     {
@@ -61,11 +61,8 @@ class Button
     }
 
   private:
-    static bool isPinPressed()
-    {
-        static_assert(sizeof(button) == 0, "Default  can't be used");
-    }
-    
+    static bool isPinPressed();
+
     bool isLong_ = false;
     timer::TimeoutTimer timer_;
     timer::TimeoutTimer isLongTimer_;

@@ -1,19 +1,18 @@
-#include "stm32includes.hpp"
 #include "syscall.hpp"
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include "rtc/rtc.hpp"
+#include "hal/time/rtc.hpp"
 #include "usart.hpp"
 
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
     uint64_t t = 0;
-    if (rtc::Rtc::wasInitialized())
+    if (hal::time::Rtc::wasInitialized())
     {
-        t = rtc::Rtc::get().getTime();
+        t = hal::time::Rtc::get().getTime();
     }
 
     tv->tv_sec = t;                        // convert to seconds

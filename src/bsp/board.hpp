@@ -28,6 +28,9 @@ class Board
 
     hal::core::BackupRegisters& registers;
 
+    void run();
+    bool exit();
+
   private:
     logger::Logger logger_;
 };

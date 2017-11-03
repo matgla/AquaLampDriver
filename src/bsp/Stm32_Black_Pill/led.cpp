@@ -12,7 +12,7 @@ template <>
 Led<Leds::Led1>::Led()
 {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-    Helpers::configureGpio(GPIOB, GPIO_Pin_12, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
+    Helper::configureGpio(GPIOB, GPIO_Pin_12, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
 }
 
 template <>

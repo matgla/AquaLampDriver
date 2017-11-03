@@ -1,4 +1,4 @@
-#include "rtc/rtc.hpp"
+#include "hal/time/rtc.hpp"
 
 #include <cstdio>
 #include <ctime>
@@ -8,21 +8,22 @@
 
 #include "hal/core/backupRegisters.hpp"
 
-namespace rtc
+namespace hal
 {
-
+namespace time
+{
 static bool wasInitialized = false;
 
 Rtc& Rtc::get()
 {
     static Rtc rtc;
-    rtc::wasInitialized = true;
+    hal::time::wasInitialized = true;
     return rtc;
 }
 
 bool Rtc::wasInitialized()
 {
-    return rtc::wasInitialized;
+    return hal::time::wasInitialized;
 }
 
 Rtc::Rtc()
@@ -166,5 +167,5 @@ void RTC_IRQHandler(void)
         RTC_WaitForLastTask();
     }
 }
-
-} // namespace rtc
+} // namespace time
+} // namespace hal

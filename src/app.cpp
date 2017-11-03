@@ -1,16 +1,16 @@
 #include "app.hpp"
 
-#include "board.hpp"
-#include "rtc/rtc.hpp"
+#include "bsp/board.hpp"
+#include "hal/time/rtc.hpp"
 
-App::App(Board& board)
+App::App(bsp::Board& board)
     : channelSettings_(board),
       statemachine_(channelSettings_),
       logger_("App"),
       board_(board)
 {
     logger_.info() << "Startup";
-    rtc::Rtc::get().setSecondsHandler([this] {
+    hal::time::Rtc::get().setSecondsHandler([this] {
         update();
     });
 
@@ -27,7 +27,7 @@ void App::update()
 
 void App::run()
 {
-    while (true)
+    while (!board_.exit())
     {
         if (board_.downButton.isPressed())
         {
@@ -53,6 +53,8 @@ void App::run()
         {
             statemachine_.process_event(events::ButtonBack{});
         }
+
+        board_.run();
     }
 }
 

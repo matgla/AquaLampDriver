@@ -1,9 +1,9 @@
-#include "bsp/helpers.hpp"
+#include "bsp/stm32f1_common/helpers.hpp"
 
 namespace bsp
 {
 
-void Helpers::configureGpio(GPIO_TypeDef* port, uint16_t pin, GPIOMode_TypeDef mode, GPIOSpeed_TypeDef speed)
+void Helper::configureGpio(GPIO_TypeDef* port, uint16_t pin, GPIOMode_TypeDef mode, GPIOSpeed_TypeDef speed)
 {
     GPIO_InitTypeDef gpio;
     gpio.GPIO_Pin = pin;

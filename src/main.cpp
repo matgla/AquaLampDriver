@@ -1,10 +1,11 @@
 #include "app.hpp"
 #include "bsp/board.hpp"
+#include "logger/logger.hpp"
 
-int main(void)
+int main()
 {
     bsp::BoardInit();
-    Board board;
+    bsp::Board board;
     App app(board);
     app.run();
 }

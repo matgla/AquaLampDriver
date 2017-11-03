@@ -1,6 +1,7 @@
 #pragma once
 
-#include "stm32includes.hpp"
+#include "stm32f10x_gpio.h"
+#include "stm32f10x_usart.h"
 #include "system_stm32f10x.h"
 #include "utils.hpp"
 #include <cstdint>
@@ -27,7 +28,8 @@ extern bool wasUsart2Initialized;
 enum class USARTS
 {
     USART1_PP1,
-    USART2_PP1
+    USART2_PP1,
+    USART3_PP
 };
 
 template <USARTS UsartNumber>

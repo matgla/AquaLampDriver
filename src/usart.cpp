@@ -29,14 +29,6 @@ namespace hw
 {
 
 template <USARTS UsartNumber>
-USART<UsartNumber>& USART<UsartNumber>::getUsart()
-{
-    static_assert(sizeof(UsartNumber) == 0, "Method needs to be specialized");
-    //  static USART s;
-    //  return s;
-}
-
-template <USARTS UsartNumber>
 ReaderWriterBuffer<BUFFER_SIZE>& USART<UsartNumber>::getBuffer()
 {
     return this->buffer_;
@@ -80,7 +72,6 @@ void USART<UsartNumber>::send(const char* str, int size)
 template <USARTS UsartNumber>
 u32 USART<UsartNumber>::size()
 {
-    //printf("Buffer size: %d", buffer_.size());
     return this->buffer_.size();
 }
 
@@ -88,19 +79,6 @@ template <USARTS UsartNumber>
 u8 USART<UsartNumber>::read()
 {
     return this->buffer_.getByte();
-}
-
-template <USARTS UsartNumber>
-USART<UsartNumber>::USART()
-{
-    static_assert(sizeof(UsartNumber) == 0, "Method needs to be specialized");
-}
-
-template <USARTS UsartNumber>
-bool USART<UsartNumber>::initialized()
-{
-    static_assert(sizeof(UsartNumber) == 0, "Method needs to be specialized");
-    return false;
 }
 
 template <USARTS UsartNumber>
@@ -170,21 +148,11 @@ void USART<UsartNumber>::USARTInit()
 }
 
 template <USARTS UsartNumber>
-void USART<UsartNumber>::InitClocks()
-{
-    static_assert(sizeof(UsartNumber) == 0, "Method needs to be specialized");
-}
-
-template <USARTS UsartNumber>
 void USART<UsartNumber>::wait()
 {
-    // auto status = USART_GetFlagStatus(USARTx_, USART_FLAG_TC);
     while (USART_GetFlagStatus(USARTx_, USART_FLAG_TC) == RESET)
     {
     }
-    // while (!(USARTx_->SR & 0x00000040))
-    // {
-    // }
 }
 
 // template <USARTS UsartNumber>

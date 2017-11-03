@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "board.hpp"
+#include "bsp/board.hpp"
 #include "logger/logger.hpp"
 
 
@@ -50,12 +50,12 @@ void printfMenu(int selected);
 
 struct ChannelSetting
 {
-    ChannelSetting(Board& board)
+    ChannelSetting(bsp::Board& board)
         : board_(board), index(0)
     {
         memset(power, 0, sizeof(power) * sizeof(u8));
     }
-    Board& board_;
+    bsp::Board& board_;
     int index;
     u8 power[20];
 };
@@ -188,7 +188,7 @@ class AppSm
 class App
 {
   public:
-    App(Board& board);
+    App(bsp::Board& board);
 
     void run();
 
@@ -199,5 +199,5 @@ class App
     ChannelSetting channelSettings_;
     boost::sml::sm<AppSm> statemachine_;
     logger::Logger logger_;
-    Board& board_;
+    bsp::Board& board_;
 };

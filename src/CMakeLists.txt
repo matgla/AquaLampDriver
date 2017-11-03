@@ -23,6 +23,12 @@ if (${BOARD} STREQUAL "STM32_Black_Pill")
                     ${stm32_black_pill_sources}
                     ${stm32_black_pill_includes}
     )
+elseif (${BOARD} STREQUAL "X86")
+    include(cmake/bsp/x86.cmake)
+    set(bsp_sources ${bsp_sources} 
+        ${x86_bsp_sources} 
+        ${x86_bsp_includes}
+    )
 endif (${BOARD} STREQUAL "STM32_Black_Pill")
 
 message("BSP sources: ${bsp_sources}")
@@ -31,16 +37,22 @@ set(production_srcs ${production_srcs} ${bsp_sources})
 
 if (${ARCH} STREQUAL "X86")
     include(cmake/x86_sources.cmake)
-    find_package(Boost 1.58 COMPONENTS system program_options REQUIRED)
-    include_directories(SYSTEM ${Boost_INCLUDE_DIR})
+    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
+   # find_package(Boost 1.58 COMPONENTS system program_options REQUIRED)
+   # include_directories(SYSTEM ${Boost_INCLUDE_DIR})
+   find_package(SFML 2 REQUIRED network audio graphics window system)
+   include_directories(SYSTEM ${SFML_INCLUDE_DIR})
+
     include_directories(${PROJECT_SOURCE_DIR}/src/hal/x86)
     set(production_srcs ${production_srcs} ${x86_sources} ${x86_includes})
-    set(target_libs ${target_libs} ${Boost_LIBRARIES} beast stdc++fs pthread)
+   set(target_libs ${target_libs} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+     #${Boost_LIBRARIES} beast stdc++fs pthread)
     if (WIN32)
         set(target_libs ${target_libs} ws2_32 wsock32)
     elseif (UNIX)
         set(target_libs ${target_libs} pthread)
     endif (WIN32)
+    message("Used sources: ${production_srcs} " )
     add_executable(${target_name} ${production_srcs})
     target_link_libraries(${target_name} ${target_libs})
 elseif (${ARCH} STREQUAL "STM32")

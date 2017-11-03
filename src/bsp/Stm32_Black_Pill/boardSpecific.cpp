@@ -9,5 +9,13 @@ void BoardInit()
 {
     SystemInit();
 }
-    
+
+void Board::run()
+{
+}
+
+bool Board::exit()
+{
+    return false;
+}
 } // namespace bsp
