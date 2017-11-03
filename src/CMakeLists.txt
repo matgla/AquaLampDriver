@@ -3,11 +3,31 @@ include(cmake/common_sources.cmake)
 set(production_srcs ${common_porting_sources} ${common_porting_includes})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 
-set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl)
 set(target_name AquaLampDriver)
 set(target_name_lib Firmware)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=3000")
+
+include(cmake/bsp/common.cmake)
+
+set(bsp_sources ${bsp_common_sources} ${bsp_common_includes})
+
+set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl )
+
+if (${BOARD} STREQUAL "STM32_Black_Pill")
+    include(cmake/bsp/stm32f1_common.cmake)
+    include(cmake/bsp/stm32_black_pill.cmake)
+    set(bsp_sources ${bsp_sources} 
+                    ${stm32f1_common_sources} 
+                    ${stm32f1_common_includes}
+                    ${stm32_black_pill_sources}
+                    ${stm32_black_pill_includes}
+    )
+endif (${BOARD} STREQUAL "STM32_Black_Pill")
+
+message("BSP sources: ${bsp_sources}")
+
+set(production_srcs ${production_srcs} ${bsp_sources})
 
 if (${ARCH} STREQUAL "X86")
     include(cmake/x86_sources.cmake)

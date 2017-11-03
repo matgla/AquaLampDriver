@@ -2,9 +2,9 @@
 
 #include "timer/timeoutTimer.hpp"
 
-#include "hal/core/backupRegisters.hpp"
-#include "logger/logger.hpp"
-
+namespace bsp
+{
+    
 enum class Buttons
 {
     Up,
@@ -15,20 +15,14 @@ enum class Buttons
     Back
 };
 
-enum class Leds
-{
-    Led1,
-    Led2
-};
-
-#define GPIO_IN_READ_DELAY 200
-#define TIME_TO_LONG_PUSH 1000
-
 template <Buttons button>
 class Button
 {
   public:
-    Button();
+    Button()
+    {
+        static_assert(sizeof(button) == 0, "Default constructor can't be used");
+    }
 
     bool isPressed()
     {
@@ -67,44 +61,14 @@ class Button
     }
 
   private:
-    static bool isPinPressed();
+    static bool isPinPressed()
+    {
+        static_assert(sizeof(button) == 0, "Default  can't be used");
+    }
+    
     bool isLong_ = false;
     timer::TimeoutTimer timer_;
     timer::TimeoutTimer isLongTimer_;
 };
 
-template <Leds led>
-class Led
-{
-  public:
-    Led()
-    {
-        static_assert(sizeof(led) == 0, "Default constructor can't be used");
-    }
-    static void on();
-    static void off();
-};
-
-
-void CoreInit();
-
-
-class Board
-{
-  public:
-    Board();
-
-    Button<Buttons::Left> leftButton;
-    Button<Buttons::Right> rightButton;
-    Button<Buttons::Up> upButton;
-    Button<Buttons::Down> downButton;
-    Button<Buttons::Select> selectButton;
-    Button<Buttons::Back> backButton;
-
-    Led<Leds::Led1> led;
-
-    hal::core::BackupRegisters& registers;
-
-  private:
-    logger::Logger logger_;
-};
+} // namespace bsp

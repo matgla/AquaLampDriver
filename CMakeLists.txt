@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 
-set(ARCH "X86" CACHE STRING "Target architecture (X86|STM32)")
+set(ARCH "X86" CACHE STRING "Target architecture (X86|ARM)")
 set(ARM_TOOLCHAIN $ENV{ARM_TOOLCHAIN} CACHE STRING "Path to ARM toolchain")
+set(BOARD "STM32_Black_Pill" CACHE STRING "Board name for choose board support platform")
 
 set(BUILD_TARGET OFF CACHE STRING "Build target")
 set(BUILD_TESTS  OFF CACHE STRING "Build tests")
