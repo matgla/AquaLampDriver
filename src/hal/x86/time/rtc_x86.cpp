@@ -15,9 +15,17 @@ namespace time
 {
 
 static time_t currentTime;
+static bool kill = false;
 static std::unique_ptr<std::thread> rtcSecondsInterruptThread;
 
 static bool wasInitialized = false;
+
+
+Rtc::~Rtc()
+{
+    kill = true;
+    rtcSecondsInterruptThread->join();
+}
 
 Rtc& Rtc::get()
 {
@@ -75,7 +83,7 @@ void Rtc::initSecondsInterrupt()
     rtcSecondsInterruptThread.reset(new std::thread([this]() {
         logger_.info() << "Started seconds interrupt";
 
-        while (true)
+        while (!kill)
         {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             if (secondsHandler_)

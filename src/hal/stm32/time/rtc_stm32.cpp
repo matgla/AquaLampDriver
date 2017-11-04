@@ -46,6 +46,10 @@ Rtc::Rtc()
     }
 }
 
+Rtc::~Rtc()
+{
+}
+
 void Rtc::setHandler(std::function<void()> handler)
 {
     timerCallback_ = handler;

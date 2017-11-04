@@ -1,8 +1,11 @@
-#include "app.hpp"
+#include "app/app.hpp"
 
+#include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
 #include "hal/time/rtc.hpp"
 
+namespace app
+{
 App::App(bsp::Board& board)
     : channelSettings_(board),
       statemachine_(channelSettings_),
@@ -18,15 +21,18 @@ App::App(bsp::Board& board)
     board_.registers.startupDone();
 
     logger_.info() << "Started";
+    display_.print("Hello world\n");
+    display_.print("CH1: 100%\n");
 }
 
 void App::update()
 {
-    statemachine_.process_event(events::Update{});
+    statemachine_.process_event(statemachines::events::Update{});
 }
 
 void App::run()
 {
+    using namespace statemachines;
     while (!board_.exit())
     {
         if (board_.downButton.isPressed())
@@ -58,52 +64,4 @@ void App::run()
     }
 }
 
-void printfMenu(int selected)
-{
-    printf("\e[2J");
-    if (selected == 1)
-    {
-        printf("-> ");
-    }
-    else
-    {
-        printf("   ");
-    }
-    printf("1. Channel Settings\n");
-    if (selected == 2)
-    {
-        printf("-> ");
-    }
-    else
-    {
-        printf("   ");
-    }
-    printf("2. Time Settings\n");
-    if (selected == 3)
-    {
-        printf("-> ");
-    }
-    else
-    {
-        printf("   ");
-    }
-    printf("3. General Settings\n");
-    if (selected == 4)
-    {
-        printf("-> ");
-    }
-    else
-    {
-        printf("   ");
-    }
-    printf("4. Effect Settings\n");
-    if (selected == 5)
-    {
-        printf("-> ");
-    }
-    else
-    {
-        printf("   ");
-    }
-    printf("5. About Settings\n");
-}
+} // namespace app

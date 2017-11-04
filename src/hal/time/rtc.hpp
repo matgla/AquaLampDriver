@@ -12,7 +12,7 @@ namespace time
 
 class Rtc
 {
-  public:
+public:
     static Rtc& get();
     static bool wasInitialized();
 
@@ -25,8 +25,9 @@ class Rtc
     void setSecondsHandler(std::function<void()> handler);
     std::function<void()>& getSecondsHandler();
 
-  private:
+private:
     Rtc();
+    ~Rtc();
     void init();
     void initNvic();
     void initSecondsInterrupt();

@@ -1,11 +1,9 @@
 #include "bsp/board.hpp"
 
-#include <SFML/Graphics.hpp>
+#include "bsp/x86/window.hpp"
 
 namespace bsp
 {
-
-sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
 
 void BoardInit()
 {
@@ -13,20 +11,12 @@ void BoardInit()
 
 void Board::run()
 {
-    sf::Event event;
-
-    while (window.pollEvent(event))
-    {
-        if (event.type == sf::Event::Closed)
-            window.close();
-    }
-    window.clear();
-    window.display();
+    x86::Window::get().run();
 }
 
 bool Board::exit()
 {
-    return !window.isOpen();
+    return !x86::Window::get().window().isOpen();
 }
 
 } // namespace bsp

@@ -1,13 +1,15 @@
 set(COMMON_SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+set(DRIVERS_SRC_DIR "${PROJECT_SOURCE_DIR}/src/drivers")
 
 set(common_porting_sources
-    ${COMMON_SRC_DIR}/app.cpp
+    ${COMMON_SRC_DIR}/app/app.cpp
     ${COMMON_SRC_DIR}/main.cpp
     ${COMMON_SRC_DIR}/logger/logger.cpp
     ${COMMON_SRC_DIR}/timer/intervalTimer.cpp
     ${COMMON_SRC_DIR}/timer/manager.cpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
-
+    ${DRIVERS_SRC_DIR}/lcd/font.cpp
+    
     #${COMMON_SRC_DIR}/usart.cpp
     #${COMMON_SRC_DIR}/utils.cpp
     #${COMMON_SRC_DIR}/dispatcher/ChannelHandler.cpp
@@ -21,7 +23,14 @@ set(common_porting_sources
 )
 
 set(common_porting_includes
-    ${COMMON_SRC_DIR}/app.hpp
+    ${COMMON_SRC_DIR}/app/app.hpp
+    ${COMMON_SRC_DIR}/app/channelSetting.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/appSm.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/channelSettingsSm.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/events.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/helpers.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/menuSm.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/states.hpp
 
     ${COMMON_SRC_DIR}/hal/core/core.hpp    
     ${COMMON_SRC_DIR}/hal/core/backupRegisters.hpp    
@@ -36,6 +45,8 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/timer/manager.hpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.hpp
 
+    ${DRIVERS_SRC_DIR}/lcd/display.hpp
+    ${DRIVERS_SRC_DIR}/lcd/font.hpp
 
     # ${COMMON_SRC_DIR}/usart.hpp
     # ${COMMON_SRC_DIR}/utils.hpp
