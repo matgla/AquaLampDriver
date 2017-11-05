@@ -38,6 +38,18 @@ struct AppSm
         // clang-format on
     }
 
+
+    /* 10000
+       11000
+       10100
+       10010
+       10100
+       11000
+       10000
+
+       */
+
+
     static void DisplayTime(Context& context)
     {
         context.display.clear(drivers::lcd::Colors::OFF);
@@ -45,9 +57,31 @@ struct AppSm
         char buffer[TIME_BUFFER_SIZE];
         auto t = std::time(nullptr);
         struct tm* currentTime = std::localtime(&t);
-        std::strftime(static_cast<char*>(buffer), TIME_BUFFER_SIZE, "%d/%m/%y %H:%M:%S\0", currentTime);
+        std::strftime(static_cast<char*>(buffer), TIME_BUFFER_SIZE, "   %d/%m/%y\n   %H:%M:%S\n", currentTime);
         context.display.print(buffer);
+        const u8 arrow[4] =
+            {
+                0b11111110,
+                0b01000100,
+                0b00101000,
+                0b00010000};
+        context.display.drawImage(gsl::span<const u8>{arrow}, 4, 7);
+        // char buffer[]
+
+        // sprintf(buffer, "")
+
+        // context.display.print(
     }
+
+    /*
+    01110
+    10001
+    10001
+    01110
+    01110
+    01110
+    00000
+    */
 };
 
 } // namespace statemachines

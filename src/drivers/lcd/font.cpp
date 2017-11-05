@@ -1525,5 +1525,4 @@ const uint8_t font5x7[FONT_ARRAY_SIZE] = {
 font font_5x7 = {
     7,
     5,
-    5,
     font5x7};

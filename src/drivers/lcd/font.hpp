@@ -5,7 +5,6 @@ struct font
 {
     uint8_t height;
     uint8_t width;
-    uint8_t bufferSize;
     const uint8_t* array;
 };
 

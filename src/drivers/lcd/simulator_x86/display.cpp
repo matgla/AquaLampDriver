@@ -1,6 +1,7 @@
 #include "drivers/lcd/display.hpp"
 
 #include <cstring>
+#include <iostream>
 
 #include <SFML/Graphics.hpp>
 
@@ -74,24 +75,38 @@ void Display::clear(Colors color)
     cursorPosition_.y = 0;
 }
 
+void Display::incrementCursorX(u8 offsetX, u8 offsetY)
+{
+    if (cursorPosition_.x + offsetX >= DISPLAY_WIDTH)
+    {
+        cursorPosition_.y += offsetY + 1;
+        cursorPosition_.x = 0;
+    }
+    else
+    {
+        cursorPosition_.x += offsetX + 1;
+    }
+}
+
+void Display::incrementCursorY(u8 offsetY)
+{
+    if (cursorPosition_.y + offsetY >= DISPLAY_HEIGHT)
+    {
+        cursorPosition_.y = offsetY + 1;
+        cursorPosition_.x = 0;
+    }
+    else
+    {
+        cursorPosition_.y += offsetY + 1;
+    }
+}
+
 void Display::print(char c, Colors color)
 {
     u16 charOffset = c - 32; // 32 first letter in font
     u16 charPosition = charOffset + charOffset * (use_font->width - 1);
 
     const uint8_t* font_ptr = &use_font->array[charPosition];
-
-    if (cursorPosition_.x + use_font->width >= DISPLAY_WIDTH)
-    {
-        cursorPosition_.y += use_font->height + 1;
-        cursorPosition_.x = 0;
-    }
-
-    if (cursorPosition_.y + use_font->height >= DISPLAY_HEIGHT)
-    {
-        cursorPosition_.y = use_font->height + 1;
-        cursorPosition_.x = 0;
-    }
 
     if (c == 0xA)
     {
@@ -119,7 +134,8 @@ void Display::print(char c, Colors color)
         }
         ++font_ptr;
     }
-    cursorPosition_.x += use_font->width + 1;
+    incrementCursorX(use_font->width, use_font->height);
+    // cursorPosition_.x += use_font->width + 1;
     drawScreen();
 }
 
@@ -130,6 +146,57 @@ void Display::print(const char* str, Colors color)
         print(str[i], color);
     }
 }
+
+void Display::setCursor(u8 x, u8 y)
+{
+    cursorPosition_.x = x;
+    cursorPosition_.y = y;
+}
+
+void Display::setX(u8 x)
+{
+    cursorPosition_.x = x;
+}
+
+void Display::setY(u8 y)
+{
+    cursorPosition_.y = y;
+}
+
+void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, Colors color)
+{
+    if (buffer.length() < width || sizeof(buffer[0]) * 8 < height)
+    {
+        logger_.error() << "Buffer smaller than picture";
+        logger_.error() << "buffer.length()=" << buffer.length() << ", width=" << width << ", sizeof(buffer[0])=" << sizeof(buffer[0]) << ", height=" << height;
+        return;
+    }
+
+    int i = 0;
+    for (int x = cursorPosition_.x; x < cursorPosition_.x + width; ++x)
+    {
+        std::cout << std::endl;
+        for (int y = height; y > 0; --y)
+        {
+            if ((buffer[i] >> y) & 0x01)
+            {
+                display_.setPixel(x, cursorPosition_.y + height - y, convertToSfColor(color));
+            }
+        }
+        i++;
+    }
+
+    incrementCursorX(width, use_font->height);
+    drawScreen();
+}
+
+void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, u8 x, u8 y, Colors color)
+{
+    cursorPosition_.x = x;
+    cursorPosition_.y = y;
+    drawImage(buffer, width, height);
+}
+
 
 } // namespace lcd
 } // namespace drivers
