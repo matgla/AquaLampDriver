@@ -10,4 +10,4 @@ struct font
 };
 
 
-extern font font_5x8;
+extern font font_5x7;

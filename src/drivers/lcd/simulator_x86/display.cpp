@@ -58,7 +58,7 @@ Display::Display()
     display_.create(DISPLAY_WIDTH, DISPLAY_HEIGHT, PIXEL_OFF_COLOR);
     clear(Colors::OFF);
     drawScreen();
-    use_font = &font_5x8;
+    use_font = &font_5x7;
 }
 
 void Display::clear(Colors color)
@@ -76,42 +76,45 @@ void Display::clear(Colors color)
 
 void Display::print(char c, Colors color)
 {
-    const uint8_t* font_ptr = &use_font->array[(c - 32) + (c - 32) * (use_font->height - 1)];
+    u16 charOffset = c - 32; // 32 first letter in font
+    u16 charPosition = charOffset + charOffset * (use_font->width - 1);
+
+    const uint8_t* font_ptr = &use_font->array[charPosition];
 
     if (cursorPosition_.x + use_font->width >= DISPLAY_WIDTH)
     {
-        cursorPosition_.y += use_font->height + 2;
+        cursorPosition_.y += use_font->height + 1;
         cursorPosition_.x = 0;
     }
 
     if (cursorPosition_.y + use_font->height >= DISPLAY_HEIGHT)
     {
-        cursorPosition_.y = use_font->height + 2;
+        cursorPosition_.y = use_font->height + 1;
         cursorPosition_.x = 0;
     }
 
     if (c == 0xA)
     {
         cursorPosition_.x = 0;
-        cursorPosition_.y += use_font->height + 2;
+        cursorPosition_.y += use_font->height + 1;
         return;
     }
 
     else if (c == 0x08)
     {
-        cursorPosition_.x -= (use_font->width + 2);
+        cursorPosition_.x -= (use_font->width + 1);
         c = ' ';
     }
 
     int i = 0;
 
-    for (i = cursorPosition_.y; i < use_font->height + cursorPosition_.y; i++)
+    for (i = cursorPosition_.x; i < use_font->width + cursorPosition_.x; i++)
     {
-        for (int j = 7; j >= 0; j--)
+        for (int j = use_font->height; j > 0; j--)
         {
             if ((*font_ptr >> j) & 0x01)
             {
-                display_.setPixel(cursorPosition_.x + 7 - j, i, convertToSfColor(color));
+                display_.setPixel(i, cursorPosition_.y + use_font->height - j, convertToSfColor(color));
             }
         }
         ++font_ptr;
