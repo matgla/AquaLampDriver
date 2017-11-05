@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "app/channelSetting.hpp"
+#include "app/context.hpp"
 #include "app/statemachines/appSm.hpp"
 #include "bsp/board.hpp"
 #include "logger/logger.hpp"
@@ -17,18 +17,19 @@ namespace app
 class App
 {
 public:
-    App(bsp::Board& board);
+    App(drivers::lcd::Display& display, bsp::Board& board);
 
     void run();
+    void start();
 
 private:
     void update();
 
-    ChannelSetting channelSettings_;
-    boost::sml::sm<statemachines::AppSm> statemachine_;
+    Context context_;
     logger::Logger logger_;
+    drivers::lcd::Display& display_;
     bsp::Board& board_;
-    drivers::lcd::Display display_;
+    boost::sml::sm<statemachines::AppSm> statemachine_;
 };
 
 } // namespace app

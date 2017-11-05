@@ -29,7 +29,7 @@ class Display
 {
 public:
     Display();
-    void clear(Colors color) const;
+    void clear(Colors color);
     void setPixel(u8 x, u8 y, Colors color);
     void print(char c, Vector2u position);
     void print(char c, u16 x, u16 y, Colors color = Colors::BLACK);

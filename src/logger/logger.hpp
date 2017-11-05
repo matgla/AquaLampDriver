@@ -1,16 +1,16 @@
 #pragma once
 
 #include <cstdio>
+#include <mutex>
 #include <string>
 #include <type_traits>
 #include <vector>
 
 namespace logger
 {
-
 class Logger
 {
-  public:
+public:
     Logger(std::string name = "", bool insertNewlineWhenDestruct = false);
     Logger(const Logger&) = default;
     Logger(Logger&&) = default;
@@ -35,7 +35,7 @@ class Logger
     Logger warning();
     Logger error();
 
-  protected:
+protected:
     std::string getFormatedDateAndTime();
 
     std::string name_;

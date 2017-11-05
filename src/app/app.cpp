@@ -2,27 +2,32 @@
 
 #include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
+#include "drivers/lcd/display.hpp"
 #include "hal/time/rtc.hpp"
+#include "logger/logger.hpp"
 
 namespace app
 {
-App::App(bsp::Board& board)
-    : channelSettings_(board),
-      statemachine_(channelSettings_),
+App::App(drivers::lcd::Display& display, bsp::Board& board)
+    : context_(board, display),
+      statemachine_(context_),
       logger_("App"),
+      display_(display),
       board_(board)
+{
+}
+
+void App::start()
 {
     logger_.info() << "Startup";
     hal::time::Rtc::get().setSecondsHandler([this] {
-        update();
+        this->update();
     });
 
     board_.led.on();
     board_.registers.startupDone();
 
     logger_.info() << "Started";
-    display_.print("Hello world\n");
-    display_.print("CH1: 100%\n");
 }
 
 void App::update()

@@ -4,7 +4,7 @@
 
 #include <boost/sml.hpp>
 
-#include "app/channelSetting.hpp"
+#include "app/context.hpp"
 #include "app/statemachines/events.hpp"
 #include "app/statemachines/states.hpp"
 
@@ -24,43 +24,43 @@ struct ChannelSettingsSm
         return make_transition_table(
             *state<Init> / [] { printf("\e[2JChannel configuration:\n"); } = state<ChannelSettings>,
             state<ChannelSettings> + on_entry<_> / 
-            [](ChannelSetting& setting) 
+            [](Context& context) 
             {  
                 printf("\e[2JChannel configuration:\n");
-                printf("CH %2d : %3d %%\n", setting.index, setting.power[setting.index]); 
+                printf("CH %2d : %3d %%\n", context.channelSetting.index, context.channelSetting.power[context.channelSetting.index]); 
             },
             state<ChannelSettings> + event<ButtonDown> / 
-            [](ChannelSetting& setting) 
+            [](Context& context) 
             {
-                ++setting.index;
+                ++context.channelSetting.index;
             } = state<ChannelSettings>,
             state<ChannelSettings> + event<ButtonUp> / 
-            [](ChannelSetting& setting) 
+            [](Context& context) 
             {
-                --setting.index;
+                --context.channelSetting.index;
             } = state<ChannelSettings>,
             state<ChannelSettings> + event<ButtonLeft> / 
-            [](ChannelSetting& setting) 
+            [](Context& context) 
             {
-                if (setting.board_.leftButton.isLongPressed())
+                if (context.channelSetting.board_.leftButton.isLongPressed())
                 {
-                    setting.power[setting.index] -= 5;
+                    context.channelSetting.power[context.channelSetting.index] -= 5;
                 }
                 else
                 {
-                    --setting.power[setting.index];                    
+                    --context.channelSetting.power[context.channelSetting.index];                    
                 }
             } = state<ChannelSettings>,
             state<ChannelSettings> + event<ButtonRight> / 
-            [](ChannelSetting& setting)
+            [](Context& context)
             {
-                if (setting.board_.rightButton.isLongPressed())
+                if (context.channelSetting.board_.rightButton.isLongPressed())
                 {
-                    setting.power[setting.index] += 5;
+                    context.channelSetting.power[context.channelSetting.index] += 5;
                 }
                 else
                 {
-                    ++setting.power[setting.index];                    
+                    ++context.channelSetting.power[context.channelSetting.index];                    
                 }
             } = state<ChannelSettings>
         );

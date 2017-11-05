@@ -61,7 +61,7 @@ Display::Display()
     use_font = &font_5x8;
 }
 
-void Display::clear(Colors color) const
+void Display::clear(Colors color)
 {
     for (int y = 0; y < DISPLAY_HEIGHT; ++y)
     {
@@ -70,6 +70,8 @@ void Display::clear(Colors color) const
             display_.setPixel(x, y, convertToSfColor(color));
         }
     }
+    cursorPosition_.x = 0;
+    cursorPosition_.y = 0;
 }
 
 void Display::print(char c, Colors color)
@@ -102,7 +104,6 @@ void Display::print(char c, Colors color)
     }
 
     int i = 0;
-    logger_.info() << "draw on: " << cursorPosition_.y << " , " << cursorPosition_.x;
 
     for (i = cursorPosition_.y; i < use_font->height + cursorPosition_.y; i++)
     {

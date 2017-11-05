@@ -5,6 +5,9 @@
 namespace logger
 {
 
+static std::mutex logMutex;
+
+
 Logger::Logger(std::string name, bool insertNewlineWhenDestruct)
     : name_(std::move(name)), insertNewlineWhenDestruct_(insertNewlineWhenDestruct)
 {
@@ -15,17 +18,20 @@ Logger::~Logger()
     if (insertNewlineWhenDestruct_)
     {
         operator<<("\n");
+        logMutex.unlock();
     }
 }
 
 Logger Logger::debug()
 {
+    logMutex.lock();
     printf("<%s> DBG/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
     return Logger(name_, true);
 }
 
 Logger Logger::info()
 {
+    logMutex.lock();
     auto size = getFormatedDateAndTime().length();
     printf("<%s> INF/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
 
@@ -34,6 +40,7 @@ Logger Logger::info()
 
 Logger Logger::warning()
 {
+    logMutex.lock();
     printf("<%s> WRN/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
 
     return Logger(name_, true);
@@ -41,6 +48,7 @@ Logger Logger::warning()
 
 Logger Logger::error()
 {
+    logMutex.lock();
     printf("<%s> ERR/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
 
     return Logger(name_, true);
