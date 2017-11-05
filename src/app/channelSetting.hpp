@@ -16,6 +16,6 @@ struct ChannelSetting
     }
     bsp::Board& board_;
     int index;
-    u8 power[20];
+    u8 power[13];
 };
 } // namespace app

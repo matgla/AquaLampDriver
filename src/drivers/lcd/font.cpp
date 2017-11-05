@@ -756,7 +756,7 @@ const uint8_t font5x9[846] = {
 };
 
 font font_5x8 = {
-    8,
+    7,
     5,
     5,
     font5x9};

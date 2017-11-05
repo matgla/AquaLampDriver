@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <ctime>
+#include <functional>
 
 #include <boost/sml.hpp>
 

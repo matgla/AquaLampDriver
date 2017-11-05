@@ -73,11 +73,11 @@ struct MenuSm
         // clang-format off
         return make_transition_table(
             *state<Init> / []{printf("\e[2JShow Menu:\n");} = state<ChannelSettings>,
-            state<ChannelSettings> + on_entry<_> / []{printfMenu(1);},
-            state<TimeSettings> + on_entry<_> / []{printfMenu(2);},
-            state<GeneralSettings> + on_entry<_> / []{printfMenu(3);},
-            state<EffectSettings> + on_entry<_> / []{printfMenu(4);},
-            state<About> + on_entry<_> / []{printfMenu(5);},
+            state<ChannelSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 1);},
+            state<TimeSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 2);},
+            state<GeneralSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 3);},
+            state<EffectSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 4);},
+            state<About> + on_entry<_> / [](Context& context){DisplayMenu(context, 5);},
             state<ChannelSettings> + event<ButtonDown> = state<TimeSettings>,
             state<TimeSettings> + event<ButtonDown> = state<GeneralSettings>,
             state<GeneralSettings> + event<ButtonDown> = state<EffectSettings>,
@@ -92,6 +92,59 @@ struct MenuSm
             state<ChannelSettingsSm> + event<ButtonBack> = state<Init>
         );
         // clang-format on
+    }
+
+    static void DisplayMenu(Context& context, int selection)
+    {
+        using namespace drivers::lcd;
+        auto& display = context.display;
+        display.clear(Colors::OFF);
+
+        if (selection == 1)
+        {
+            display.print("-> ");
+        }
+        else
+        {
+            display.print("   ");
+        }
+        display.print("1.Channel\n");
+        if (selection == 2)
+        {
+            display.print("-> ");
+        }
+        else
+        {
+            display.print("   ");
+        }
+        display.print("2.Time\n");
+        if (selection == 3)
+        {
+            display.print("-> ");
+        }
+        else
+        {
+            display.print("   ");
+        }
+        display.print("3.General\n");
+        if (selection == 4)
+        {
+            display.print("-> ");
+        }
+        else
+        {
+            display.print("   ");
+        }
+        display.print("4.Effect\n");
+        // if (selection == 5)
+        // {
+        //     display.print("-> ");
+        // }
+        // else
+        // {
+        //     display.print("   ");
+        // }
+        // display.print("5. About Settings\n");
     }
 };
 
