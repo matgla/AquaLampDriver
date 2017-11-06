@@ -88,6 +88,19 @@ void Display::incrementCursorX(u8 offsetX, u8 offsetY)
     }
 }
 
+void Display::incrementCursorX(u8 offsetX)
+{
+    if (cursorPosition_.x + offsetX >= DISPLAY_WIDTH)
+    {
+        cursorPosition_.y += use_font->height + 1;
+        cursorPosition_.x = 0;
+    }
+    else
+    {
+        cursorPosition_.x += offsetX + 1;
+    }
+}
+
 void Display::incrementCursorY(u8 offsetY)
 {
     if (cursorPosition_.y + offsetY >= DISPLAY_HEIGHT)
@@ -175,7 +188,6 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
     int i = 0;
     for (int x = cursorPosition_.x; x < cursorPosition_.x + width; ++x)
     {
-        std::cout << std::endl;
         for (int y = height; y > 0; --y)
         {
             if ((buffer[i] >> y) & 0x01)
@@ -195,6 +207,18 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
     cursorPosition_.x = x;
     cursorPosition_.y = y;
     drawImage(buffer, width, height);
+}
+
+void Display::drawImage(const Image& image, Colors color)
+{
+    drawImage(image.data, image.width, image.height);
+}
+
+void Display::drawImage(const Image& image, u8 x, u8 y, Colors color)
+{
+    cursorPosition_.x = x;
+    cursorPosition_.y = y;
+    drawImage(image);
 }
 
 

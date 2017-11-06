@@ -9,6 +9,7 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/timer/manager.cpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
     ${DRIVERS_SRC_DIR}/lcd/font.cpp
+    ${DRIVERS_SRC_DIR}/lcd/icons.cpp
     
     #${COMMON_SRC_DIR}/usart.cpp
     #${COMMON_SRC_DIR}/utils.cpp
@@ -48,6 +49,7 @@ set(common_porting_includes
 
     ${DRIVERS_SRC_DIR}/lcd/display.hpp
     ${DRIVERS_SRC_DIR}/lcd/font.hpp
+    ${DRIVERS_SRC_DIR}/lcd/icons.hpp
 
     # ${COMMON_SRC_DIR}/usart.hpp
     # ${COMMON_SRC_DIR}/utils.hpp

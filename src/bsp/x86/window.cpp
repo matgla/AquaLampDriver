@@ -3,7 +3,7 @@
 
 #define WINDOW_HEIGHT 100
 #define WINDOW_WIDTH 84
-#define WINDOW_SCALE 4
+#define WINDOW_SCALE 6
 
 namespace bsp
 {

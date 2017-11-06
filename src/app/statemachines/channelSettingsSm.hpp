@@ -38,10 +38,19 @@ struct ChannelSettingsSm
     {
         using namespace drivers::lcd;
         context.display.clear(Colors::OFF);
-        context.display.print("Channel conf:\n");
+        context.display.print("Channel conf:\n\n\n");
         char buffer[15];
-        sprintf(buffer, "CH %2d: %3d%%\n", context.channelSetting.index, context.channelSetting.power[context.channelSetting.index]);
+        sprintf(buffer, " CH%d: %3d%%\n", context.channelSetting.index, context.channelSetting.power[context.channelSetting.index]);
+        if (context.channelSetting.index < 10)
+        {
+            context.display.print(" ");
+        }
         context.display.print(buffer);
+        context.display.setY(48 - Images::backIcon.height);
+        context.display.setX(2);
+        context.display.drawImage(Images::backIcon);
+        context.display.setX(84 - Images::selectIcon.width - 2);
+        context.display.drawImage(Images::selectIcon);
     }
 
     static void onIncrementChannel(Context& context)

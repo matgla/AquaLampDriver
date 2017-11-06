@@ -5,6 +5,7 @@
 
 #include <gsl/span>
 
+#include "drivers/lcd/icons.hpp"
 #include "logger/logger.hpp"
 #include "utils/types.hpp"
 
@@ -41,11 +42,13 @@ public:
     void setY(u8 y);
     void drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, Colors color = Colors::BLACK);
     void drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, u8 x, u8 y, Colors color = Colors::BLACK);
-
-private:
+    void drawImage(const Image& image, u8 x, u8 y, Colors color = Colors::BLACK);
+    void drawImage(const Image& image, Colors color = Colors::BLACK);
     void incrementCursorX(u8 offsetX, u8 offsetY);
+    void incrementCursorX(u8 offsetX);
     void incrementCursorY(u8 offsetY);
 
+private:
     Vector2u cursorPosition_;
     logger::Logger logger_;
 };
