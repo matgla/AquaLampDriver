@@ -8,6 +8,7 @@
 #include "app/statemachines/appSm.hpp"
 #include "bsp/board.hpp"
 #include "logger/logger.hpp"
+#include "timer/manager.hpp"
 
 #include "drivers/lcd/display.hpp"
 
@@ -30,6 +31,7 @@ private:
     drivers::lcd::Display& display_;
     bsp::Board& board_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
+    timer::Manager timerManager_;
 };
 
 } // namespace app

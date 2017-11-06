@@ -6,17 +6,19 @@
 namespace timer
 {
 
-class IntervalTimer : public ITimer
+class IntervalTimer
 {
 public:
     IntervalTimer(u64 time, TimerCallback callback, int times = -1);
+    IntervalTimer();
 
-    void run() override;
-    void cancel() override;
-    bool enabled() const override;
+    void run();
+    void cancel();
+    bool enabled() const;
+    void start(u64 time, TimerCallback callback, int times = 1);
 
 protected:
-    void fire() override;
+    void fire();
 
     TimerCallback callback_;
     u64 startTime_;

@@ -5,21 +5,20 @@
 namespace timer
 {
 
-class TimeoutTimer : public ITimer
+class TimeoutTimer
 {
-  public:
+public:
     TimeoutTimer(u64 time, TimerCallback callback);
     TimeoutTimer();
 
-    void start(u64 time);
-    void start(u64 time, TimerCallback callback);
-    void run() override;
-    void cancel() override;
+    void start(u64 time, TimerCallback callback = nullptr);
+    void run();
+    void cancel();
     u64 elapsed();
-    bool enabled() const override;
+    bool enabled() const;
 
-  protected:
-    void fire() override;
+protected:
+    void fire();
 
     TimerCallback callback_;
     u64 startTime_;

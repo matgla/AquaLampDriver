@@ -15,6 +15,11 @@ IntervalTimer::IntervalTimer(const u64 time, TimerCallback callback, const int t
 {
 }
 
+IntervalTimer::IntervalTimer()
+    : callback_(nullptr), startTime_(0), time_(0), enabled_(false), times_(-1)
+{
+}
+
 void IntervalTimer::run()
 {
     if (hal::time::Time::milliseconds() - startTime_ >= time_)
@@ -33,6 +38,14 @@ bool IntervalTimer::enabled() const
     return enabled_;
 }
 
+void IntervalTimer::start(u64 time, TimerCallback callback, int times = 1)
+{
+    callback_ = callback;
+    times_ = times;
+    startTime_ = hal::time::Time::milliseconds();
+    enabled_ = true;
+    time_ = time;
+}
 
 void IntervalTimer::fire()
 {
@@ -50,7 +63,10 @@ void IntervalTimer::fire()
             enabled_ = false;
         }
 
-        callback_();
+        if (callback_)
+        {
+            callback_();
+        }
     }
 }
 
