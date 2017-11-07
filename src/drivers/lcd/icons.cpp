@@ -193,5 +193,25 @@ Image Images::ArrowUp = {
     7,
     gsl::span<const uint8_t>{arrowUpImage}};
 
+/**
+ * @brief Mosaic for making frames
+ *
+ * 0 1
+ * 1 0
+ * 0 1
+ * 1 0
+ * 0 1
+ * 1 0
+ * 0 1
+ **/
+const uint8_t chessboardMosaic[2] = {
+    0b01010100,
+    0b10101010};
+
+Image Images::ChessboardMosaic = {
+    2,
+    7,
+    gsl::span<const uint8_t>{chessboardMosaic}};
+
 } // namespace lcd
 } // namespace drivers

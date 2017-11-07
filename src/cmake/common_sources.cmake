@@ -26,8 +26,11 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/app/app.hpp
     ${COMMON_SRC_DIR}/app/channelSetting.hpp
     ${COMMON_SRC_DIR}/app/context.hpp    
+    ${COMMON_SRC_DIR}/app/timeSetting.hpp    
     ${COMMON_SRC_DIR}/app/statemachines/appSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/channelSettingsSm.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/timeSettingsSm.hpp
+    ${COMMON_SRC_DIR}/app/statemachines/setTimeSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/events.hpp
     ${COMMON_SRC_DIR}/app/statemachines/helpers.hpp
     ${COMMON_SRC_DIR}/app/statemachines/menuSm.hpp

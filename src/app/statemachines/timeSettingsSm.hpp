@@ -6,6 +6,7 @@
 
 #include "app/context.hpp"
 #include "app/statemachines/events.hpp"
+#include "app/statemachines/setTimeSm.hpp"
 #include "app/statemachines/states.hpp"
 #include "drivers/lcd/icons.hpp"
 
@@ -22,14 +23,6 @@ struct DateSettings;
 struct SetDate;
 struct SetSunrise;
 struct SetSunshine;
-struct SetTime;
-
-struct SetHourFirst;
-struct SetHourSecond;
-struct SetMinuteFirst;
-struct SetMinuteSecond;
-struct SetSecondFirst;
-struct SetSecondSecond;
 } // namespace states
 
 struct TimeSettingsSm
@@ -50,11 +43,10 @@ struct TimeSettingsSm
             state<DateSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>,
             state<SunriseSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 2); } = state<DateSettings>,
             state<SunshineSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 3); } = state<SunriseSettings>,
-            state<TimeSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context); } = state<SetTime>,
-            state<SetTime> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>,
-            state<SetTime> = state<SetHourFirst>,
-            state<SetHourFirst> + on_entry<_>
+            state<TimeSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetTimeSm>,
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>
 
+//            state<SetHourFirst> + on_entry<_> / [](Context& context) { }
         );
         // clang-format on
     }
@@ -131,4 +123,4 @@ struct TimeSettingsSm
 };
 
 } // namespace statemachines
-} // namepsace app
+} // namespace app

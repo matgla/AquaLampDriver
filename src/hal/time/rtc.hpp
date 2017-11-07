@@ -16,7 +16,8 @@ public:
     static Rtc& get();
     static bool wasInitialized();
 
-    void setTime(u32 day, u32 month, u32 year, u32 hours, u32 minutes, u32 seconds);
+    void setTime(u32 hours, u32 minutes, u32 seconds);
+    void setDate(u32 day, u32 month, u32 year);
     u32 getTime();
     u32 alarmTime();
     void setAlarm(u32 time);

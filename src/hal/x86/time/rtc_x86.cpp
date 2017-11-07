@@ -94,16 +94,25 @@ void Rtc::initSecondsInterrupt()
     }));
 }
 
-void Rtc::setTime(u32 day, u32 month, u32 year, u32 hours, u32 minutes, u32 seconds)
+void Rtc::setTime(u32 hours, u32 minutes, u32 seconds)
 {
-    std::tm t = {0};
-    t.tm_year = year - 1900;
-    t.tm_mon = month - 1;
-    t.tm_mday = day;
-    t.tm_hour = hours;
-    t.tm_min = minutes;
-    t.tm_sec = seconds;
-    time_t timeSinceEpoch = mktime(&t);
+    std::time_t currentTime = std::time(nullptr);
+    std::tm* t = localtime(&currentTime);
+    t->tm_hour = hours;
+    t->tm_min = minutes;
+    t->tm_sec = seconds;
+    time_t timeSinceEpoch = mktime(t);
+    currentTime = timeSinceEpoch;
+}
+
+void Rtc::setDate(u32 day, u32 month, u32 year)
+{
+    std::time_t currentTime = std::time(nullptr);
+    std::tm* t = localtime(&currentTime);
+    t->tm_year = year - 1900;
+    t->tm_mon = month - 1;
+    t->tm_mday = day;
+    time_t timeSinceEpoch = mktime(t);
     currentTime = timeSinceEpoch;
 }
 

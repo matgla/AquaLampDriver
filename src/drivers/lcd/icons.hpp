@@ -25,6 +25,7 @@ extern Image selectIcon;
 extern Image backIcon;
 extern Image ArrowDown;
 extern Image ArrowUp;
+extern Image ChessboardMosaic;
 } // namespace Images
 
 } // namespace lcd

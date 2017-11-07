@@ -7,9 +7,9 @@ namespace app
 
 struct TimeSetting
 {
-    u8 hours;
-    u8 minutes;
-    u8 seconds;
+    i8 hours;
+    i8 minutes;
+    i8 seconds;
 };
 
 } // namespace app
