@@ -1,5 +1,7 @@
 #include "drivers/lcd/icons.hpp"
 
+#include <gsl/span>
+
 namespace drivers
 {
 namespace lcd
@@ -143,6 +145,53 @@ Image Images::selectIcon = {
     19,
     7,
     gsl::span<const uint8_t>{selectIconImage}};
+
+/**
+ * @brief Filled arrow down
+ * 
+ * 00000
+ * 00000
+ * 00000
+ * 11111
+ * 01110
+ * 00100
+ * 00000
+ **/
+
+const uint8_t arrowDownImage[5] = {
+    0b00010000,
+    0b00011000,
+    0b00011100,
+    0b00011000,
+    0b00010000};
+
+Image Images::ArrowDown = {
+    5,
+    7,
+    gsl::span<const uint8_t>{arrowDownImage}};
+
+/**
+ * @brief Filled arrow up
+ * 
+ * 00000
+ * 00100
+ * 01110
+ * 11111
+ * 00000
+ * 00000
+ * 00000
+ **/
+const uint8_t arrowUpImage[5] = {
+    0b00010000,
+    0b00110000,
+    0b01110000,
+    0b00110000,
+    0b00010000};
+
+Image Images::ArrowUp = {
+    5,
+    7,
+    gsl::span<const uint8_t>{arrowUpImage}};
 
 } // namespace lcd
 } // namespace drivers

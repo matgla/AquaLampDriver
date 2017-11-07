@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/channelSetting.hpp"
+#include "app/timeSetting.hpp"
 #include "drivers/lcd/display.hpp"
 #include "timer/manager.hpp"
 
@@ -17,6 +18,7 @@ struct Context
     ChannelSetting channelSetting;
     drivers::lcd::Display& display;
     timer::Manager<5, 5> timerManager;
+    TimeSetting timeSetting;
 };
 
 } // namespace app

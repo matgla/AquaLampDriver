@@ -23,6 +23,8 @@ extern Image emptyTriangle;
 extern Image fullTriangle;
 extern Image selectIcon;
 extern Image backIcon;
+extern Image ArrowDown;
+extern Image ArrowUp;
 } // namespace Images
 
 } // namespace lcd

@@ -64,8 +64,8 @@ private:
     static bool isPinPressed();
 
     bool isLong_ = false;
-    timer::TimeoutTimer& timer_;
-    timer::TimeoutTimer& isLongTimer_;
+    timer::TimeoutTimer timer_;
+    timer::TimeoutTimer isLongTimer_;
 };
 
 } // namespace bsp
