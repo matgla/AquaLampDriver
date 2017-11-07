@@ -1,5 +1,4 @@
 #pragma once
-#include "timer/ITimer.hpp"
 #include "utils/types.hpp"
 
 namespace timer

@@ -6,7 +6,6 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/main.cpp
     ${COMMON_SRC_DIR}/logger/logger.cpp
     ${COMMON_SRC_DIR}/timer/intervalTimer.cpp
-    ${COMMON_SRC_DIR}/timer/manager.cpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
     ${DRIVERS_SRC_DIR}/lcd/font.cpp
     ${DRIVERS_SRC_DIR}/lcd/icons.cpp
@@ -41,15 +40,15 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/hal/time/sleep.hpp  
 
     ${COMMON_SRC_DIR}/logger/logger.hpp
-    ${COMMON_SRC_DIR}/timer/IManager.hpp
     ${COMMON_SRC_DIR}/timer/intervalTimer.hpp
-    ${COMMON_SRC_DIR}/timer/ITimer.hpp
-    ${COMMON_SRC_DIR}/timer/manager.hpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.hpp
 
     ${DRIVERS_SRC_DIR}/lcd/display.hpp
     ${DRIVERS_SRC_DIR}/lcd/font.hpp
     ${DRIVERS_SRC_DIR}/lcd/icons.hpp
+
+    ${COMMON_SRC_DIR}/timer/manager.hpp
+    
 
     # ${COMMON_SRC_DIR}/usart.hpp
     # ${COMMON_SRC_DIR}/utils.hpp

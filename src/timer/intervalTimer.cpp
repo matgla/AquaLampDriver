@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include "hal/time/time.hpp"
-#include "timer/ITimer.hpp"
 #include "utils/types.hpp"
 
 namespace timer
@@ -38,7 +37,7 @@ bool IntervalTimer::enabled() const
     return enabled_;
 }
 
-void IntervalTimer::start(u64 time, TimerCallback callback, int times = 1)
+void IntervalTimer::start(u64 time, TimerCallback callback, int times)
 {
     callback_ = callback;
     times_ = times;

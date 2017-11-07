@@ -21,7 +21,7 @@ enum class Buttons
 template <Buttons button>
 class Button
 {
-  public:
+public:
     Button();
 
     bool isPressed()
@@ -60,12 +60,12 @@ class Button
         return isLong_;
     }
 
-  private:
+private:
     static bool isPinPressed();
 
     bool isLong_ = false;
-    timer::TimeoutTimer timer_;
-    timer::TimeoutTimer isLongTimer_;
+    timer::TimeoutTimer& timer_;
+    timer::TimeoutTimer& isLongTimer_;
 };
 
 } // namespace bsp

@@ -31,7 +31,6 @@ private:
     drivers::lcd::Display& display_;
     bsp::Board& board_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
-    timer::Manager timerManager_;
 };
 
 } // namespace app

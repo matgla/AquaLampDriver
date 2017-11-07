@@ -25,3 +25,5 @@ using BufferSpan = gsl::span<const u8>;
 using BufferIndexType = BufferSpan::index_type;
 using WriterCallback = std::function<void(const BufferSpan& buffer)>;
 using ReaderCallback = std::function<void(const BufferSpan& buffer, const WriterCallback& writer)>;
+
+using TimerCallback = std::function<void()>;

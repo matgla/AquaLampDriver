@@ -2,7 +2,7 @@
 
 #include <array>
 #include <cstdint>
-#include <pair>
+#include <utility>
 
 #include "timer/intervalTimer.hpp"
 #include "timer/timeoutTimer.hpp"
@@ -30,9 +30,9 @@ public:
         }
     }
 
-    TimerId setTimeout(u32 milliseconds, ITimer::TimerCallback callback)
+    TimerId setTimeout(u32 milliseconds, TimerCallback callback)
     {
-        for (TimerId id = 0; i < timeouts_.size(); ++id)
+        for (TimerId id = 0; id < timeouts_.size(); ++id)
         {
             auto& timeout = timeouts_[id];
             if (timeout.second == false)
@@ -48,9 +48,9 @@ public:
         return -1;
     }
 
-    TimerId setInterval(u32 milliseconds, ITimer::TimerCallback callback, int times = -1)
+    TimerId setInterval(u32 milliseconds, TimerCallback callback, int times = -1)
     {
-        for (TimerId id = 0; i < intervals_.size(); ++id)
+        for (TimerId id = 0; id < intervals_.size(); ++id)
         {
             auto& interval = intervals_[id];
             if (interval.second == false)
