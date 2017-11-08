@@ -153,7 +153,7 @@ void Display::print(char c, Colors color)
 
 void Display::print(const char* str, Colors color)
 {
-    for (int i = 0; i < strlen(str); i++)
+    for (std::size_t i = 0; i < strlen(str); i++)
     {
         print(str[i], color);
     }
@@ -177,6 +177,7 @@ void Display::setY(u8 y)
 
 void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, Colors color)
 {
+    UNUSED(color);
     if (buffer.length() < width || sizeof(buffer[0]) * 8 < height)
     {
         logger_.error() << "Buffer smaller than picture";
@@ -206,6 +207,7 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
 
 void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, u8 x, u8 y, Colors color)
 {
+    UNUSED(color);
     cursorPosition_.x = x;
     cursorPosition_.y = y;
     drawImage(buffer, width, height);
@@ -213,11 +215,13 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
 
 void Display::drawImage(const Image& image, Colors color)
 {
+    UNUSED(color);
     drawImage(image.data, image.width, image.height);
 }
 
 void Display::drawImage(const Image& image, u8 x, u8 y, Colors color)
 {
+    UNUSED(color);
     cursorPosition_.x = x;
     cursorPosition_.y = y;
     drawImage(image);

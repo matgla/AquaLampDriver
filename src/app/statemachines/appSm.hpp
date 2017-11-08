@@ -11,6 +11,7 @@
 #include "app/statemachines/helpers.hpp"
 #include "app/statemachines/menuSm.hpp"
 #include "app/statemachines/states.hpp"
+#include "utils.hpp"
 
 namespace app
 {
@@ -41,12 +42,18 @@ struct AppSm
     static void DisplayTime(Context& context)
     {
         context.display.clear(drivers::lcd::Colors::OFF);
-        const int TIME_BUFFER_SIZE = 30;
-        char buffer[TIME_BUFFER_SIZE];
+        constexpr const int TimeBufferSize = 12;
+        constexpr const int DateBufferSize = 10;
+        char timeBuffer[TimeBufferSize];
+        char dateBuffer[DateBufferSize];
         auto t = std::time(nullptr);
         struct tm* currentTime = std::localtime(&t);
-        std::strftime(static_cast<char*>(buffer), TIME_BUFFER_SIZE, "   %d/%m/%y\n   %H:%M:%S\n", currentTime);
-        context.display.print(buffer);
+        utils::formatDate(dateBuffer, DateBufferSize, currentTime);
+        utils::formatTime(timeBuffer, TimeBufferSize, currentTime);
+        context.display.print("    ");
+        context.display.print(dateBuffer);
+        context.display.print("    \n");
+        context.display.print(timeBuffer);
     }
 };
 

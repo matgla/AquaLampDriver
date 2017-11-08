@@ -6,8 +6,8 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
 set(target_name AquaLampDriver)
 set(target_name_lib Firmware)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=3000 -Wno-unused-result")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-result")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=3000 -Wno-unused-result -std=c++1z -Wall -Wextra")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-result -std=c99 -Wall -Wextra")
 
 include(cmake/bsp/common.cmake)
 

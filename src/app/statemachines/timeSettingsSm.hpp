@@ -59,72 +59,72 @@ struct TimeSettingsSm
 
     static void onDrawMenu(Context& context, u8 selectedPosition)
     {
-        // using namespace drivers::lcd;
-        // auto& display = context.display;
-        // display.clear(drivers::lcd::Colors::OFF);
-        // display.print("Time:\n");
+        using namespace drivers::lcd;
+        auto& display = context.display;
+        display.clear(drivers::lcd::Colors::OFF);
+        display.print("Time:\n");
 
-        // if (1 == selectedPosition)
-        // {
-        //     display.drawImage(Images::fullTriangle);
-        // }
-        // else
-        // {
-        //     display.drawImage(Images::emptyTriangle);
-        // }
-        // display.print("Set time\n");
-        // if (2 == selectedPosition)
-        // {
-        //     display.drawImage(Images::fullTriangle);
-        // }
-        // else
-        // {
-        //     display.drawImage(Images::emptyTriangle);
-        // }
-        // display.print("Set date\n");
-        // if (3 == selectedPosition)
-        // {
-        //     display.drawImage(Images::fullTriangle);
-        // }
-        // else
-        // {
-        //     display.drawImage(Images::emptyTriangle);
-        // }
-        // display.print("Set sunshine\n");
-        // if (4 == selectedPosition)
-        // {
-        //     display.drawImage(Images::fullTriangle);
-        // }
-        // else
-        // {
-        //     display.drawImage(Images::emptyTriangle);
-        // }
-        // display.print("Set sunrise\n");
+        if (1 == selectedPosition)
+        {
+            display.drawImage(Images::fullTriangle);
+        }
+        else
+        {
+            display.drawImage(Images::emptyTriangle);
+        }
+        display.print("Set time\n");
+        if (2 == selectedPosition)
+        {
+            display.drawImage(Images::fullTriangle);
+        }
+        else
+        {
+            display.drawImage(Images::emptyTriangle);
+        }
+        display.print("Set date\n");
+        if (3 == selectedPosition)
+        {
+            display.drawImage(Images::fullTriangle);
+        }
+        else
+        {
+            display.drawImage(Images::emptyTriangle);
+        }
+        display.print("Set sunshine\n");
+        if (4 == selectedPosition)
+        {
+            display.drawImage(Images::fullTriangle);
+        }
+        else
+        {
+            display.drawImage(Images::emptyTriangle);
+        }
+        display.print("Set sunrise\n");
     }
 
     static void onSetTime(Context& context, u8 arrowPosition)
     {
-        // using namespace drivers::lcd;
-        // auto& display = context.display;
-        // display.clear(Colors::OFF);
-        // display.print("Set time:\n");
+        using namespace drivers::lcd;
+        auto& display = context.display;
+        display.clear(Colors::OFF);
+        display.print("Set time:\n");
 
-        // for (u8 i = 0; i < arrowPosition; ++i)
-        // {
-        //     display.print(" ");
-        // }
-        // display.drawImage(Images::ArrowDown);
+        for (u8 i = 0; i < arrowPosition; ++i)
+        {
+            display.print(" ");
+        }
+        display.drawImage(Images::ArrowDown);
 
-        // char buffer[50];
-        // sprintf(buffer, "\n %2d:%2d:%2d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
-        // display.print(buffer);
+        char buffer[50];
+        sprintf(buffer, "\n %2d:%2d:%2d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
+        display.print(buffer);
 
-        // for (u8 i = 0; i < arrowPosition; ++i)
-        // {
-        //     display.print(" ");
-        // }
+        for (u8 i = 0; i < arrowPosition; ++i)
+        {
+            display.print(" ");
+        }
 
-        // display.drawImage(Images::ArrowUp);
+        display.drawImage(Images::ArrowUp);
     }
 };
 

@@ -1,5 +1,9 @@
 #include "utils.hpp"
 
+#include <cassert>
+#include <cstring>
+#include <ctime>
+
 /*
 ** reverse string in place 
 */
@@ -48,4 +52,49 @@ int itoa(int n, char* s, int base_n)
     reverse(s);
     return i;
 }
+
+int writeTimePartToBufferWithAlign(char* buffer, int data, char suffix)
+{
+    int i = 0;
+    if (data < 10)
+    {
+        buffer[i++] = '0';
+    }
+    i += utils::itoa(data, buffer + i);
+    buffer[i++] = suffix;
+    return i;
 }
+
+int formatTime(char* buffer, const u8 bufferSize, std::tm* t)
+{
+    u8 i = 0;
+
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mday, '/');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mon + 1, '/');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_year + 1900, '\0');
+
+    assert(i < bufferSize);
+    return i;
+}
+
+int formatDate(char* buffer, const u8 bufferSize, std::tm* t)
+{
+    u8 i = 0;
+
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_hour, ':');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_min, ':');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_sec, '\0');
+
+    assert(i < bufferSize);
+    return i;
+}
+
+void formatDateAndTime(char* buffer, const u8 bufferSize, std::tm* t)
+{
+    u8 i = 0;
+    i += formatDate(buffer + i, bufferSize - i, t);
+    buffer[i++] = ' ';
+    i += formatTime(buffer + i, bufferSize - i, t);
+    assert(i < bufferSize);
+}
+} // namespace utils

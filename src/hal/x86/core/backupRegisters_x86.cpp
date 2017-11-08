@@ -1,5 +1,7 @@
 #include "hal/core/backupRegisters.hpp"
 
+#include "utils.hpp"
+
 #define STARTUP_REGISTER 1
 #define STARTUP_MAGIC_COOKIE 0xBEEF
 
@@ -22,6 +24,7 @@ bool BackupRegisters::isFirstStartup()
 
 void BackupRegisters::write(u16 registerNumber, u16 value)
 {
+    UNUSED(registerNumber, value);
     // TODO: implement
 }
 

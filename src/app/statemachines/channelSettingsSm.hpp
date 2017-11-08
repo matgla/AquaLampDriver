@@ -105,7 +105,7 @@ struct ChannelSettingsSm
             --context.channelSetting.power[context.channelSetting.index];
         }
 
-        if (context.channelSetting.power[context.channelSetting.index] < 0 || context.channelSetting.power[context.channelSetting.index] > 101)
+        if (context.channelSetting.power[context.channelSetting.index] > 101)
         {
             context.channelSetting.power[context.channelSetting.index] = 0;
         }

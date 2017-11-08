@@ -7,7 +7,7 @@ namespace hal
 namespace time
 {
 
-volatile u64 Time::milliseconds()
+u64 Time::milliseconds()
 {
     auto epoch = std::chrono::high_resolution_clock::from_time_t(0);
     auto now = std::chrono::high_resolution_clock::now();

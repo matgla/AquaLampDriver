@@ -40,11 +40,11 @@ struct MenuSm
                 state<TimeSettings> + event<ButtonUp> = state<ChannelSettings>,
                 state<GeneralSettings> + event<ButtonUp> = state<TimeSettings>,
                 state<EffectSettings> + event<ButtonUp> = state<GeneralSettings>,
-                state<About> + event<ButtonUp> = state<EffectSettings>,
-                state<ChannelSettings> + event<ButtonSelect> = state<ChannelSettingsSm>,
-                state<ChannelSettingsSm> + event<ButtonBack> = state<ChannelSettings>,
-                state<TimeSettings> + event<ButtonSelect> = state<TimeSettingsSm>,
-                state<TimeSettingsSm> + event<ButtonBack> = state<TimeSettings>
+                state<About> + event<ButtonUp> = state<EffectSettings>
+                // state<ChannelSettings> + event<ButtonSelect> = state<ChannelSettingsSm>,
+                // state<ChannelSettingsSm> + event<ButtonBack> = state<ChannelSettings>,
+                // state<TimeSettings> + event<ButtonSelect> = state<TimeSettingsSm>,
+                // state<TimeSettingsSm> + event<ButtonBack> = state<TimeSettings>
             );
         // clang-format on
     }

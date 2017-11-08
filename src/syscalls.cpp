@@ -6,9 +6,11 @@
 
 #include "hal/time/rtc.hpp"
 #include "usart.hpp"
+#include "utils.hpp"
 
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
+    UNUSED(tzvp);
     uint64_t t = 0;
     if (hal::time::Rtc::wasInitialized())
     {
@@ -25,31 +27,37 @@ int errno = 0;
 
 int _close(int file)
 {
+    UNUSED(file);
     return 0;
 }
 
 int _fstat(int file, struct stat* st)
 {
+    UNUSED(file, st);
     return 0;
 }
 
 int _isatty(int file)
 {
+    UNUSED(file);
     return 1;
 }
 
 int _lseek(int file, int ptr, int dir)
 {
+    UNUSED(file, ptr, dir);
     return 0;
 }
 
 int _open(const char* name, int flags, int mode)
 {
+    UNUSED(name, flags, mode);
     return -1;
 }
 
 int _read(int file, char* ptr, int len)
 {
+    UNUSED(file, ptr, len);
     return 0;
 }
 
@@ -65,6 +73,10 @@ int _getpid()
 
 void _exit(int code)
 {
+    UNUSED(code);
+    while (true)
+    {
+    }
 }
 
 char* heap_end = 0;
@@ -95,6 +107,7 @@ caddr_t _sbrk(int incr)
 
 int _write(int file, const char* ptr, int len)
 {
+    UNUSED(file);
     hw::USART<hw::USARTS::USART2_PP1>::getUsart().send(ptr, len);
 
     return len;

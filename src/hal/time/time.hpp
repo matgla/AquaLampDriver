@@ -9,13 +9,13 @@ namespace time
 
 class Time
 {
-  public:
-    static volatile u64 getTicks();
-    static volatile void incrementTicks();
-    static volatile void setTicks(u64 ticks);
-    static volatile u64 milliseconds();
+public:
+    static u64 getTicks();
+    static void incrementTicks();
+    static void setTicks(u64 ticks);
+    static u64 milliseconds();
 
-  private:
+private:
     static volatile u64 ticks_;
 };
 
