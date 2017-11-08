@@ -1,15 +1,12 @@
 #include "logger.hpp"
 
-#include <mutex>
+#include <cassert>
 
 namespace logger
 {
 
-static std::mutex logMutex;
-
-
-Logger::Logger(std::string name, bool insertNewlineWhenDestruct)
-    : name_(std::move(name)), insertNewlineWhenDestruct_(insertNewlineWhenDestruct)
+Logger::Logger(std::experimental::string_view name, bool insertNewlineWhenDestruct)
+    : name_(std::move(name)), insertNewlineWhenDestruct_(insertNewlineWhenDestruct), fd_(1)
 {
 }
 
@@ -18,50 +15,81 @@ Logger::~Logger()
     if (insertNewlineWhenDestruct_)
     {
         operator<<("\n");
-        logMutex.unlock();
     }
+}
+
+void Logger::printHeader(std::experimental::string_view level)
+{
+    write(fd_, "<", 1);
+    printTimeAndDate();
+    write(fd_, "> ", 2);
+
+    write(fd_, level.data(), strlen(level.data()));
+    write(fd_, "/", 1);
+    write(fd_, name_.data(), strlen(name_.data()));
+    write(fd_, ": ", 2);
 }
 
 Logger Logger::debug()
 {
-    logMutex.lock();
-    printf("<%s> DBG/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
+    printHeader("DBG");
     return Logger(name_, true);
 }
 
 Logger Logger::info()
 {
-    logMutex.lock();
-    auto size = getFormatedDateAndTime().length();
-    printf("<%s> INF/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
-
+    printHeader("INF");
     return Logger(name_, true);
 }
 
 Logger Logger::warning()
 {
-    logMutex.lock();
-    printf("<%s> WRN/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
-
+    printHeader("WRN");
     return Logger(name_, true);
 }
 
 Logger Logger::error()
 {
-    logMutex.lock();
-    printf("<%s> ERR/%s:", getFormatedDateAndTime().c_str(), name_.c_str());
-
+    printHeader("ERR");
     return Logger(name_, true);
 }
 
-std::string Logger::getFormatedDateAndTime()
+int Logger::writeTimePartToBufferWithAlign(char* buffer, int data, char suffix)
 {
-    const int TIME_BUFFER_SIZE = 80;
-    char buffer[TIME_BUFFER_SIZE];
+    int i = 0;
+    if (data < 10)
+    {
+        buffer[i++] = '0';
+    }
+    i += utils::itoa(data, buffer + i);
+    buffer[i++] = suffix;
+    return i;
+}
+
+void Logger::formatTime(char* buffer, const u8 bufferSize, std::tm* t)
+{
+    u8 i = 0;
+
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mday, '/');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mon + 1, '/');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_year + 1900, ' ');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_hour, ':');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_min, ':');
+    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_sec, '\0');
+
+    assert(i < bufferSize);
+}
+
+void Logger::printTimeAndDate()
+{
+    constexpr const int BufferSize = 21;
+    char buffer[BufferSize];
     auto t = std::time(nullptr);
     struct tm* currentTime = std::localtime(&t);
-    std::strftime(static_cast<char*>(buffer), TIME_BUFFER_SIZE, "%d/%m/%y %H:%M:%S", currentTime);
-    return std::string(static_cast<char*>(buffer));
+
+    // std::strftime(static_cast<char*>(buffer), BufferSize, "%d/%m/%y %H:%M:%S", currentTime);
+    formatTime(buffer, BufferSize, currentTime);
+    write(fd_, buffer, strlen(buffer));
 }
 
 

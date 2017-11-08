@@ -96,7 +96,6 @@ void Channel::initClocks()
 
     if (RCC_APB2Periph_TIM1 == rccPeriph_)
     {
-        printf("Enabling priph for TIM1\n");
         RCC_APB2PeriphClockCmd(rccPeriph_, ENABLE);
         TIM_CtrlPWMOutputs(TIM1, ENABLE);
     }

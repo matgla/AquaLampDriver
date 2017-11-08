@@ -40,7 +40,7 @@ struct ChannelSettingsSm
         context.display.clear(Colors::OFF);
         context.display.print("Channel conf:\n\n\n");
         char buffer[15];
-        sprintf(buffer, " CH%d: %3d%%\n", context.channelSetting.index, context.channelSetting.power[context.channelSetting.index]);
+        // sprintf(buffer, " CH%d: %3d%%\n", context.channelSetting.index, context.channelSetting.power[context.channelSetting.index]);
         if (context.channelSetting.index < 10)
         {
             context.display.print(" ");

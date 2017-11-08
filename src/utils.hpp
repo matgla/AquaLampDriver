@@ -14,5 +14,5 @@ volatile u64 getTicks();
 
 namespace utils
 {
-void itoa(int n, char* s, int base_n);
+int itoa(int n, char* s, int base_n = 10);
 }

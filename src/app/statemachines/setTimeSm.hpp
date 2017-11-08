@@ -26,7 +26,6 @@ struct SetSeconds;
 struct Saved;
 } // namespace states
 
-
 struct SetTimeSm
 {
     auto operator()() const noexcept
@@ -152,7 +151,6 @@ struct SetTimeSm
         {
             minutes = 0;
         }
-
     };
 
 
@@ -208,7 +206,7 @@ struct SetTimeSm
         display.drawImage(Images::ArrowDown);
         char buffer[50];
 
-        sprintf(buffer, "\n   %02d:%02d:%02d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
+        // sprintf(buffer, "\n   %02d:%02d:%02d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
         display.print(buffer);
         for (u8 i = 0; i < arrowPosition; ++i)
         {

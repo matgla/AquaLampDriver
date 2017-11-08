@@ -29,6 +29,7 @@ struct MenuSm
                 state<TimeSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 2);},
                 state<GeneralSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 3);},
                 state<EffectSettings> + on_entry<_> / [](Context& context){DisplayMenu(context, 4);},
+                
                 state<About> + on_entry<_> / [](Context& context){DisplayMenu(context, 5);},
                 state<ChannelSettings> + event<ButtonDown> = state<TimeSettings>,
                 state<TimeSettings> + event<ButtonDown> = state<GeneralSettings>,
@@ -48,8 +49,7 @@ struct MenuSm
         // clang-format on
     }
 
-    static void
-        DisplayMenu(Context& context, int selection)
+    static void DisplayMenu(Context& context, int selection)
     {
         using namespace drivers::lcd;
         auto& display = context.display;

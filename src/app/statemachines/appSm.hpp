@@ -32,8 +32,8 @@ struct AppSm
             state<DisplayInfo> + event<ButtonRight> = state<MenuSm>,
             state<DisplayInfo> + event<ButtonUp> = state<MenuSm>,
             state<DisplayInfo> + event<ButtonSelect> = state<MenuSm>,
-            state<DisplayInfo> + event<Update> / [](Context& context){DisplayTime(context);}  = state<DisplayInfo>,           
-            state<MenuSm> + event<ButtonBack> / [](Context& context){DisplayTime(context);}  = state<DisplayInfo>
+            state<DisplayInfo> + event<Update> / [](Context& context){DisplayTime(context);} = state<DisplayInfo>,           
+            state<MenuSm> + event<ButtonBack> / [](Context& context){DisplayTime(context);} = state<DisplayInfo>
         );
         // clang-format on
     }

@@ -86,7 +86,7 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-    printf("usage fault \n");
+    // printf("usage fault \n");
     assert(1 && "Usage fault");
 
     /* Go to infinite loop when Usage Fault exception occurs */
@@ -102,7 +102,7 @@ void UsageFault_Handler(void)
   */
 void SVC_Handler(void)
 {
-    printf("svc\n");
+    // printf("svc\n");
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 

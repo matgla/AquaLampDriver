@@ -15,7 +15,7 @@ namespace core
 
 namespace
 {
-logger::Logger logger;
+logger::Logger logger("core");
 }
 
 void Core::initializeClocks()

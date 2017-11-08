@@ -31,7 +31,7 @@ char getNumber(int n)
 
 namespace utils
 {
-void itoa(int n, char* s, int base_n)
+int itoa(int n, char* s, int base_n)
 {
     int i, sign;
 
@@ -46,5 +46,6 @@ void itoa(int n, char* s, int base_n)
         s[i++] = '-';
     s[i] = '\0';
     reverse(s);
+    return i;
 }
 }

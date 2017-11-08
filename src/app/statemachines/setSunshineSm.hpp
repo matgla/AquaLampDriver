@@ -207,7 +207,7 @@ struct SetSunshineSm
         display.drawImage(Images::ArrowDown);
         char buffer[50];
 
-        sprintf(buffer, "\n   %02d:%02d:%02d \n", context.sunshine.hours, context.sunshine.minutes, context.sunshine.seconds);
+        // sprintf(buffer, "\n   %02d:%02d:%02d \n", context.sunshine.hours, context.sunshine.minutes, context.sunshine.seconds);
         display.print(buffer);
         for (u8 i = 0; i < arrowPosition; ++i)
         {

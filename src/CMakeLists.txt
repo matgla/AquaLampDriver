@@ -6,7 +6,8 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
 set(target_name AquaLampDriver)
 set(target_name_lib Firmware)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=3000")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth=3000 -Wno-unused-result")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-result")
 
 include(cmake/bsp/common.cmake)
 
@@ -43,7 +44,7 @@ if (${ARCH} STREQUAL "X86")
    find_package(SFML 2 REQUIRED network audio graphics window system)
    include_directories(SYSTEM ${SFML_INCLUDE_DIR})
 
-    include_directories(${PROJECT_SOURCE_DIR}/src/hal/x86)
+   include_directories(${PROJECT_SOURCE_DIR}/src/hal/x86)
    set(production_srcs ${production_srcs} ${x86_sources} ${x86_includes})
    set(target_debug_libs ${target_libs} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
    
@@ -60,7 +61,7 @@ if (${ARCH} STREQUAL "X86")
     elseif (UNIX)
         set(target_libs ${target_libs} pthread)
     endif (WIN32)
-    message("Used sources: ${production_srcs} " )
+
     add_executable(${target_name} ${production_srcs})
     target_link_libraries(${target_name} ${target_libs})
     target_link_libraries(${target_name} debug ${target_debug_libs})
@@ -95,6 +96,7 @@ elseif (${ARCH} STREQUAL "STM32")
 
     add_custom_target(${target_name}.hex DEPENDS ${target_name} COMMAND ${CMAKE_OBJCOPY} -Oihex ${target_name}.elf ${target_name}.hex)
     file(TO_CMAKE_PATH "${CMAKE_OBJCOPY}" OBJCPY)
+    message("cmd: ${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin")
     add_custom_target(${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin)
 
     # If STM32 ST-Link Utility is found, add a make target to program the chip
