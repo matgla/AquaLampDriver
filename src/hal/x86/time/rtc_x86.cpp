@@ -81,14 +81,14 @@ void Rtc::initNvic()
 void Rtc::initSecondsInterrupt()
 {
     rtcSecondsInterruptThread.reset(new std::thread([this]() {
-        this->logger_.info() << "Started seconds interrupt";
+        logger_.info() << "Started seconds interrupt";
 
         while (!kill)
         {
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            if (this->secondsHandler_)
+            if (secondsHandler_)
             {
-                this->secondsHandler_();
+                secondsHandler_();
             }
         }
     }));

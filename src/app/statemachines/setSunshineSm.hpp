@@ -12,7 +12,6 @@
 #include "drivers/lcd/icons.hpp"
 #include "hal/time/rtc.hpp"
 
-
 namespace app
 {
 namespace statemachines
@@ -27,7 +26,7 @@ struct Saved;
 } // namespace states
 
 
-struct SetTimeSm
+struct SetSunshineSm
 {
     auto operator()() const noexcept
     {
@@ -76,14 +75,14 @@ struct SetTimeSm
     const Action onInit = [](Context& context) {
         std::time_t t = std::time(nullptr);
         struct tm* currentTime = std::localtime(&t);
-        auto& timeSetting = context.timeSetting;
+        auto& timeSetting = context.sunshine;
         timeSetting.hours = currentTime->tm_hour;
         timeSetting.minutes = currentTime->tm_min;
         timeSetting.seconds = currentTime->tm_sec;
     };
 
     const Action onHoursIncrement = [](Context& context) {
-        auto& hours = context.timeSetting.hours;
+        auto& hours = context.sunshine.hours;
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
             hours += 5;
@@ -101,7 +100,7 @@ struct SetTimeSm
 
 
     const Action onHoursDecrement = [](Context& context) {
-        auto& hours = context.timeSetting.hours;
+        auto& hours = context.sunshine.hours;
 
         if (context.channelSetting.board_.downButton.isLongPressed())
         {
@@ -119,7 +118,7 @@ struct SetTimeSm
     };
 
     const Action onMinutesIncrement = [](Context& context) {
-        auto& minutes = context.timeSetting.minutes;
+        auto& minutes = context.sunshine.minutes;
 
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
@@ -137,7 +136,7 @@ struct SetTimeSm
     };
 
     const Action onMinutesDecrement = [](Context& context) {
-        auto& minutes = context.timeSetting.minutes;
+        auto& minutes = context.sunshine.minutes;
 
         if (context.channelSetting.board_.downButton.isLongPressed())
         {
@@ -157,7 +156,7 @@ struct SetTimeSm
 
 
     const Action onSecondsIncrement = [](Context& context) {
-        auto& seconds = context.timeSetting.seconds;
+        auto& seconds = context.sunshine.seconds;
 
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
@@ -175,7 +174,7 @@ struct SetTimeSm
     };
 
     const Action onSecondsDecrement = [](Context& context) {
-        auto& seconds = context.timeSetting.seconds;
+        auto& seconds = context.sunshine.seconds;
 
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
@@ -198,7 +197,7 @@ struct SetTimeSm
         using namespace drivers::lcd;
         auto& display = context.display;
         display.clear(Colors::OFF);
-        display.print("Set time:\n\n");
+        display.print("Set sunshine:\n\n");
         for (u8 i = 0; i < arrowPosition; ++i)
         {
             display.print(" ");
@@ -208,7 +207,7 @@ struct SetTimeSm
         display.drawImage(Images::ArrowDown);
         char buffer[50];
 
-        sprintf(buffer, "\n   %02d:%02d:%02d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
+        sprintf(buffer, "\n   %02d:%02d:%02d \n", context.sunshine.hours, context.sunshine.minutes, context.sunshine.seconds);
         display.print(buffer);
         for (u8 i = 0; i < arrowPosition; ++i)
         {
@@ -305,7 +304,7 @@ struct SetTimeSm
     }
 
     const Action onSave = [](Context& context) {
-        auto& t = context.timeSetting;
+        auto& t = context.sunshine;
         hal::time::Rtc::get().setTime(t.hours, t.minutes, t.seconds);
 
         auto& display = context.display;

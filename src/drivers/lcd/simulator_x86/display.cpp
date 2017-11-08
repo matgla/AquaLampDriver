@@ -11,14 +11,12 @@
 #define PIXEL_OFF_COLOR sf::Color(34, 155, 68)
 #define PIXEL_ON_COLOR sf::Color(0, 0, 0)
 
-// font font_5x8;
-
-static font* use_font;
-
 namespace drivers
 {
 namespace lcd
 {
+
+font* usedFont = &font_5x7;
 
 static sf::Image display_;
 
@@ -59,7 +57,6 @@ Display::Display()
     display_.create(DISPLAY_WIDTH, DISPLAY_HEIGHT, PIXEL_OFF_COLOR);
     clear(Colors::OFF);
     drawScreen();
-    use_font = &font_5x7;
 }
 
 void Display::clear(Colors color)
@@ -79,12 +76,12 @@ void Display::incrementCursorX(u8 offsetX, u8 offsetY)
 {
     if (cursorPosition_.x + offsetX >= DISPLAY_WIDTH)
     {
-        cursorPosition_.y += offsetY + 1;
+        cursorPosition_.y += offsetY;
         cursorPosition_.x = 0;
     }
     else
     {
-        cursorPosition_.x += offsetX + 1;
+        cursorPosition_.x += offsetX;
     }
 }
 
@@ -92,12 +89,12 @@ void Display::incrementCursorX(u8 offsetX)
 {
     if (cursorPosition_.x + offsetX >= DISPLAY_WIDTH)
     {
-        cursorPosition_.y += use_font->height + 1;
+        cursorPosition_.y += usedFont->height;
         cursorPosition_.x = 0;
     }
     else
     {
-        cursorPosition_.x += offsetX + 1;
+        cursorPosition_.x += offsetX;
     }
 }
 
@@ -105,50 +102,52 @@ void Display::incrementCursorY(u8 offsetY)
 {
     if (cursorPosition_.y + offsetY >= DISPLAY_HEIGHT)
     {
-        cursorPosition_.y = offsetY + 1;
+        cursorPosition_.y = offsetY;
         cursorPosition_.x = 0;
     }
     else
     {
-        cursorPosition_.y += offsetY + 1;
+        cursorPosition_.y += offsetY;
     }
 }
 
 void Display::print(char c, Colors color)
 {
     u16 charOffset = c - 32; // 32 first letter in font
-    u16 charPosition = charOffset + charOffset * (use_font->width - 1);
+    u16 charPosition = charOffset + charOffset * (usedFont->width - 1);
 
-    const uint8_t* font_ptr = &use_font->array[charPosition];
+    const uint8_t* font_ptr = &usedFont->array[charPosition];
 
     if (c == 0xA)
     {
         cursorPosition_.x = 0;
-        cursorPosition_.y += use_font->height + 1;
+        cursorPosition_.y += usedFont->height + 1;
         return;
     }
 
     else if (c == 0x08)
     {
-        cursorPosition_.x -= (use_font->width + 1);
+        cursorPosition_.x -= (usedFont->width + 1);
         c = ' ';
     }
 
     int i = 0;
 
-    for (i = cursorPosition_.x; i < use_font->width + cursorPosition_.x; i++)
+    for (i = cursorPosition_.x; i < usedFont->width + cursorPosition_.x; i++)
     {
-        for (int j = use_font->height; j > 0; j--)
+        for (int j = usedFont->height; j > 0; j--)
         {
             if ((*font_ptr >> j) & 0x01)
             {
-                display_.setPixel(i, cursorPosition_.y + use_font->height - j, convertToSfColor(color));
+                if (i < DISPLAY_WIDTH && (cursorPosition_.y + usedFont->height - j) < DISPLAY_HEIGHT)
+                {
+                    display_.setPixel(i, cursorPosition_.y + usedFont->height - j, convertToSfColor(color));
+                }
             }
         }
         ++font_ptr;
     }
-    incrementCursorX(use_font->width, use_font->height);
-    // cursorPosition_.x += use_font->width + 1;
+    incrementCursorX(usedFont->width + 1, usedFont->height + 1);
     drawScreen();
 }
 
@@ -192,13 +191,16 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
         {
             if ((buffer[i] >> y) & 0x01)
             {
-                display_.setPixel(x, cursorPosition_.y + height - y, convertToSfColor(color));
+                if (x < DISPLAY_WIDTH && (cursorPosition_.y + height - y) < DISPLAY_HEIGHT)
+                {
+                    display_.setPixel(x, cursorPosition_.y + height - y, convertToSfColor(color));
+                }
             }
         }
         i++;
     }
 
-    incrementCursorX(width, use_font->height);
+    incrementCursorX(width, usedFont->height);
     drawScreen();
 }
 

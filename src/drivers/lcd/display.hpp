@@ -5,6 +5,7 @@
 
 #include <gsl/span>
 
+#include "drivers/lcd/font.hpp"
 #include "drivers/lcd/icons.hpp"
 #include "logger/logger.hpp"
 #include "utils/types.hpp"
@@ -13,6 +14,8 @@ namespace drivers
 {
 namespace lcd
 {
+
+extern font* usedFont;
 
 enum class Colors
 {

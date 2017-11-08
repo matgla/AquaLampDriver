@@ -9,11 +9,11 @@
 namespace app
 {
 App::App(drivers::lcd::Display& display, bsp::Board& board)
-    : context_(board, display),
-      statemachine_(context_),
-      logger_("App"),
+    : logger_("App"),
       display_(display),
-      board_(board)
+      board_(board),
+      context_(board, display, logger_),
+      statemachine_(context_)
 {
 }
 

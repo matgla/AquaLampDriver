@@ -26,10 +26,10 @@ public:
 private:
     void update();
 
-    Context context_;
     logger::Logger logger_;
     drivers::lcd::Display& display_;
     bsp::Board& board_;
+    Context context_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
 };
 

@@ -6,6 +6,8 @@
 
 #include "app/context.hpp"
 #include "app/statemachines/events.hpp"
+#include "app/statemachines/setSunriseSm.hpp"
+#include "app/statemachines/setSunshineSm.hpp"
 #include "app/statemachines/setTimeSm.hpp"
 #include "app/statemachines/states.hpp"
 #include "drivers/lcd/icons.hpp"
@@ -44,7 +46,11 @@ struct TimeSettingsSm
             state<SunriseSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 2); } = state<DateSettings>,
             state<SunshineSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 3); } = state<SunriseSettings>,
             state<TimeSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetTimeSm>,
-            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>,
+            state<SunshineSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetSunshineSm>,
+            state<SetSunshineSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunshineSettings>,
+            state<SunriseSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetSunriseSm>,
+            state<SetSunriseSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunriseSettings>
 
 //            state<SetHourFirst> + on_entry<_> / [](Context& context) { }
         );
