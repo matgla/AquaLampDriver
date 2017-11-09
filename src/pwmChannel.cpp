@@ -3,6 +3,8 @@
 #include <cassert>
 #include <cstdio>
 
+#include "hal/utils/assert.hpp"
+
 namespace pwm
 {
 Channel::Channel(u32 pin,
@@ -28,7 +30,7 @@ Channel::~Channel(){};
 
 void Channel::setPulse(u8 width)
 {
-    assert(width <= 100);
+    HAL_ASSERT_MSG(width <= 100, "Pulse can be set only to 100%");
     TIM_OCInitTypeDef channel;
 
     TIM_OCStructInit(&channel);
@@ -275,7 +277,7 @@ Channel13::Channel13()
 
 std::unique_ptr<Channel> makeChannel(u8 nr)
 {
-    assert(nr >= 0 && nr < 14);
+    HAL_ASSERT_MSG(nr >= 0 && nr < 14, "Wrong channel creation");
     switch (nr)
     {
         case 0:

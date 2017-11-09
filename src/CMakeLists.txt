@@ -85,7 +85,6 @@ elseif (${ARCH} STREQUAL "STM32")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
     endif (DEBUG)
 
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -T${CMAKE_SOURCE_DIR}/lkr/stm32f103_128k.ld --specs=nano.specs")
     add_library(stm32lib ${STM32_SOURCES})
     add_executable(${target_name} ${production_srcs})
     target_link_libraries(${target_name} stm32lib ${STM32_LIBRARIES} ${target_libs})

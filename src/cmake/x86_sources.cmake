@@ -8,7 +8,8 @@ set(x86_sources
     ${X86_SRC_DIR}/time/time_x86.cpp 
     ${X86_SRC_DIR}/time/rtc_x86.cpp   
     ${X86_SRC_DIR}/time/sleep_x86.cpp    
-
+    ${X86_SRC_DIR}/utils/assert_x86.cpp  
+    
     ${DRIVERS_SRC_DIR}/lcd/simulator_x86/display.cpp
 )
 

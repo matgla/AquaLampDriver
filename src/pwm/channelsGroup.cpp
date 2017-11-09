@@ -1,5 +1,6 @@
 #include "pwm/channelsGroup.hpp"
-#include <cassert>
+
+#include "hal/core/core.hpp"
 
 namespace pwm
 {
@@ -10,7 +11,7 @@ ChannelsGroup::ChannelsGroup()
 
 void ChannelsGroup::configureChannel(u8 channelNr)
 {
-    assert(channelNr >= 0 && channelNr <= 13);
+    HAL_ASSERT_MSG(channelNr >= 0 && channelNr <= 13, "Wrong channel for configure");
     channels_[channelNr] = pwm::makeChannel(channelNr);
 }
 

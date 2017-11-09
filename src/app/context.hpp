@@ -23,6 +23,14 @@ struct Context
     TimeSetting sunshine;
     TimeSetting sunrise;
     logger::Logger& logger;
+    
+    enum class TimeSettingOptions : char
+    {
+        SetTime,
+        SetSunshine,
+        SetSunrise
+    };
+    TimeSettingOptions timeSettingOption;
 };
 
 } // namespace app

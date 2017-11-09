@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdio>
-
 #include <boost/sml.hpp>
 
 #include "app/context.hpp"
@@ -45,14 +43,12 @@ struct TimeSettingsSm
             state<DateSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>,
             state<SunriseSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 2); } = state<DateSettings>,
             state<SunshineSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 3); } = state<SunriseSettings>,
-            state<TimeSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetTimeSm>,
+            state<TimeSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context); } = state<SetTimeSm>,
             state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>,
-            state<SunshineSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetSunshineSm>,
-            state<SetSunshineSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunshineSettings>,
-            state<SunriseSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context, 1); } = state<SetSunriseSm>,
-            state<SetSunriseSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunriseSettings>
-
-//            state<SetHourFirst> + on_entry<_> / [](Context& context) { }
+            state<SunshineSettings> + event<ButtonSelect> / [](Context& context) { onSetSunshine(context); } = state<SetTimeSm>,
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunshineSettings>,
+            state<SunriseSettings> + event<ButtonSelect> / [](Context& context) { onSetSunrise(context); } = state<SetTimeSm>,
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunriseSettings>
         );
         // clang-format on
     }
@@ -102,29 +98,19 @@ struct TimeSettingsSm
         display.print("Set sunrise\n");
     }
 
-    static void onSetTime(Context& context, u8 arrowPosition)
+    static void onSetTime(Context& context)
     {
-        using namespace drivers::lcd;
-        auto& display = context.display;
-        display.clear(Colors::OFF);
-        display.print("Set time:\n");
-
-        for (u8 i = 0; i < arrowPosition; ++i)
-        {
-            display.print(" ");
-        }
-        display.drawImage(Images::ArrowDown);
-
-        char buffer[50];
-        sprintf(buffer, "\n %2d:%2d:%2d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
-        display.print(buffer);
-
-        for (u8 i = 0; i < arrowPosition; ++i)
-        {
-            display.print(" ");
-        }
-
-        display.drawImage(Images::ArrowUp);
+        context.timeSettingOption = Context::TimeSettingOptions::SetTime;
+    }
+    
+    static void onSetSunshine(Context& context)
+    {
+        context.timeSettingOption = Context::TimeSettingOptions::SetSunshine;
+    }
+    
+    static void onSetSunrise(Context& context)
+    {
+        context.timeSettingOption = Context::TimeSettingOptions::SetSunrise;
     }
 };
 

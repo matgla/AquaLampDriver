@@ -4,6 +4,8 @@
 #include <cstring>
 #include <ctime>
 
+#include "hal/utils/assert.hpp"
+
 /*
 ** reverse string in place 
 */
@@ -73,7 +75,7 @@ int formatTime(char* buffer, const u8 bufferSize, std::tm* t)
     i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mon + 1, '/');
     i += writeTimePartToBufferWithAlign(buffer + i, t->tm_year + 1900, '\0');
 
-    assert(i < bufferSize);
+    HAL_ASSERT_MSG(i < bufferSize, "Buffer overflow");
     return i;
 }
 
@@ -85,7 +87,7 @@ int formatDate(char* buffer, const u8 bufferSize, std::tm* t)
     i += writeTimePartToBufferWithAlign(buffer + i, t->tm_min, ':');
     i += writeTimePartToBufferWithAlign(buffer + i, t->tm_sec, '\0');
 
-    assert(i < bufferSize);
+    HAL_ASSERT_MSG(i < bufferSize, "Buffer overflow");
     return i;
 }
 
@@ -95,6 +97,6 @@ void formatDateAndTime(char* buffer, const u8 bufferSize, std::tm* t)
     i += formatDate(buffer + i, bufferSize - i, t);
     buffer[i++] = ' ';
     i += formatTime(buffer + i, bufferSize - i, t);
-    assert(i < bufferSize);
+    HAL_ASSERT_MSG(i < bufferSize, "Buffer overflow");
 }
 } // namespace utils

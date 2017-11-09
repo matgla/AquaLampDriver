@@ -40,7 +40,6 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-    assert(1 && "HARD fault");
     write(1, "hard fault\n", 11);
     /* Go to infinite loop when Hard Fault exception occurs */
     while (1)
@@ -56,7 +55,8 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
 
-    assert(1 && "Mem fault");
+    // assert(1 && "Mem fault");
+    write(1, "mem fault\n", 10);
 
     /* Go to infinite loop when Memory Manage exception occurs */
     while (1)
@@ -71,7 +71,7 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
-    assert(1 && "Bus fault");
+    write(1, "bus fault\n", 10);
 
     /* Go to infinite loop when Bus Fault exception occurs */
     while (1)
@@ -86,9 +86,8 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-    // printf("usage fault \n");
-    assert(1 && "Usage fault");
-
+    write(1, "usage fault\n", 12);
+    
     /* Go to infinite loop when Usage Fault exception occurs */
     while (1)
     {
