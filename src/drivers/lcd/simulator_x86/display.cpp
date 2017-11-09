@@ -72,6 +72,14 @@ void Display::clear(Colors color)
     cursorPosition_.y = 0;
 }
 
+void Display::backlightOn()
+{
+}
+void Display::backlightOff()
+{
+}
+
+
 void Display::incrementCursorX(u8 offsetX, u8 offsetY)
 {
     if (cursorPosition_.x + offsetX >= DISPLAY_WIDTH)

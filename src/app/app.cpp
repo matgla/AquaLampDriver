@@ -19,6 +19,7 @@ App::App(drivers::lcd::Display& display, bsp::Board& board)
 
 void App::start()
 {
+    display_.backlightOff();
     logger_.info() << "Startup";
     hal::time::Rtc::get().setSecondsHandler([this] {
         this->update();
@@ -32,6 +33,7 @@ void App::start()
 
 void App::update()
 {
+    display_.backlightOn();
     statemachine_.process_event(statemachines::events::Update{});
 }
 

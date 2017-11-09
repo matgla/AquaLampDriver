@@ -34,6 +34,8 @@ class Display
 {
 public:
     Display();
+    void backlightOn();
+    void backlightOff();
     void clear(Colors color);
     void setPixel(u8 x, u8 y, Colors color);
     void print(char c, Vector2u position);

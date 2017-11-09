@@ -4,6 +4,9 @@
 
 #include "utils.hpp"
 
+#include "bsp/stm32f1_common/helpers.hpp"
+#include <stm32f10x_gpio.h>
+
 namespace drivers
 {
 namespace lcd
@@ -14,6 +17,16 @@ font* usedFont = &font_5x7;
 Display::Display()
     : logger_("Display")
 {
+    bsp::Helper::configureGpio(GPIOA, GPIO_Pin_4, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
+}
+
+void Display::backlightOn()
+{
+    GPIO_SetBits(GPIOA, GPIO_Pin_4);
+}
+void Display::backlightOff()
+{
+    GPIO_ResetBits(GPIOA, GPIO_Pin_4);
 }
 
 void Display::clear(Colors color)
