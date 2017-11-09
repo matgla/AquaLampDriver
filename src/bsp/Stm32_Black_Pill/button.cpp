@@ -8,8 +8,8 @@ namespace bsp
 template <>
 Button<Buttons::Left>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    Helper::configureGpio(GPIOA, GPIO_Pin_4, GPIO_Mode_IPD, GPIO_Speed_50MHz);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    Helper::configureGpio(GPIOA, GPIO_Pin_13, GPIO_Mode_IPD, GPIO_Speed_2MHz);
 }
 
 template <>
@@ -50,7 +50,7 @@ Button<Buttons::Select>::Button()
 template <>
 bool Button<Buttons::Left>::isPinPressed()
 {
-    return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_4);
+    return GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13);
 }
 
 template <>

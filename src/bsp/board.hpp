@@ -1,8 +1,5 @@
 #pragma once
 
-#define GPIO_IN_READ_DELAY 200
-#define TIME_TO_LONG_PUSH 1000
-
 #include "bsp/button.hpp"
 #include "bsp/led.hpp"
 #include "hal/core/backupRegisters.hpp"
@@ -14,7 +11,7 @@ void BoardInit();
 
 class Board
 {
-  public:
+public:
     Board();
 
     Button<Buttons::Left> leftButton;
@@ -31,7 +28,7 @@ class Board
     void run();
     bool exit();
 
-  private:
+private:
     logger::Logger logger_;
 };
 

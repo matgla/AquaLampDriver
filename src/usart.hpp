@@ -35,12 +35,12 @@ enum class USARTS
 template <USARTS UsartNumber>
 class USART
 {
-  public:
+public:
     static USART& getUsart();
     static bool initialized();
     ReaderWriterBuffer<BUFFER_SIZE>& getBuffer();
     void send(char ch);
-    void send(char* str);
+    void send(const char* str);
     void send(u8* str, int size);
     void send(const char* str, int size);
     u8 read();
@@ -53,10 +53,10 @@ class USART
     u32 size();
     // void waitForAck(u32 timeout);
 
-  private:
+private:
     USART();
     void init();
-    void GPIOInit(u16 pin, GPIO_TypeDef* port);
+    void GPIOInit(GPIO_TypeDef* port);
     void NVICInit();
     void USARTInit();
     void InitClocks();

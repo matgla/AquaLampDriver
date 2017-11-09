@@ -78,6 +78,7 @@ elseif (${ARCH} STREQUAL "STM32")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_STDPERIPH_DRIVER -DSTM32F10X_MD")
 
     if (DEBUG)
+        message("-- Debug: enabled")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DUSE_FULL_ASSERT -g -Og")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_FULL_ASSERT -g -Og")
     else (DEBUG)

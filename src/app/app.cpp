@@ -42,26 +42,32 @@ void App::run()
     {
         if (board_.downButton.isPressed())
         {
+            logger_.info() << "down";
             statemachine_.process_event(events::ButtonDown{});
         }
         if (board_.upButton.isPressed())
         {
+            logger_.info() << "up";
             statemachine_.process_event(events::ButtonUp{});
         }
         if (board_.leftButton.isPressed())
         {
+            logger_.info() << "left";
             statemachine_.process_event(events::ButtonLeft{});
         }
         if (board_.rightButton.isPressed())
         {
+            logger_.info() << "right";
             statemachine_.process_event(events::ButtonRight{});
         }
         if (board_.selectButton.isPressed())
         {
+            logger_.info() << "select";
             statemachine_.process_event(events::ButtonSelect{});
         }
         if (board_.backButton.isPressed())
         {
+            logger_.info() << "back";
             statemachine_.process_event(events::ButtonBack{});
         }
 

@@ -1,6 +1,5 @@
 #include "app/app.hpp"
 #include "bsp/board.hpp"
-
 #include "drivers/lcd/display.hpp"
 
 int main()
@@ -12,4 +11,5 @@ int main()
     app::App app(display, board);
     app.start();
     app.run();
+    return 1;
 }

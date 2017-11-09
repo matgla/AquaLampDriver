@@ -2,7 +2,7 @@
 
 #include "timer/timeoutTimer.hpp"
 
-#define GPIO_IN_READ_DELAY 200
+#define GPIO_IN_READ_DELAY 300
 #define TIME_TO_LONG_PUSH 1000
 
 namespace bsp

@@ -44,9 +44,9 @@ Potrzebuje
 
 1) USART2   RX   TX
 	        PA3  PA2
-2) SPI      RST   D/C  DN   SCLK 
+2) SPI      RST   D/C  DN   SCLK CE    BL
                        MOSI SCK
-	        PA15 PB4   PB5  PB3
+	        PA15 PB4   PB5  PB3  PB12  PA4
 3) 14 x timer
     TIM1 - PA8, PA9, PA10, PA11
 	TIM2 - PA0, PA1
@@ -58,6 +58,6 @@ Potrzebuje
    PB10, PB11
 5) przyciski
    L    P    G    D    1    2
-   PA4  PA5 PB15  PA12 PB13 PB14
+   PC13  PA5 PB15  PA12 PB13 PB14
    
 	

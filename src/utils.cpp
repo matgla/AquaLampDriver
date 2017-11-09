@@ -69,11 +69,11 @@ int writeTimePartToBufferWithAlign(char* buffer, int data, char suffix)
 
 int formatTime(char* buffer, const u8 bufferSize, std::tm* t)
 {
-    u8 i = 0;
+    int i = 0;
 
-    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mday, '/');
-    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_mon + 1, '/');
-    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_year + 1900, '\0');
+    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_mday, '/');
+    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_mon + 1, '/');
+    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_year + 1900, '\0');
 
     HAL_ASSERT_MSG(i < bufferSize, "Buffer overflow");
     return i;
@@ -81,21 +81,20 @@ int formatTime(char* buffer, const u8 bufferSize, std::tm* t)
 
 int formatDate(char* buffer, const u8 bufferSize, std::tm* t)
 {
-    u8 i = 0;
+    int i = 0;
 
-    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_hour, ':');
-    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_min, ':');
-    i += writeTimePartToBufferWithAlign(buffer + i, t->tm_sec, '\0');
-
+    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_hour, ':');
+    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_min, ':');
+    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_sec, '\0');
     HAL_ASSERT_MSG(i < bufferSize, "Buffer overflow");
     return i;
 }
 
 void formatDateAndTime(char* buffer, const u8 bufferSize, std::tm* t)
 {
-    u8 i = 0;
+    int i = 0;
     i += formatDate(buffer + i, bufferSize - i, t);
-    buffer[i++] = ' ';
+    buffer[i - 1] = ' ';
     i += formatTime(buffer + i, bufferSize - i, t);
     HAL_ASSERT_MSG(i < bufferSize, "Buffer overflow");
 }

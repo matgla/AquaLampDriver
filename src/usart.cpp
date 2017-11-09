@@ -43,9 +43,9 @@ void USART<UsartNumber>::send(char ch)
 }
 
 template <USARTS UsartNumber>
-void USART<UsartNumber>::send(char* str)
+void USART<UsartNumber>::send(const char* str)
 {
-    for (int i = 0; i < strlen(str); ++i)
+    for (u32 i = 0; i < strlen(str); ++i)
     {
         send(str[i]);
     }
@@ -86,14 +86,14 @@ void USART<UsartNumber>::init()
 {
     USART_DeInit(USARTx_);
     InitClocks();
-    GPIOInit(gpioPinTx_, gpioPortTx_);
-    GPIOInit(gpioPinRx_, gpioPortRx_);
+    GPIOInit(gpioPortTx_);
+    GPIOInit(gpioPortRx_);
     NVICInit();
     USARTInit();
 }
 
 template <USARTS UsartNumber>
-void USART<UsartNumber>::GPIOInit(u16 pin, GPIO_TypeDef* port)
+void USART<UsartNumber>::GPIOInit(GPIO_TypeDef* port)
 {
     GPIO_InitTypeDef gpioInit;
 
@@ -280,9 +280,9 @@ bool returnTrue()
 template <>
 USART<USARTS::USART1_PP1>& USART<USARTS::USART1_PP1>::getUsart()
 {
-    // static USART s1;
-    // wasUsart1Initialized = true;
-    //  return s1;
+    static USART s1;
+    wasUsart1Initialized = true;
+    return s1;
 }
 
 template <>
