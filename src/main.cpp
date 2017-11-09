@@ -2,6 +2,8 @@
 #include "bsp/board.hpp"
 #include "drivers/lcd/display.hpp"
 
+// #include <stm32f10x.h>
+
 int main()
 {
     bsp::BoardInit();
@@ -11,5 +13,4 @@ int main()
     app::App app(display, board);
     app.start();
     app.run();
-    return 1;
 }
