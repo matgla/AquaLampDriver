@@ -8,7 +8,7 @@ int main()
 {
     bsp::BoardInit();
     bsp::Board board;
-    drivers::lcd::Display display;
+    drivers::lcd::Display display(board);
     display.clear(drivers::lcd::Colors::OFF);
     app::App app(display, board);
     app.start();

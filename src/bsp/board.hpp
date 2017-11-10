@@ -2,6 +2,7 @@
 
 #include "bsp/button.hpp"
 #include "bsp/led.hpp"
+#include "bsp/spi.hpp"
 #include "hal/core/backupRegisters.hpp"
 
 namespace bsp
@@ -22,8 +23,11 @@ public:
     Button<Buttons::Back> backButton;
 
     Led<Leds::Led1> led;
+    Led<Leds::LcdBacklight> lcdBacklight;
 
     hal::core::BackupRegisters& registers;
+
+    Spi spi;
 
     void run();
     bool exit();

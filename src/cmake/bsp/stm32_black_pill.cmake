@@ -6,6 +6,7 @@ set(stm32_black_pill_sources
     ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/boardSpecific.cpp
     ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/button.cpp
     ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/led.cpp
+    ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/spi.cpp
     ${DRIVERS_SRC_DIR}/lcd/pcd8544/display.cpp
     
 )

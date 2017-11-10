@@ -1,4 +1,4 @@
-#include "drivers/lcd/display.hpp"
+#include "drivers/lcd/smfl/displaySmfl.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "bsp/x86/window.hpp"
-#include "drivers/lcd/font.hpp"
 
 #define PIXEL_OFF_COLOR sf::Color(34, 155, 68)
 #define PIXEL_ON_COLOR sf::Color(0, 0, 0)
@@ -15,8 +14,6 @@ namespace drivers
 {
 namespace lcd
 {
-
-font* usedFont = &font_5x7;
 
 static sf::Image display_;
 
@@ -51,12 +48,26 @@ void drawScreen()
     bsp::x86::Window::get().setDisplay(texture);
 }
 
-Display::Display()
-    : logger_("Display")
+DisplaySmfl::DisplaySmfl(bsp::Board& board)
+    : DisplayDriver(board), logger_("DisplaySmfl")
 {
     display_.create(DISPLAY_WIDTH, DISPLAY_HEIGHT, PIXEL_OFF_COLOR);
     clear(Colors::OFF);
     drawScreen();
+}
+
+void Display::sendCommand(u8 command)
+{
+    // TODO: implement
+}
+
+void Display::sendData(const gsl::span<const u8>& data)
+{
+    // TODO: implement
+}
+
+void Display::reset()
+{
 }
 
 void Display::clear(Colors color)

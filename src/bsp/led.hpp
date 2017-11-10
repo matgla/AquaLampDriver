@@ -5,7 +5,8 @@ namespace bsp
 
 enum class Leds
 {
-    Led1
+    Led1,
+    LcdBacklight
 };
 
 template <Leds led>

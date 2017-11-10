@@ -34,4 +34,21 @@ void Led<Leds::Led1>::off()
     x86::Window::get().add("LED1", std::move(shape));
 }
 
+template <>
+Led<Leds::LcdBacklight>::Led()
+{
+    // TODO: implement
+}
+
+template <>
+void Led<Leds::LcdBacklight>::on()
+{
+    // TODO: implement
+}
+
+template <>
+void Led<Leds::LcdBacklight>::off()
+{
+    // TODO: implement
+}
 } // namespace bsp

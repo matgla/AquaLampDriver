@@ -27,4 +27,23 @@ void Led<Leds::Led1>::off()
     GPIO_SetBits(GPIOB, GPIO_Pin_12);
 }
 
+template <>
+Led<Leds::LcdBacklight>::Led()
+{
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    Helper::configureGpio(GPIOA, GPIO_Pin_4, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
+}
+
+template <>
+void Led<Leds::LcdBacklight>::on()
+{
+    GPIO_SetBits(GPIOA, GPIO_Pin_4);
+}
+
+template <>
+void Led<Leds::LcdBacklight>::off()
+{
+    GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+}
+
 } // namespace bsp

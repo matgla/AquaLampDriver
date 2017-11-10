@@ -4,9 +4,7 @@
 
 #include <gsl/span>
 
-namespace drivers
-{
-namespace lcd
+namespace display
 {
 
 struct Image
@@ -28,5 +26,4 @@ extern Image ArrowUp;
 extern Image ChessboardMosaic;
 } // namespace Images
 
-} // namespace lcd
-} // namespace drivers
+} // namespace display

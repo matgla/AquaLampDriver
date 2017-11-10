@@ -1,10 +1,8 @@
-#include "drivers/lcd/icons.hpp"
+#include "display/images.hpp"
 
 #include <gsl/span>
 
-namespace drivers
-{
-namespace lcd
+namespace display
 {
 
 /**
@@ -148,7 +146,7 @@ Image Images::selectIcon = {
 
 /**
  * @brief Filled arrow down
- * 
+ *
  * 00000
  * 00000
  * 00000
@@ -172,7 +170,7 @@ Image Images::ArrowDown = {
 
 /**
  * @brief Filled arrow up
- * 
+ *
  * 00000
  * 00100
  * 01110
@@ -213,5 +211,4 @@ Image Images::ChessboardMosaic = {
     7,
     gsl::span<const uint8_t>{chessboardMosaic}};
 
-} // namespace lcd
-} // namespace drivers
+} // namespace display

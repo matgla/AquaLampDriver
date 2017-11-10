@@ -1,9 +1,8 @@
-#include "drivers/lcd/font.hpp"
+#include "display/font.hpp"
 
-
-#define FONT_ARRAY_SIZE 475 // (127 - 32) * 5 bytes
-
-const uint8_t font5x7[FONT_ARRAY_SIZE] = {
+namespace display
+{
+const uint8_t font5x7[] = {
     /**
      * @brief SPACE ASCII (32)
      * 00000
@@ -53,7 +52,7 @@ const uint8_t font5x7[FONT_ARRAY_SIZE] = {
     0b00000000,
 
     /**
-     * @brief # ASCII (35) 
+     * @brief # ASCII (35)
      * 00000
      * 01010
      * 11111
@@ -1522,7 +1521,9 @@ const uint8_t font5x7[FONT_ARRAY_SIZE] = {
     0b00001000,
     0b00110000};
 
-font font_5x7 = {
+Font font_5x7 = {
     7,
     5,
     font5x7};
+
+} // namespace display
