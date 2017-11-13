@@ -8,7 +8,7 @@
 #include "app/statemachines/events.hpp"
 #include "app/statemachines/states.hpp"
 #include "app/statemachines/timeSettingsSm.hpp"
-#include "drivers/lcd/icons.hpp"
+#include "display/images.hpp"
 
 namespace app
 {
@@ -51,102 +51,101 @@ struct MenuSm
 
     static void DisplayMenu(Context& context, int selection)
     {
-        using namespace drivers::lcd;
         auto& display = context.display;
-        display.clear(Colors::OFF);
+        display.clear(display::Colors::OFF);
         display.print("     Menu\n");
 
         if (selection == 1)
         {
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
             display.incrementCursorX(1);
             display.print("1.Channel\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("2.Time\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("3.General\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("4.Effects\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("5.About\n");
         }
 
         if (selection == 2)
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("1.Channel\n");
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
             display.incrementCursorX(1);
             display.print("2.Time\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("3.General\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("4.Effects\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("5.About\n");
         }
 
         if (selection == 3)
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("1.Channel\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("2.Time\n");
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
             display.incrementCursorX(1);
             display.print("3.General\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("4.Effects\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("5.About\n");
         }
 
         if (selection == 4)
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("1.Channel\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("2.Time\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("3.General\n");
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
             display.incrementCursorX(1);
             display.print("4.Effects\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("5.About\n");
         }
 
         if (selection == 5)
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("1.Channel\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("2.Time\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("3.General\n");
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
             display.incrementCursorX(1);
             display.print("4.Effects\n");
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
             display.incrementCursorX(1);
             display.print("5.About\n");
         }

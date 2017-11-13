@@ -2,13 +2,12 @@
 
 #include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
-#include "drivers/lcd/display.hpp"
 #include "hal/time/rtc.hpp"
 #include "logger/logger.hpp"
 
 namespace app
 {
-App::App(drivers::lcd::Display& display, bsp::Board& board)
+App::App(display::Display& display, bsp::Board& board)
     : logger_("App"),
       display_(display),
       board_(board),

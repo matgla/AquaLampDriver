@@ -12,7 +12,7 @@ void sleep(u32 seconds)
     std::this_thread::sleep_for(std::chrono::seconds(seconds));
 }
 
-void msleep(u32 milliseconds)
+void msleep(u64 milliseconds)
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }

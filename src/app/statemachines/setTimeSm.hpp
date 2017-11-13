@@ -8,8 +8,8 @@
 #include "app/context.hpp"
 #include "app/statemachines/events.hpp"
 #include "app/statemachines/states.hpp"
-#include "drivers/lcd/display.hpp"
-#include "drivers/lcd/icons.hpp"
+#include "display/display.hpp"
+#include "display/images.hpp"
 #include "hal/time/rtc.hpp"
 
 
@@ -193,9 +193,8 @@ struct SetTimeSm
 
     static void displayTime(Context& context, u8 arrowPosition)
     {
-        using namespace drivers::lcd;
         auto& display = context.display;
-        display.clear(Colors::OFF);
+        display.clear(display::Colors::OFF);
         display.print("Set time:\n\n");
         for (u8 i = 0; i < arrowPosition; ++i)
         {
@@ -203,7 +202,7 @@ struct SetTimeSm
         }
         display.print("  ");
 
-        display.drawImage(Images::ArrowDown);
+        display.drawImage(display::Images::ArrowDown);
         char buffer[50];
 
         // sprintf(buffer, "\n   %02d:%02d:%02d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
@@ -214,13 +213,13 @@ struct SetTimeSm
         }
         display.print("  ");
 
-        display.drawImage(Images::ArrowUp);
+        display.drawImage(display::Images::ArrowUp);
 
-        context.display.setY(48 - Images::backIcon.height);
+        context.display.setY(48 - display::Images::backIcon.height);
         context.display.setX(2);
-        context.display.drawImage(Images::backIcon);
-        context.display.setX(84 - Images::selectIcon.width - 2);
-        context.display.drawImage(Images::selectIcon);
+        context.display.drawImage(display::Images::backIcon);
+        context.display.setX(84 - display::Images::selectIcon.width - 2);
+        context.display.drawImage(display::Images::selectIcon);
     }
 
     const Action onHours = [](Context& context) {
@@ -237,68 +236,66 @@ struct SetTimeSm
     };
 
 
-    static void drawFrame(drivers::lcd::Display& display)
+    static void drawFrame(display::Display& display)
     {
-        using namespace drivers::lcd;
-
-        display.clear(Colors::OFF);
+        display.clear(display::Colors::OFF);
 
         for (int i = 0; i < 84; i += 2)
         {
-            display.drawImage(Images::ChessboardMosaic);
+            display.drawImage(display::Images::ChessboardMosaic);
         }
-        display.setCursor(0, Images::ChessboardMosaic.height * 1 - 1);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(84 - Images::ChessboardMosaic.width * 3, Images::ChessboardMosaic.height * 1 - 1);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(0, Images::ChessboardMosaic.height * 2 - 2);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(84 - Images::ChessboardMosaic.width * 3, Images::ChessboardMosaic.height * 2 - 2);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(0, Images::ChessboardMosaic.height * 3 - 3);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(84 - Images::ChessboardMosaic.width * 3, Images::ChessboardMosaic.height * 3 - 3);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(0, Images::ChessboardMosaic.height * 4 - 4);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(84 - Images::ChessboardMosaic.width * 3, Images::ChessboardMosaic.height * 4 - 4);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(0, Images::ChessboardMosaic.height * 5 - 5);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(84 - Images::ChessboardMosaic.width * 3, Images::ChessboardMosaic.height * 5 - 5);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(0, Images::ChessboardMosaic.height * 6 - 6);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(84 - Images::ChessboardMosaic.width * 3, Images::ChessboardMosaic.height * 6 - 6);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.drawImage(Images::ChessboardMosaic);
-        display.setCursor(0, Images::ChessboardMosaic.height * 7 - 7);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 1 - 1);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 1 - 1);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 2 - 2);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 2 - 2);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 3 - 3);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 3 - 3);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 4 - 4);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 4 - 4);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 5 - 5);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 5 - 5);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 6 - 6);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 6 - 6);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 7 - 7);
         for (int i = 0; i < 84; i += 2)
         {
-            display.drawImage(Images::ChessboardMosaic);
+            display.drawImage(display::Images::ChessboardMosaic);
         }
     }
 
@@ -310,8 +307,8 @@ struct SetTimeSm
         drawFrame(context.display);
         const char* str = "Saved!";
 
-        u8 cursorX = (DISPLAY_WIDTH - strlen(str) * (drivers::lcd::usedFont->width + 1)) / 2;
-        u8 cursorY = (DISPLAY_HEIGHT - drivers::lcd::usedFont->height) / 2;
+        u8 cursorX = (display.getWidth() - strlen(str) * (display.getFont().width + 1)) / 2;
+        u8 cursorY = (display.getHeight() - display.getFont().height) / 2;
 
         context.logger.debug() << "Set cursor to: " << cursorX << ", "
                                << cursorY;

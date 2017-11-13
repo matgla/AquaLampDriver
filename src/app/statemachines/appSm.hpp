@@ -41,7 +41,7 @@ struct AppSm
 
     static void DisplayTime(Context& context)
     {
-        context.display.clear(drivers::lcd::Colors::OFF);
+        context.display.clear(display::Colors::OFF);
         constexpr const int TimeBufferSize = 12;
         constexpr const int DateBufferSize = 10;
         char timeBuffer[TimeBufferSize];

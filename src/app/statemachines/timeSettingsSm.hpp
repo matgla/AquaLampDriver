@@ -4,11 +4,9 @@
 
 #include "app/context.hpp"
 #include "app/statemachines/events.hpp"
-#include "app/statemachines/setSunriseSm.hpp"
-#include "app/statemachines/setSunshineSm.hpp"
 #include "app/statemachines/setTimeSm.hpp"
 #include "app/statemachines/states.hpp"
-#include "drivers/lcd/icons.hpp"
+#include "display/images.hpp"
 
 namespace app
 {
@@ -55,45 +53,44 @@ struct TimeSettingsSm
 
     static void onDrawMenu(Context& context, u8 selectedPosition)
     {
-        using namespace drivers::lcd;
         auto& display = context.display;
-        display.clear(drivers::lcd::Colors::OFF);
+        display.clear(display::Colors::OFF);
         display.print("Time:\n");
 
         if (1 == selectedPosition)
         {
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
         }
         else
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
         }
         display.print("Set time\n");
         if (2 == selectedPosition)
         {
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
         }
         else
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
         }
         display.print("Set date\n");
         if (3 == selectedPosition)
         {
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
         }
         else
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
         }
         display.print("Set sunshine\n");
         if (4 == selectedPosition)
         {
-            display.drawImage(Images::fullTriangle);
+            display.drawImage(display::Images::fullTriangle);
         }
         else
         {
-            display.drawImage(Images::emptyTriangle);
+            display.drawImage(display::Images::emptyTriangle);
         }
         display.print("Set sunrise\n");
     }
@@ -102,12 +99,12 @@ struct TimeSettingsSm
     {
         context.timeSettingOption = Context::TimeSettingOptions::SetTime;
     }
-    
+
     static void onSetSunshine(Context& context)
     {
         context.timeSettingOption = Context::TimeSettingOptions::SetSunshine;
     }
-    
+
     static void onSetSunrise(Context& context)
     {
         context.timeSettingOption = Context::TimeSettingOptions::SetSunrise;

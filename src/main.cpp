@@ -1,16 +1,31 @@
 #include "app/app.hpp"
 #include "bsp/board.hpp"
-#include "drivers/lcd/display.hpp"
+#include "display/display.hpp"
+#include "display/font.hpp"
 
-// #include <stm32f10x.h>
+
+// TODO: remove this ugly preprocessor
+
+
+#ifdef PCD8544_DISPLAY
+#include "drivers/lcd/pcd8544/displayPcd8544.hpp"
+#elif SFML_DISPLAY
+#include "drivers/lcd/sfml/displaySfml.hpp"
+#endif
 
 int main()
 {
     bsp::BoardInit();
     bsp::Board board;
-    drivers::lcd::Display display(board);
-    display.clear(drivers::lcd::Colors::OFF);
+
+#ifdef PCD8544_DISPLAY
+    drivers::lcd::DisplayPcd8544 lcdDriver(board);
+#elif SFML_DISPLAY
+    drivers::lcd::DisplaySfml lcdDriver;
+#endif
+    display::Display display(board, lcdDriver, display::font_5x7);
     app::App app(display, board);
     app.start();
     app.run();
+    return 0;
 }

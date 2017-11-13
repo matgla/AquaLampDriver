@@ -16,6 +16,8 @@ set(bsp_sources ${bsp_common_sources} ${bsp_common_includes})
 set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl )
 
 if (${BOARD} STREQUAL "STM32_Black_Pill")
+    # TODO: make this smarter
+    add_definitions(-DPCD8544_DISPLAY)
     include(cmake/bsp/stm32f1_common.cmake)
     include(cmake/bsp/stm32_black_pill.cmake)
     set(bsp_sources ${bsp_sources} 
@@ -25,6 +27,8 @@ if (${BOARD} STREQUAL "STM32_Black_Pill")
                     ${stm32_black_pill_includes}
     )
 elseif (${BOARD} STREQUAL "X86")
+    # TODO: make this smarter
+    add_definitions(-DSFML_DISPLAY)
     include(cmake/bsp/x86.cmake)
     set(bsp_sources ${bsp_sources} 
         ${x86_bsp_sources} 

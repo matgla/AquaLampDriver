@@ -114,7 +114,7 @@ void AppSm::process_event(const events::Update& event)
 
 void AppSm::displayTime()
 {
-    context_.display.clear(drivers::lcd::Colors::OFF);
+    context_.display.clear(display::Colors::OFF);
     constexpr const int TimeBufferSize = 12;
     constexpr const int DateBufferSize = 10;
     char timeBuffer[TimeBufferSize];

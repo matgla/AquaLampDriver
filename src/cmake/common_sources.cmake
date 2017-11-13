@@ -9,19 +9,11 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
     ${COMMON_SRC_DIR}/utils.cpp
     
-    ${DRIVERS_SRC_DIR}/lcd/font.cpp
-    ${DRIVERS_SRC_DIR}/lcd/icons.cpp
-    
-    #${COMMON_SRC_DIR}/usart.cpp
-    #${COMMON_SRC_DIR}/utils.cpp
-    #${COMMON_SRC_DIR}/dispatcher/ChannelHandler.cpp
-    #${COMMON_SRC_DIR}/dispatcher/dispatcher.cpp
-    #${COMMON_SRC_DIR}/dispatcher/handlerBase.cpp
-    #${COMMON_SRC_DIR}/dispatcher/RtcHandler.cpp
-    #${COMMON_SRC_DIR}/pwm/channelsGroup.cpp
-    # ${COMMON_SRC_DIR}/pwmChannel.cpp
-    # ${COMMON_SRC_DIR}/logger.cpp
+    ${COMMON_SRC_DIR}/display/font.cpp
+    ${COMMON_SRC_DIR}/display/images.cpp
+    ${COMMON_SRC_DIR}/display/display.cpp
 
+    ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.cpp
 )
 
 set(common_porting_includes
@@ -33,7 +25,6 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/app/statemachines/channelSettingsSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/timeSettingsSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/setTimeSm.hpp
-    ${COMMON_SRC_DIR}/app/statemachines/setSunshineSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/events.hpp
     ${COMMON_SRC_DIR}/app/statemachines/helpers.hpp
     ${COMMON_SRC_DIR}/app/statemachines/menuSm.hpp
@@ -50,41 +41,17 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/timer/intervalTimer.hpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.hpp
 
-    ${DRIVERS_SRC_DIR}/lcd/display.hpp
-    ${DRIVERS_SRC_DIR}/lcd/font.hpp
-    ${DRIVERS_SRC_DIR}/lcd/icons.hpp
+    ${COMMON_SRC_DIR}/display/display.hpp
+    ${COMMON_SRC_DIR}/display/font.hpp
+    ${COMMON_SRC_DIR}/display/images.hpp
+    ${COMMON_SRC_DIR}/display/colors.hpp
 
     ${COMMON_SRC_DIR}/timer/manager.hpp
     ${COMMON_SRC_DIR}/utils.hpp
-    
-    
 
-    # ${COMMON_SRC_DIR}/usart.hpp
-    # ${COMMON_SRC_DIR}/utils.hpp
-    # ${COMMON_SRC_DIR}/dispatcher/ChannelHandler.hpp
-    # ${COMMON_SRC_DIR}/dispatcher/dispatcher.hpp
-    # ${COMMON_SRC_DIR}/dispatcher/fwd.hpp
-    # ${COMMON_SRC_DIR}/dispatcher/handlerBase.hpp
-    # ${COMMON_SRC_DIR}/dispatcher/IHandler.hpp
-    # ${COMMON_SRC_DIR}/dispatcher/RtcHandler.hpp
-    # ${COMMON_SRC_DIR}/pwm/channelsGroup.hpp
-    # ${COMMON_SRC_DIR}/rtc/rtc.hpp
-    # ${COMMON_SRC_DIR}/state_machine/bootloader_sm.hpp
-    # ${COMMON_SRC_DIR}/state_machine/helpers.hpp
-    # ${COMMON_SRC_DIR}/buffer.hpp
-    # ${COMMON_SRC_DIR}/memoryHelpers.hpp
-    # ${COMMON_SRC_DIR}/pwmChannel.hpp
-    # ${COMMON_SRC_DIR}/readerWriterBuffer.hpp
-
-    # ${COMMON_SRC_DIR}/logger/logger.hpp
-    # ${COMMON_SRC_DIR}/app.hpp
-
-
-    # ${COMMON_SRC_DIR}/hal/core/core.hpp    
-    # ${COMMON_SRC_DIR}/hal/core/backupRegisters.hpp    
-    # ${COMMON_SRC_DIR}/hal/time/time.hpp
-    # ${COMMON_SRC_DIR}/hal/time/sleep.hpp    
-)
+    ${DRIVERS_SRC_DIR}/lcd/displayDriver.hpp    
+    ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.hpp
+    )
 
 set(common_srcs
 
