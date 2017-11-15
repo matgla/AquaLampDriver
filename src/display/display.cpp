@@ -31,6 +31,8 @@ void Display::clear(Colors color)
     }
     cursorPosition_.x = 0;
     cursorPosition_.y = 0;
+
+    driver_.display();
 }
 
 void Display::setPixel(u16 x, u16 y, Colors color)
@@ -40,11 +42,6 @@ void Display::setPixel(u16 x, u16 y, Colors color)
 
 void Display::print(char c, Colors color)
 {
-    u16 charOffset = c - 32; // 32 first letter in font
-    u16 charPosition = charOffset + charOffset * (font_.width - 1);
-
-    const uint8_t* font_ptr = &font_.array[charPosition];
-
     if (c == 0xA)
     {
         cursorPosition_.x = 0;
@@ -58,11 +55,17 @@ void Display::print(char c, Colors color)
         c = ' ';
     }
 
-    int i = 0;
+    if (c < 32)
+        return;
 
+    u16 charOffset = static_cast<u16>(c - 32); // 32 first letter in font
+    u16 charPosition = charOffset * font_.width;
+    const uint8_t* font_ptr = &font_.array[charPosition];
+
+    int i = 0;
     for (i = cursorPosition_.x; i < font_.width + cursorPosition_.x; i++)
     {
-        for (int j = font_.height; j > 0; j--)
+        for (u16 j = font_.height; j > 0; j--)
         {
             if ((*font_ptr >> j) & 0x01)
             {

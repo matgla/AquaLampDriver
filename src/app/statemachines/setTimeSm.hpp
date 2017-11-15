@@ -11,6 +11,7 @@
 #include "display/display.hpp"
 #include "display/images.hpp"
 #include "hal/time/rtc.hpp"
+#include "utils.hpp"
 
 
 namespace app
@@ -205,8 +206,16 @@ struct SetTimeSm
         display.drawImage(display::Images::ArrowDown);
         char buffer[50];
 
-        // sprintf(buffer, "\n   %02d:%02d:%02d \n", context.timeSetting.hours, context.timeSetting.minutes, context.timeSetting.seconds);
+        std::tm time;
+        time.tm_hour = context.timeSetting.hours;
+        time.tm_min = context.timeSetting.minutes;
+        time.tm_sec = context.timeSetting.seconds;
+
+        utils::formatTime(buffer, 50, &time);
+
+        display.print("\n   ");
         display.print(buffer);
+        display.print("\n");
         for (u8 i = 0; i < arrowPosition; ++i)
         {
             display.print(" ");
@@ -215,10 +224,10 @@ struct SetTimeSm
 
         display.drawImage(display::Images::ArrowUp);
 
-        context.display.setY(48 - display::Images::backIcon.height);
+        context.display.setY(context.display.getWidth() - display::Images::backIcon.height);
         context.display.setX(2);
         context.display.drawImage(display::Images::backIcon);
-        context.display.setX(84 - display::Images::selectIcon.width - 2);
+        context.display.setX(context.display.getHeight() - display::Images::selectIcon.width - 2);
         context.display.drawImage(display::Images::selectIcon);
     }
 

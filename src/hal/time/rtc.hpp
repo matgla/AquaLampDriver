@@ -25,6 +25,7 @@ public:
     void setHandler(std::function<void()> handler);
     void setSecondsHandler(std::function<void()> handler);
     std::function<void()>& getSecondsHandler();
+    void stop();
 
 private:
     Rtc();

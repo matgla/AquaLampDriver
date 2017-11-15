@@ -31,6 +31,7 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/app/statemachines/states.hpp
 
     ${COMMON_SRC_DIR}/hal/core/core.hpp    
+    ${COMMON_SRC_DIR}/hal/core/criticalSection.hpp    
     ${COMMON_SRC_DIR}/hal/core/backupRegisters.hpp    
     ${COMMON_SRC_DIR}/hal/time/time.hpp
     ${COMMON_SRC_DIR}/hal/time/rtc.hpp

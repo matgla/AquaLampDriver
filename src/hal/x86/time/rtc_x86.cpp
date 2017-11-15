@@ -23,8 +23,7 @@ static bool wasInitialized = false;
 
 Rtc::~Rtc()
 {
-    kill = true;
-    rtcSecondsInterruptThread->join();
+    stop();
 }
 
 Rtc& Rtc::get()
@@ -92,6 +91,12 @@ void Rtc::initSecondsInterrupt()
             }
         }
     }));
+}
+
+void Rtc::stop()
+{
+    kill = true;
+    rtcSecondsInterruptThread->join();
 }
 
 void Rtc::setTime(u32 hours, u32 minutes, u32 seconds)

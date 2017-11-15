@@ -74,6 +74,7 @@ void App::run()
 
         board_.run();
     }
+    hal::time::Rtc::get().stop();
 }
 
 } // namespace app

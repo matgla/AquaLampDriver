@@ -8,8 +8,8 @@
 #include "bsp/board.hpp"
 #include "logger/Logger.hpp"
 
-#define PCD8544_SCREEN_HEIGHT 42
-#define PCD8544_SCREEN_WIDTH 82
+#define PCD8544_SCREEN_HEIGHT 48
+#define PCD8544_SCREEN_WIDTH 84
 
 namespace drivers
 {
@@ -21,7 +21,7 @@ class DisplayPcd8544 : public DisplayDriver
 public:
     DisplayPcd8544(bsp::Board& board);
 
-    void display() const override;
+    void display() override;
     u16 getHeight() const override;
     u16 getWidth() const override;
     void setPixel(u16 x, u16 y, display::Colors color = display::Colors::BLACK) override;
@@ -32,7 +32,7 @@ protected:
 
     bsp::Board& board_;
     logger::Logger logger_;
-    std::array<display::Colors, PCD8544_SCREEN_HEIGHT * PCD8544_SCREEN_WIDTH> buffer_;
+    std::array<u8, 6 * PCD8544_SCREEN_WIDTH> buffer_;
 };
 
 } // namespace drivers

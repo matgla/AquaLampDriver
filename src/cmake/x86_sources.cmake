@@ -5,6 +5,7 @@ set(x86_sources
      ${X86_SRC_DIR}/serial/serial_x86.cpp
      ${X86_SRC_DIR}/core/backupRegisters_x86.cpp
      ${X86_SRC_DIR}/core/core_x86.cpp
+     ${X86_SRC_DIR}/core/criticalSection_x86.cpp
      ${X86_SRC_DIR}/time/time_x86.cpp
      ${X86_SRC_DIR}/time/rtc_x86.cpp
      ${X86_SRC_DIR}/time/sleep_x86.cpp

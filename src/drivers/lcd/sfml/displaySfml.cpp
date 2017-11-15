@@ -6,8 +6,8 @@
 
 #include "bsp/x86/window.hpp"
 
-#define DISPLAY_WIDTH 82
-#define DISPLAY_HEIGHT 42
+#define DISPLAY_WIDTH 84
+#define DISPLAY_HEIGHT 48
 
 #define PIXEL_OFF_COLOR sf::Color(34, 155, 68)
 #define PIXEL_ON_COLOR sf::Color(0, 0, 0)

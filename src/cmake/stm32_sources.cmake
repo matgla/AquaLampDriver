@@ -9,6 +9,7 @@ set(stm32_sources
     ${COMMON_SRC_DIR}/usart.cpp
 
     ${STM32_SRC_DIR}/core/core_stm32.cpp    
+    ${STM32_SRC_DIR}/core/criticalSection_stm32.cpp    
     ${STM32_SRC_DIR}/core/backupRegisters_stm32.cpp    
     ${STM32_SRC_DIR}/time/sleep_stm32.cpp
     ${STM32_SRC_DIR}/time/rtc_stm32.cpp

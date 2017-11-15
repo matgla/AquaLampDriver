@@ -40,7 +40,7 @@ message("BSP sources: ${bsp_sources}")
 
 set(production_srcs ${production_srcs} ${bsp_sources})
 
-if (${ARCH} STREQUAL "X86")
+if (${ARCH} STREQUAL "X86") 
     include(cmake/x86_sources.cmake)
     set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
    # find_package(Boost 1.58 COMPONENTS system program_options REQUIRED)
@@ -93,7 +93,7 @@ elseif (${ARCH} STREQUAL "STM32")
     add_library(stm32lib ${STM32_SOURCES})
     add_executable(${target_name} ${production_srcs})
     target_link_libraries(${target_name} stm32lib ${STM32_LIBRARIES} ${target_libs})
-
+ 
     install(TARGETS ${target_name} DESTINATION ${CMAKE_BINARY_DIR})
     add_custom_command(TARGET POST_BUILD ${target_name}
         COMMAND ${ARM_TOOLCHAIN}/bin/arm-none-eabi-size --format=berkeley "${target_name}.elf")

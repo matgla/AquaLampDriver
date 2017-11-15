@@ -14,9 +14,9 @@ void assertFailed(const char* expr, const char* file, int line, const char* func
     logger::Logger logger("HAL");
     logger.error() << "Assertion failed (" << expr << ") in " << file << ":" << line << " in " << function;
     logger.error() << "Assertion message: " << msg;
-    #ifndef NDEBUG
+#ifndef NDEBUG
     std::abort();
-    #endif
+#endif
 }
 
 } // namespace utils

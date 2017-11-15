@@ -50,6 +50,10 @@ Rtc::~Rtc()
 {
 }
 
+void Rtc::stop()
+{
+}
+
 void Rtc::setHandler(std::function<void()> handler)
 {
     timerCallback_ = handler;
@@ -166,9 +170,8 @@ std::function<void()>& Rtc::getSecondsHandler()
     return secondsHandler_;
 }
 
-extern "C"
-{
-    void RTC_IRQHandler();
+extern "C" {
+void RTC_IRQHandler();
 }
 
 void RTC_IRQHandler(void)

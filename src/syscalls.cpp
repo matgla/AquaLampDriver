@@ -8,6 +8,8 @@
 #include "usart.hpp"
 #include "utils.hpp"
 
+register char* stack_ptr asm("sp");
+
 int _gettimeofday(struct timeval* tv, void* tzvp)
 {
     UNUSED(tzvp);
@@ -79,29 +81,47 @@ void _exit(int code)
     }
 }
 
-char* heap_end = 0;
 caddr_t _sbrk(int incr)
 {
-    extern char _heap;  /* Defined by the linker */
-    extern char _eheap; /* Defined by the linker */
+    // extern char _end;           /* Defined by the linker */
+    // extern char _Min_Heap_Size; /* Defined by the linker */
+    // char* prev_heap_end;
+
+    // if (heap_end == 0)
+    // {
+    //     heap_end = &_end;
+    // }
+
+    // prev_heap_end = heap_end;
+
+    // if (heap_end + incr > &_Min_Heap_Size + _end)
+    // {
+    //     /* Heap and stack collision */
+    //     _write(1, "Heap and stack collision\n", 25);
+    //     errno = ENOMEM;
+    //     return (caddr_t)0;
+    // }
+
+    // heap_end += incr;
+    // return (caddr_t)prev_heap_end;
+    extern char end asm("end");
+    static char* heap_end;
     char* prev_heap_end;
 
     if (heap_end == 0)
-    {
-        heap_end = &_heap;
-    }
+        heap_end = &end;
 
     prev_heap_end = heap_end;
-
-    if (heap_end + incr > &_eheap)
+    if (heap_end + incr > stack_ptr)
     {
-        /* Heap and stack collision */
         _write(1, "Heap and stack collision\n", 25);
+        abort();
         errno = ENOMEM;
-        return (caddr_t)0;
+        return (caddr_t)-1;
     }
 
     heap_end += incr;
+
     return (caddr_t)prev_heap_end;
 }
 

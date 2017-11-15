@@ -1,5 +1,8 @@
 #include "logger.hpp"
 
+// TODO: Find out how to remove critial section from here
+#include "hal/core/criticalSection.hpp"
+
 #include <cassert>
 
 namespace logger
@@ -16,10 +19,12 @@ Logger::~Logger()
     {
         operator<<("\n");
     }
+    hal::core::stopCriticalSection();
 }
 
 void Logger::printHeader(std::experimental::string_view level)
 {
+    hal::core::startCriticalSection();
     write(fd_, "<", 1);
     printTimeAndDate();
     write(fd_, "> ", 2);
@@ -57,7 +62,7 @@ Logger Logger::error()
 
 void Logger::printTimeAndDate()
 {
-    constexpr const int BufferSize = 22;
+    constexpr const int BufferSize = 20;
     char buffer[BufferSize];
     auto t = std::time(nullptr);
     struct tm* currentTime = std::localtime(&t);

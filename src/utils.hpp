@@ -4,6 +4,7 @@
 #include <cstring>
 #include <stdint.h>
 
+
 #define UNUSED1(x) (void)(x)
 
 #define UNUSED2(x, y) \
@@ -36,6 +37,7 @@
 #define ALL_UNUSED_IMPL_(nargs) UNUSED##nargs
 #define ALL_UNUSED_IMPL(nargs) ALL_UNUSED_IMPL_(nargs)
 #define UNUSED(...) ALL_UNUSED_IMPL(VA_NUM_ARGS(__VA_ARGS__)) \
+\
 \
 (__VA_ARGS__)
 /*

@@ -42,8 +42,8 @@ struct AppSm
     static void DisplayTime(Context& context)
     {
         context.display.clear(display::Colors::OFF);
-        constexpr const int TimeBufferSize = 12;
-        constexpr const int DateBufferSize = 10;
+        constexpr const int TimeBufferSize = 9;
+        constexpr const int DateBufferSize = 12;
         char timeBuffer[TimeBufferSize];
         char dateBuffer[DateBufferSize];
         auto t = std::time(nullptr);
