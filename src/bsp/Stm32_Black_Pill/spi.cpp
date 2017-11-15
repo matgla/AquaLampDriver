@@ -84,15 +84,14 @@ u8 Spi::send(const u8 byte) const
     // TODO: change to timeout
     while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET)
     {
-
     }
     SPI_I2S_SendData(SPI1, byte);
 
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET)
-  {
-  }
+    while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET)
+    {
+    }
 
-  return SPI_I2S_ReceiveData(SPI1);
+    return SPI_I2S_ReceiveData(SPI1);
 }
 
 } // namespace bsp

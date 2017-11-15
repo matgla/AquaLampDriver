@@ -28,12 +28,8 @@ int main()
     display.print("Hej\nho\n");
     display.print("Wyswietlacz dziala\n");
     display.print("lalalal\n");
-    // app::App app(display, board);
-    // app.start();
-    // app.run();
-    board.lcdBacklight.on();
-    while (true)
-    {
-    }
+    app::App app(display, board);
+    app.start();
+    app.run();
     return 0;
 }

@@ -59,7 +59,7 @@ DisplayPcd8544::DisplayPcd8544(bsp::Board& board)
 
     sendCommand(FUNCTION_SET | EXTENDED_INSTRUCTION_SET);
     sendCommand(BIAS_4);
-    sendCommand(SET_VOP | 0x2f);
+    sendCommand(SET_VOP | 0x2a);
     sendCommand(FUNCTION_SET | BASIC_INSTRUCTION_SET);
     sendCommand(DISPLAY_NORMAL);
 
@@ -107,11 +107,27 @@ void DisplayPcd8544::display()
 {
     sendCommand(SET_Y_ADDRESS | 0x0);
     sendCommand(SET_X_ADDRESS | 0x0);
+
+
+    sendCommand(SET_Y_ADDRESS | 1);
+    sendCommand(SET_X_ADDRESS | 3);
+
     board_.spi.dcPinHigh();
     board_.spi.cePinLow();
-    for (const u8 byte : buffer_)
+    for (std::size_t i = 0; i < buffer_.size(); ++i)
     {
-        board_.spi.send(byte);
+        if (buffer_[i] != previous_[i])
+        {
+            u8 y = floor(i / getWidth());
+            board_.spi.cePinHigh();
+            sendCommand(SET_Y_ADDRESS | y);
+            sendCommand(SET_X_ADDRESS | (i - y * getWidth()));
+            board_.spi.dcPinHigh();
+            board_.spi.cePinLow();
+
+            board_.spi.send(buffer_[i]);
+            previous_[i] = buffer_[i];
+        }
     }
     board_.spi.cePinHigh();
 }
@@ -156,6 +172,7 @@ void DisplayPcd8544::reset()
     hal::time::msleep(1);
     board_.spi.resetPinHigh();
 }
+
 
 void DisplayPcd8544::sendCommand(u8 cmd)
 {

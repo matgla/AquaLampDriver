@@ -33,6 +33,7 @@ protected:
     bsp::Board& board_;
     logger::Logger logger_;
     std::array<u8, 6 * PCD8544_SCREEN_WIDTH> buffer_;
+    std::array<u8, 6 * PCD8544_SCREEN_WIDTH> previous_;
 };
 
 } // namespace drivers
