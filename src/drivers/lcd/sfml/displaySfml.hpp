@@ -16,7 +16,7 @@ class DisplaySfml : public DisplayDriver
 public:
     DisplaySfml();
 
-    void display() const override;
+    void display() override;
     u16 getHeight() const override;
     u16 getWidth() const override;
     void setPixel(u16 x, u16 y, display::Colors color = display::Colors::BLACK) override;

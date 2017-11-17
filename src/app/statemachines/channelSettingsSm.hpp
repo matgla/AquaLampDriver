@@ -39,14 +39,18 @@ struct ChannelSettingsSm
         using namespace drivers::lcd;
         context.display.clear(display::Colors::OFF);
         context.display.print("Channel conf:\n\n\n");
-        char buffer[15];
+        char buffer[5];
 
         // sprintf(buffer, " CH%d: %3d%%\n", context.channelSetting.index, context.channelSetting.power[context.channelSetting.index]);
-        if (context.channelSetting.index < 10)
-        {
-            context.display.print(" ");
-        }
+        context.display.print(" CH");
+        utils::writeToBufferAligned(buffer, context.channelSetting.index, '\0', 2);
+
         context.display.print(buffer);
+        context.display.print(": ");
+        utils::writeToBufferAligned(buffer, context.channelSetting.power[context.channelSetting.index], '\0', 3, ' ');
+        context.display.print(buffer);
+        context.display.print(" %");
+
         context.display.setY(48 - display::Images::backIcon.height);
         context.display.setX(2);
         context.display.drawImage(display::Images::backIcon);

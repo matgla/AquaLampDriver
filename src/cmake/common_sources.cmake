@@ -14,6 +14,9 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/display/display.cpp
 
     ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.cpp
+    ${DRIVERS_SRC_DIR}/interfaces/onewire.cpp
+    ${DRIVERS_SRC_DIR}/devices/ds18b20.cpp
+    
 )
 
 set(common_porting_includes
@@ -52,7 +55,10 @@ set(common_porting_includes
 
     ${DRIVERS_SRC_DIR}/lcd/displayDriver.hpp    
     ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.hpp
-    )
+    ${DRIVERS_SRC_DIR}/interfaces/onewire.hpp
+    ${DRIVERS_SRC_DIR}/devices/ds18b20.hpp
+    
+)
 
 set(common_srcs
 

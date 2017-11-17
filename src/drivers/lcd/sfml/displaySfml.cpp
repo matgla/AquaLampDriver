@@ -24,7 +24,7 @@ DisplaySfml::DisplaySfml()
     display();
 }
 
-void DisplaySfml::display() const
+void DisplaySfml::display()
 {
     sf::Texture texture;
     texture.loadFromImage(buffer_);

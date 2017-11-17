@@ -1,5 +1,6 @@
 ---
 Language: Cpp
+AlignConsecutiveAssignments: true
 AccessModifierOffset: -4
 AlignEscapedNewlinesLeft: false
 AlignTrailingComments: true

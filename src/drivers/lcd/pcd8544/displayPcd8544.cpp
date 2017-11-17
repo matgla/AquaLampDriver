@@ -105,15 +105,6 @@ const unsigned char logo_mini_mono[] = {
 
 void DisplayPcd8544::display()
 {
-    sendCommand(SET_Y_ADDRESS | 0x0);
-    sendCommand(SET_X_ADDRESS | 0x0);
-
-
-    sendCommand(SET_Y_ADDRESS | 1);
-    sendCommand(SET_X_ADDRESS | 3);
-
-    board_.spi.dcPinHigh();
-    board_.spi.cePinLow();
     for (std::size_t i = 0; i < buffer_.size(); ++i)
     {
         if (buffer_[i] != previous_[i])

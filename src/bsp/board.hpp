@@ -2,6 +2,7 @@
 
 #include "bsp/button.hpp"
 #include "bsp/led.hpp"
+#include "bsp/onewire.hpp"
 #include "bsp/spi.hpp"
 #include "hal/core/backupRegisters.hpp"
 
@@ -26,6 +27,8 @@ public:
     Led<Leds::LcdBacklight> lcdBacklight;
 
     hal::core::BackupRegisters& registers;
+
+    OneWire<OneWires::OneWire1> oneWire;
 
     Spi spi;
 

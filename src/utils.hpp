@@ -39,6 +39,9 @@
 #define UNUSED(...) ALL_UNUSED_IMPL(VA_NUM_ARGS(__VA_ARGS__)) \
 \
 \
+\
+\
+\
 (__VA_ARGS__)
 /*
 ** reverse string in place 
@@ -51,7 +54,7 @@ namespace utils
 {
 int itoa(int n, char* s, int base_n = 10);
 
-int writeTimePartToBufferWithAlign(char* buffer, int data, char suffix);
+int writeToBufferAligned(char* buffer, int data, char suffix, u8 size = 2, char prefix = '0');
 int formatTime(char* buffer, const u8 bufferSize, std::tm* t);
 int formatDate(char* buffer, const u8 bufferSize, std::tm* t);
 void formatDateAndTime(char* buffer, const u8 bufferSize, std::tm* t);

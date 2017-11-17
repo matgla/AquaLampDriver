@@ -55,12 +55,24 @@ int itoa(int n, char* s, int base_n)
     return i;
 }
 
-int writeTimePartToBufferWithAlign(char* buffer, int data, char suffix)
+int pow(int base, int index)
+{
+    int answer = base;
+    for (int i = 1; i < index; ++i)
+    {
+        answer *= base;
+    }
+
+    return answer;
+}
+
+int writeToBufferAligned(char* buffer, int data, char suffix, u8 size, char prefix)
 {
     int i = 0;
-    if (data < 10)
+    for (int tmp = data == 0 ? 1 : data; tmp < pow(10, size - 1);)
     {
-        buffer[i++] = '0';
+        tmp *= 10;
+        buffer[i++] = prefix;
     }
     i += utils::itoa(data, buffer + i);
     buffer[i++] = suffix;
@@ -71,9 +83,9 @@ int formatDate(char* buffer, const u8 bufferSize, std::tm* t)
 {
     int i = 0;
 
-    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_mday, '/');
-    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_mon + 1, '/');
-    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_year + 1900, '\0');
+    i += writeToBufferAligned(&buffer[i], t->tm_mday, '/');
+    i += writeToBufferAligned(&buffer[i], t->tm_mon + 1, '/');
+    i += writeToBufferAligned(&buffer[i], t->tm_year + 1900, '\0');
 
     HAL_ASSERT_MSG(i <= bufferSize, "Buffer overflow");
     return i;
@@ -83,9 +95,9 @@ int formatTime(char* buffer, const u8 bufferSize, std::tm* t)
 {
     int i = 0;
 
-    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_hour, ':');
-    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_min, ':');
-    i += writeTimePartToBufferWithAlign(&buffer[i], t->tm_sec, '\0');
+    i += writeToBufferAligned(&buffer[i], t->tm_hour, ':');
+    i += writeToBufferAligned(&buffer[i], t->tm_min, ':');
+    i += writeToBufferAligned(&buffer[i], t->tm_sec, '\0');
     HAL_ASSERT_MSG(i <= bufferSize, "Buffer overflow");
     return i;
 }

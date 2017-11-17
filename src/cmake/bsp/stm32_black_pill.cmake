@@ -7,6 +7,7 @@ set(stm32_black_pill_sources
     ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/button.cpp
     ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/led.cpp
     ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/spi.cpp    
+    ${STM32_BLACK_PILL_BSP_SOURCE_DIR}/onewire_stm32.cpp    
 )
 
 set(stm32_black_pill_includes
