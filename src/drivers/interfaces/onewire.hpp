@@ -4,6 +4,16 @@
 
 #include "bsp/board.hpp"
 
+//================
+//| ROM COMMANDS |
+//================
+#define READ_ROM     0x33
+#define MATCH_ROM    0x55
+#define SKIP_ROM     0xCC
+#define ALARM_SEARCH 0xec
+#define SEARCH_ROM 0xf0
+
+
 namespace drivers
 {
 namespace interfaces
@@ -35,6 +45,21 @@ public:
     void writeBit(const Bit& bit);
 
     InterfaceStates performAutodetection();
+
+    template <std::size_t DeviceNumber>
+    InterfaceStates initTranssmisionWithDevice()
+    {
+        static_assert(DeviceNumber < NumberOfDevices, "Trying to read from not existing device");
+        const auto status = reset();
+        if (InterfaceStates::Detected != status)
+        {
+            return status;
+        }
+
+        write(MATCH_ROM);
+        write(static_cast<u8>(devicesAddresses_[DeviceNumber] >> 32));
+        write(static_cast<u8>(devicesAddresses_[DeviceNumber] & 0x00ff));
+    }
 
 private:
     static_assert(sizeof(u64) >= 8, "Address variable must be 8 byte minimum");

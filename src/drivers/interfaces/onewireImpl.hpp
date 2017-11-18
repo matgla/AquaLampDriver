@@ -3,8 +3,6 @@
 #include "hal/time/sleep.hpp"
 #include "containers/staticVector.hpp"
 
-#define SEARCH_ROM 0xf0
-
 namespace drivers
 {
 namespace interfaces
@@ -175,6 +173,7 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
             }
             address << 1;
         }
+        devicesAddresses_[deviceIndex] = address;
     }
 }
 
