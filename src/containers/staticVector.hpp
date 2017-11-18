@@ -33,12 +33,21 @@ public:
 
     Type pop_back()
     {
+        if (0 == firstFreePosition_)
+        {
+            return {};
+        }
         --firstFreePosition_;
         return data_[firstFreePosition_];
     }
 
-    Type& get_last()
+    Type get_last()
     {
+        if (0 == size())
+        {
+            return {};
+        }
+
         return data_[firstFreePosition_ - 1];
     }
 
