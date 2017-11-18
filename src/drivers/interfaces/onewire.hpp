@@ -44,7 +44,7 @@ private:
     std::array<u64, NumberOfDevices> devicesAddresses_;
 };
 
-#include "drivers/interfaces/onewireImpl.hpp"
-
 } // namespace drivers
 } // namespace interfaces
+
+#include "drivers/interfaces/onewireImpl.hpp"

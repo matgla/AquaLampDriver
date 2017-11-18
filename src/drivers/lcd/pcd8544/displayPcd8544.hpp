@@ -6,7 +6,7 @@
 #include "drivers/lcd/displayDriver.hpp"
 
 #include "bsp/board.hpp"
-#include "logger/Logger.hpp"
+#include "logger/logger.hpp"
 
 #define PCD8544_SCREEN_HEIGHT 48
 #define PCD8544_SCREEN_WIDTH 84

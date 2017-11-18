@@ -1,18 +1,23 @@
 #include "drivers/interfaces/onewire.hpp"
 
 #include "hal/time/sleep.hpp"
+#include "containers/staticVector.hpp"
+
+#define SEARCH_ROM 0xf0
 
 namespace drivers
 {
 namespace interfaces
 {
 
-OneWire::OneWire(bsp::Board& board)
+template <std::size_t NumberOfDevices>
+OneWire<NumberOfDevices>::OneWire(bsp::Board& board)
     : board_(board)
 {
 }
 
-InterfaceStates OneWire::reset()
+template <std::size_t NumberOfDevices>
+InterfaceStates OneWire<NumberOfDevices>::reset()
 {
     board_.oneWire.setAsOutput();
     board_.oneWire.setState(bsp::BusState::Low);
@@ -35,7 +40,8 @@ InterfaceStates OneWire::reset()
     return InterfaceStates::NotDetected;
 }
 
-void OneWire::write(const u8 byte)
+template <std::size_t NumberOfDevices>
+void OneWire<NumberOfDevices>::write(const u8 byte)
 {
     for (u8 i = 0; i < sizeof(u8); ++i)
     {
@@ -50,7 +56,8 @@ void OneWire::write(const u8 byte)
     }
 }
 
-u8 OneWire::read()
+template <std::size_t NumberOfDevices>
+u8 OneWire<NumberOfDevices>::read()
 {
     u8 byte = 0;
     for (u8 i = 0; i < sizeof(u8); ++i)
@@ -60,9 +67,11 @@ u8 OneWire::read()
             byte |= (0x01 << i);
         }
     }
+    return byte;
 }
 
-Bit OneWire::readBit()
+template <std::size_t NumberOfDevices>
+Bit OneWire<NumberOfDevices>::readBit()
 {
     Bit bit = Bit::Low;
     board_.oneWire.setAsOutput();
@@ -79,7 +88,8 @@ Bit OneWire::readBit()
     return bit;
 }
 
-void OneWire::writeBit(const Bit& bit)
+template <std::size_t NumberOfDevices>
+void OneWire<NumberOfDevices>::writeBit(const Bit& bit)
 {
     board_.oneWire.setAsOutput();
     board_.oneWire.setState(bsp::BusState::Low);
@@ -101,13 +111,15 @@ void OneWire::writeBit(const Bit& bit)
     }
 }
 
-InterfaceStates OneWire::performAutodetection()
+template <std::size_t NumberOfDevices>
+InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
 {
+    // number of conflicts = number of devices always
+    containers::StaticVector<u8, NumberOfDevices> conflictPositions;
     for (std::size_t deviceIndex = 0; deviceIndex < NumberOfDevices; ++deviceIndex)
     {
-        const auto status = bus_.reset();
-        u64& address      = devicesAddresses_[deviceIndex_];
-        static_assert(sizeof(u64) >= 8, "Address variable must be 8 byte minimum");
+        const auto status = reset();
+        u64& address      = devicesAddresses_[deviceIndex];
         if (InterfaceStates::Detected != status)
         {
             return status;
@@ -126,7 +138,7 @@ InterfaceStates OneWire::performAutodetection()
                     return InterfaceStates::NoDevicesOnBus;
                 }
                 address |= 0x01;
-                writeBit(Bit::High)
+                writeBit(Bit::High);
             }
             else // got "0"
             {
@@ -134,8 +146,26 @@ InterfaceStates OneWire::performAutodetection()
                 if (Bit::Low == readBit())
                 {
                     // whops, we got conflict
-                    // teraz trzeba wybrać 0 czy 1
+                    // teraz trzeba wybrać 0 czy 1, dodaje pozycje do tablicy konfliktow
+                    // sprawdzam czy pozycja juz jest w tablicy konfliktow
+                    // jesli jest to ostatni wpis to wybieram "1", bo poprzednim razem wzialem "0",
+                    // jesli to jest nie ostatni wpis to biore "0"
+                    // conflictsPositions
+
+                    // if some conflicts are known
+                    if (conflictPositions.size())
+                    {
+                        // and if this conflict is last on conflicts lists, this mean that we are
+                        // on lowest part of searching tree
+                        if (i == conflictPositions.get_last())
+                        {
+                            // remove last conflict
+                            conflictPositions.pop_back();
+                            writeBit(Bit::High);
+                        }
+                    }
                     writeBit(Bit::Low);
+                    conflictPositions.push_back(i);
                     // ale jak skminić co
                 }
                 else

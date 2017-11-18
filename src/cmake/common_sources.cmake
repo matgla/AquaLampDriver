@@ -8,22 +8,20 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/timer/intervalTimer.cpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
     ${COMMON_SRC_DIR}/utils.cpp
-    
+
     ${COMMON_SRC_DIR}/display/font.cpp
     ${COMMON_SRC_DIR}/display/images.cpp
     ${COMMON_SRC_DIR}/display/display.cpp
 
     ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.cpp
-    ${DRIVERS_SRC_DIR}/interfaces/onewire.cpp
     ${DRIVERS_SRC_DIR}/devices/ds18b20.cpp
-    
 )
 
 set(common_porting_includes
     ${COMMON_SRC_DIR}/app/app.hpp
     ${COMMON_SRC_DIR}/app/channelSetting.hpp
-    ${COMMON_SRC_DIR}/app/context.hpp    
-    ${COMMON_SRC_DIR}/app/timeSetting.hpp    
+    ${COMMON_SRC_DIR}/app/context.hpp
+    ${COMMON_SRC_DIR}/app/timeSetting.hpp
     ${COMMON_SRC_DIR}/app/statemachines/appSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/channelSettingsSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/timeSettingsSm.hpp
@@ -33,14 +31,14 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/app/statemachines/menuSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/states.hpp
 
-    ${COMMON_SRC_DIR}/hal/core/core.hpp    
-    ${COMMON_SRC_DIR}/hal/core/criticalSection.hpp    
-    ${COMMON_SRC_DIR}/hal/core/backupRegisters.hpp    
+    ${COMMON_SRC_DIR}/hal/core/core.hpp
+    ${COMMON_SRC_DIR}/hal/core/criticalSection.hpp
+    ${COMMON_SRC_DIR}/hal/core/backupRegisters.hpp
     ${COMMON_SRC_DIR}/hal/time/time.hpp
     ${COMMON_SRC_DIR}/hal/time/rtc.hpp
-    ${COMMON_SRC_DIR}/hal/time/sleep.hpp  
+    ${COMMON_SRC_DIR}/hal/time/sleep.hpp
     ${COMMON_SRC_DIR}/hal/utils/assert.hpp
-    
+
     ${COMMON_SRC_DIR}/logger/logger.hpp
     ${COMMON_SRC_DIR}/timer/intervalTimer.hpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.hpp
@@ -53,11 +51,12 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/timer/manager.hpp
     ${COMMON_SRC_DIR}/utils.hpp
 
-    ${DRIVERS_SRC_DIR}/lcd/displayDriver.hpp    
+    ${DRIVERS_SRC_DIR}/lcd/displayDriver.hpp
     ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.hpp
     ${DRIVERS_SRC_DIR}/interfaces/onewire.hpp
+    ${DRIVERS_SRC_DIR}/interfaces/onewireImpl.hpp
     ${DRIVERS_SRC_DIR}/devices/ds18b20.hpp
-    
+
 )
 
 set(common_srcs

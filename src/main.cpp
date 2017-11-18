@@ -31,5 +31,6 @@ int main()
     app::App app(display, board);
     app.start();
     app.run();
+
     return 0;
 }

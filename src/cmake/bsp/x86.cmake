@@ -6,6 +6,7 @@ set(x86_bsp_sources
     ${X86_BSP_SOURCE_DIR}/led.cpp
     ${X86_BSP_SOURCE_DIR}/window.cpp
     ${X86_BSP_SOURCE_DIR}/spi.cpp
+    ${X86_BSP_SOURCE_DIR}/onewire_x86.cpp
 )
 
 set(x86_bsp_includes

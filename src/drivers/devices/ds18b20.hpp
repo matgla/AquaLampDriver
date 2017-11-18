@@ -14,7 +14,7 @@ public:
     Ds18b20(bsp::Board& board);
 
 private:
-    OneWire bus_;
+    interfaces::OneWire<2> bus_;
 };
 
 } // namespace devices

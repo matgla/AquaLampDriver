@@ -4,7 +4,7 @@
 
 #include "display/colors.hpp"
 #include "drivers/lcd/displayDriver.hpp"
-#include "logger/Logger.hpp"
+#include "logger/logger.hpp"
 
 namespace drivers
 {
