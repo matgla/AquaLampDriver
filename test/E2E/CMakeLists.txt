@@ -1,6 +1,6 @@
 enable_testing()
 
-include(../cmake/ut_sources.cmake)
+include(../cmake/e2e_sources.cmake)
 include(../cmake/production_sources.cmake)
 include(../cmake/bsp_testing_sources.cmake)
 
@@ -13,12 +13,12 @@ include_directories(SYSTEM ${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR})
 set(CMAKE_CXX_STANDARD 14)
 set(target_libs ${target_libs} ${Boost_LIBRARIES} gsl)
 
-add_executable(AquaLampServerUTs
-    ${ut_sources}
+add_executable(AquaLampServerE2ETests
+    ${e2e_sources}
     ${production_sources}
     ${bsp_sources}
 )
 
-set(testing_libs ${testing_libs} gmock gtest pthread)
+set(testing_libs ${testing_libs} gmock gtest)
 
-target_link_libraries(AquaLampServerUTs ${target_libs} ${common_libs} ${testing_libs})
+target_link_libraries(AquaLampServerE2ETests ${target_libs} ${common_libs} ${testing_libs})

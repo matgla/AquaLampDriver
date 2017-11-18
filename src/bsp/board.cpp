@@ -13,5 +13,5 @@ Board::Board()
     hal::core::Core::initializeClocks();
     logger_.info() << "Initialized";
 }
-    
+
 } // namespace bsp

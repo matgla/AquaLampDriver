@@ -72,6 +72,8 @@ endif (GCOV)
 
 include_directories(libs/include)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if (BUILD_TARGET)
     add_subdirectory(src)
 endif (BUILD_TARGET)
