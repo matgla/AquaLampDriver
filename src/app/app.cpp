@@ -12,7 +12,8 @@ App::App(display::Display& display, bsp::Board& board)
       display_(display),
       board_(board),
       context_(board, display, logger_),
-      statemachine_(context_)
+      statemachine_(context_),
+      termometers_(board)
 {
 }
 
@@ -26,6 +27,11 @@ void App::start()
 
     board_.led.on();
     board_.registers.startupDone();
+
+    float test = termometers_.readTemperature(0);
+    char buffer[40];
+    sprintf(buffer, "test: %d echh\0", (int)test);
+    logger_.info() << buffer;
 
     logger_.info() << "Started";
 }

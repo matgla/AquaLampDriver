@@ -30,7 +30,7 @@ void OneWire<OneWires::OneWire1>::setAsOutput()
 template <>
 BusState OneWire<OneWires::OneWire1>::getState()
 {
-    if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_15))
+    if (GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_10))
     {
         return BusState::High;
     }

@@ -10,38 +10,45 @@ namespace interfaces
 
 template <std::size_t NumberOfDevices>
 OneWire<NumberOfDevices>::OneWire(bsp::Board& board)
-    : board_(board)
+    : board_(board),
+      logger_("OneWire")
 {
 }
 
 template <std::size_t NumberOfDevices>
 InterfaceStates OneWire<NumberOfDevices>::reset()
 {
+    logger_.debug() << "reset";
     board_.oneWire.setAsOutput();
     board_.oneWire.setState(bsp::BusState::Low);
     hal::time::usleep(500);
-    board_.oneWire.setState(bsp::BusState::High);
+
     board_.oneWire.setAsInput();
     hal::time::usleep(70);
     // device detected
     if (bsp::BusState::Low == board_.oneWire.getState())
     {
-        hal::time::usleep(500);
+        hal::time::msleep(1);
         if (bsp::BusState::High == board_.oneWire.getState())
         {
+            logger_.debug() << "Device pulse detected";
             return InterfaceStates::Detected;
         }
         // bus must be in high state now, but is not
+        logger_.debug() << "Error on bus";
+
         return InterfaceStates::BusError;
     }
     // any device answered
+    logger_.debug() << "No devices on bus";
+
     return InterfaceStates::NotDetected;
 }
 
 template <std::size_t NumberOfDevices>
 void OneWire<NumberOfDevices>::write(const u8 byte)
 {
-    for (u8 i = 0; i < sizeof(u8); ++i)
+    for (u8 i = 0; i < 8; ++i)
     {
         if (byte & (0x01 << i))
         {
@@ -58,7 +65,7 @@ template <std::size_t NumberOfDevices>
 u8 OneWire<NumberOfDevices>::read()
 {
     u8 byte = 0;
-    for (u8 i = 0; i < sizeof(u8); ++i)
+    for (u8 i = 0; i < 8; ++i)
     {
         if (Bit::High == readBit())
         {
@@ -74,10 +81,9 @@ Bit OneWire<NumberOfDevices>::readBit()
     Bit bit = Bit::Low;
     board_.oneWire.setAsOutput();
     board_.oneWire.setState(bsp::BusState::Low);
-    hal::time::usleep(2);
-    board_.oneWire.setState(bsp::BusState::High);
+    hal::time::usleep(3);
     board_.oneWire.setAsInput();
-    hal::time::usleep(7);
+    hal::time::usleep(10);
     if (bsp::BusState::High == board_.oneWire.getState())
     {
         bit = Bit::High;
@@ -95,7 +101,6 @@ void OneWire<NumberOfDevices>::writeBit(const Bit& bit)
     {
         // transmit "1"
         hal::time::usleep(15);
-        board_.oneWire.setState(bsp::BusState::High);
         board_.oneWire.setAsInput();
         hal::time::usleep(70);
     }
@@ -103,7 +108,6 @@ void OneWire<NumberOfDevices>::writeBit(const Bit& bit)
     {
         // transmit "0"
         hal::time::usleep(70);
-        board_.oneWire.setState(bsp::BusState::High);
         board_.oneWire.setAsInput();
         hal::time::usleep(15);
     }
@@ -160,6 +164,10 @@ template <std::size_t NumberOfDevices>
 InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
 {
     // number of conflicts = number of devices always
+    char buffer[5];
+    utils::itoa(NumberOfDevices, buffer, 5);
+    logger_.debug() << "Performing autodetection: " << buffer;
+
     containers::StaticVector<u8, NumberOfDevices> conflictPositions;
     for (std::size_t deviceIndex = 0; deviceIndex < NumberOfDevices; ++deviceIndex)
     {
@@ -170,9 +178,10 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
             return status;
         }
 
+        logger_.debug() << "Searching address";
         write(SEARCH_ROM);
 
-        for (u8 i = 0; i < sizeof(u64); ++i)
+        for (u8 i = 0; i < 64; ++i)
         {
             // read bit
             if (Bit::High == readBit())
@@ -180,6 +189,7 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
                 // read complementary bit
                 if (Bit::High == readBit())
                 {
+                    logger_.error() << "No device on bus";
                     return InterfaceStates::NoDevicesOnBus;
                 }
                 address |= 0x01;
@@ -208,7 +218,7 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
                             conflictPositions.pop_back();
                             writeBit(Bit::High);
                         }
-                        else if (-1 != conflictPositions.find())
+                        else if (-1 != conflictPositions.find(i))
                         {
                             writeBit(Bit::Low);
                         }
@@ -229,10 +239,14 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
                     writeBit(Bit::Low);
                 }
             }
-            address << 1;
+            address = address << 1;
         }
         devicesAddresses_[deviceIndex] = address;
+        char buffer[40];
+        utils::itoa(address, buffer, 16);
+        logger_.debug() << "Found 0x" << buffer;
     }
+    return InterfaceStates::Detected;
 }
 
 } // namespace drivers

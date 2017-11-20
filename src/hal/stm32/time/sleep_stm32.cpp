@@ -24,18 +24,17 @@ void msleep(u64 milliseconds)
     }
 }
 
-volatile bool initialized = false;
+volatile bool initialized          = false;
 volatile u32 cyclesFor1MicroSecond = 0;
 
-void usleep(u32 microseconds)
+void __attribute__((optimize("O0"))) usleep(u32 microseconds)
 {
     if (!initialized)
     {
-        RCC_ClocksTypeDef RCC_Clocks;
-        RCC_GetClocksFreq(&RCC_Clocks);
-        cyclesFor1MicroSecond = RCC_Clocks.HCLK_Frequency / 4000000;
+        cyclesFor1MicroSecond = SystemCoreClock / 13000000;
     }
     microseconds = microseconds * cyclesFor1MicroSecond - 10;
+
     while (microseconds--)
     {
     }

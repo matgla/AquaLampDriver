@@ -11,7 +11,8 @@ template <typename Type, std::size_t BufferSize>
 class StaticVector
 {
 public:
-    StaticVector() : firstFreePosition_(0)
+    StaticVector()
+        : firstFreePosition_(0)
     {
     }
 
@@ -49,6 +50,18 @@ public:
         }
 
         return data_[firstFreePosition_ - 1];
+    }
+
+    int find(int data) const
+    {
+        for (std::size_t i = 0; i < data_.size(); i++)
+        {
+            if (data == data_[i])
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
 private:

@@ -8,6 +8,7 @@
 #include "app/statemachines/appSm.hpp"
 #include "bsp/board.hpp"
 #include "display/display.hpp"
+#include "drivers/devices/ds18b20.hpp"
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
 
@@ -31,6 +32,7 @@ private:
     bsp::Board& board_;
     Context context_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
+    drivers::devices::Ds18b20<2> termometers_;
 };
 
 } // namespace app

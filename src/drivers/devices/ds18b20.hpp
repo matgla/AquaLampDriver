@@ -28,18 +28,21 @@ template <std::size_t NumberOfDevices>
 class Ds18b20
 {
 public:
-    Ds18b20(bsp::Board& board);
+    Ds18b20(bsp::Board& board)
+        : bus_(board)
+    {
+        bus_.performAutodetection();
+    }
 
-    template <std::size_t DeviceNumber>
-    float readTemperature()
+    float readTemperature(u8 deviceNumber)
     {
         u8 temperatureH = 0;
         u8 temperatureL = 0;
-        static_assert(DeviceNumber < NumberOfDevices, "Trying to read from not existing device");
-        bus_.initTranssmisionWithDevice<DeviceNumber>();
+        HAL_ASSERT_MSG(deviceNumber < NumberOfDevices, "Trying to read from not existing device");
+        bus_.initTranssmisionWithDevice(deviceNumber);
         bus_.write(CONVERT_TEMPERATURE);
         hal::time::msleep(750);
-        bus_.initTranssmisionWithDevice<DeviceNumber>();
+        bus_.initTranssmisionWithDevice(deviceNumber);
         bus_.write(READ_SCRATCHPAD);
         temperatureL = bus_.read();
         temperatureH = bus_.read();
