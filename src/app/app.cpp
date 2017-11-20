@@ -72,6 +72,9 @@ void App::run()
             statemachine_.process_event(events::ButtonBack{});
         }
 
+        // measure temperature
+
+        // make actions
         board_.run();
     }
     hal::time::Rtc::get().stop();

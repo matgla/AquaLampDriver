@@ -1,7 +1,7 @@
 #include "drivers/interfaces/onewire.hpp"
 
-#include "hal/time/sleep.hpp"
 #include "containers/staticVector.hpp"
+#include "hal/time/sleep.hpp"
 
 namespace drivers
 {
@@ -109,6 +109,53 @@ void OneWire<NumberOfDevices>::writeBit(const Bit& bit)
     }
 }
 
+/*
+    00110101
+    11011101
+    11010111
+    11111111
+
+    conflicts: []
+    */
+
+
+// TODO: dodać sprawdzenie czy konflikt juz jest w tablicy, jak jest w tablicy i nie jest ostatni to "0"
+
+/*
+    1: 00 konflikt, nie ma pozycji konfliktowych
+    wrzucam do tablicy pozycje 0
+    [0]
+    biore 0, odpadaja te z 1
+    2...
+    to do konca zostaje odczytane bez konfliktow: 1 [00110101]
+    [0]
+    3.
+    konflikt,
+    czy jest ostatni?
+    tak
+    usuwam z tablicy i biore 1
+    []
+    4.11
+    konflikt
+    tablica pusta
+    [2], biore 0
+    1101
+    konflikt
+    czy ostatni w tablicy?
+    nie
+    wiec dodaje
+    i biore 0
+    11010
+    [2, 4]
+    to dokonca leci
+                    2. [11010111]
+    [2, 4]
+    5. konflikt ostatni biore 1, [11011101]
+    6
+
+
+
+*/
 template <std::size_t NumberOfDevices>
 InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
 {
@@ -161,10 +208,21 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
                             conflictPositions.pop_back();
                             writeBit(Bit::High);
                         }
+                        else if (-1 != conflictPositions.find())
+                        {
+                            writeBit(Bit::Low);
+                        }
+                        else
+                        {
+                            conflictPositions.push_back(i);
+                            writeBit(Bit::Low);
+                        }
                     }
-                    writeBit(Bit::Low);
-                    conflictPositions.push_back(i);
-                    // ale jak skminić co
+                    else
+                    {
+                        conflictPositions.push_back(i);
+                        writeBit(Bit::Low);
+                    }
                 }
                 else
                 {

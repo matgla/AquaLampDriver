@@ -74,16 +74,55 @@ struct SetTimeSm
     using Action = std::function<void(Context&)>;
 
     const Action onInit = [](Context& context) {
-        std::time_t t = std::time(nullptr);
-        struct tm* currentTime = std::localtime(&t);
-        auto& timeSetting = context.timeSetting;
-        timeSetting.hours = currentTime->tm_hour;
-        timeSetting.minutes = currentTime->tm_min;
-        timeSetting.seconds = currentTime->tm_sec;
+        switch (context.timeSettingOption)
+        {
+            case Context::TimeSettingOptions::SetSunshine:
+            {
+                // TODO: implement read from registers
+            }
+            break;
+            case Context::TimeSettingOptions::SetSunrise:
+            {
+                // TODO: implement read from registers
+            }
+            break;
+            case Context::TimeSettingOptions::SetTime:
+            {
+                std::time_t t          = std::time(nullptr);
+                struct tm* currentTime = std::localtime(&t);
+                auto& timeSetting      = context.timeSetting;
+                timeSetting.hours      = currentTime->tm_hour;
+                timeSetting.minutes    = currentTime->tm_min;
+                timeSetting.seconds    = currentTime->tm_sec;
+            }
+            break;
+        }
+
     };
 
+    static TimeSetting* getTimeSettings(Context& context)
+    {
+        TimeSetting* settingsPtr = nullptr;
+        if (Context::TimeSettingOptions::SetSunshine == context.timeSettingOption)
+        {
+            settingsPtr = &context.sunshine;
+        }
+        else if (Context::TimeSettingOptions::SetSunrise == context.timeSettingOption)
+        {
+            settingsPtr = &context.sunrise;
+        }
+        else if (Context::TimeSettingOptions::SetTime == context.timeSettingOption)
+        {
+            settingsPtr = &context.timeSetting;
+        }
+
+        HAL_ASSERT_MSG(settingsPtr != nullptr, "Wrong time setting option");
+        return settingsPtr;
+    }
+
     const Action onHoursIncrement = [](Context& context) {
-        auto& hours = context.timeSetting.hours;
+
+        auto& hours = getTimeSettings(context)->hours;
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
             hours += 5;
@@ -101,7 +140,7 @@ struct SetTimeSm
 
 
     const Action onHoursDecrement = [](Context& context) {
-        auto& hours = context.timeSetting.hours;
+        auto& hours = getTimeSettings(context)->hours;
 
         if (context.channelSetting.board_.downButton.isLongPressed())
         {
@@ -119,7 +158,7 @@ struct SetTimeSm
     };
 
     const Action onMinutesIncrement = [](Context& context) {
-        auto& minutes = context.timeSetting.minutes;
+        auto& minutes = getTimeSettings(context)->minutes;
 
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
@@ -137,7 +176,7 @@ struct SetTimeSm
     };
 
     const Action onMinutesDecrement = [](Context& context) {
-        auto& minutes = context.timeSetting.minutes;
+        auto& minutes = getTimeSettings(context)->minutes;
 
         if (context.channelSetting.board_.downButton.isLongPressed())
         {
@@ -156,7 +195,7 @@ struct SetTimeSm
 
 
     const Action onSecondsIncrement = [](Context& context) {
-        auto& seconds = context.timeSetting.seconds;
+        auto& seconds = getTimeSettings(context)->seconds;
 
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
@@ -174,7 +213,7 @@ struct SetTimeSm
     };
 
     const Action onSecondsDecrement = [](Context& context) {
-        auto& seconds = context.timeSetting.seconds;
+        auto& seconds = getTimeSettings(context)->seconds;
 
         if (context.channelSetting.board_.upButton.isLongPressed())
         {
@@ -196,7 +235,18 @@ struct SetTimeSm
     {
         auto& display = context.display;
         display.clear(display::Colors::OFF);
-        display.print("Set time:\n\n");
+        if (Context::TimeSettingOptions::SetSunshine == context.timeSettingOption)
+        {
+            display.print("Set sunshine:\n\n");
+        }
+        else if (Context::TimeSettingOptions::SetSunrise == context.timeSettingOption)
+        {
+            display.print("Set sunrise:\n\n");
+        }
+        else if (Context::TimeSettingOptions::SetTime == context.timeSettingOption)
+        {
+            display.print("Set time:\n\n");
+        }
         for (u8 i = 0; i < arrowPosition; ++i)
         {
             display.print(" ");
@@ -207,9 +257,32 @@ struct SetTimeSm
         char buffer[50];
 
         std::tm time;
-        time.tm_hour = context.timeSetting.hours;
-        time.tm_min = context.timeSetting.minutes;
-        time.tm_sec = context.timeSetting.seconds;
+
+        switch (context.timeSettingOption)
+        {
+            case Context::TimeSettingOptions::SetSunshine:
+            {
+                time.tm_hour = context.sunshine.hours;
+                time.tm_min  = context.sunshine.minutes;
+                time.tm_sec  = context.sunshine.seconds;
+            }
+            break;
+            case Context::TimeSettingOptions::SetSunrise:
+            {
+                time.tm_hour = context.sunrise.hours;
+                time.tm_min  = context.sunrise.minutes;
+                time.tm_sec  = context.sunrise.seconds;
+            }
+            break;
+            case Context::TimeSettingOptions::SetTime:
+            {
+                time.tm_hour = context.timeSetting.hours;
+                time.tm_min  = context.timeSetting.minutes;
+                time.tm_sec  = context.timeSetting.seconds;
+            }
+            break;
+        }
+
 
         utils::formatTime(buffer, 50, &time);
 
@@ -233,7 +306,6 @@ struct SetTimeSm
 
     const Action onHours = [](Context& context) {
         displayTime(context, 2);
-
     };
 
     const Action onMinutes = [](Context& context) {
@@ -309,8 +381,25 @@ struct SetTimeSm
     }
 
     const Action onSave = [](Context& context) {
-        auto& t = context.timeSetting;
-        hal::time::Rtc::get().setTime(t.hours, t.minutes, t.seconds);
+        switch (context.timeSettingOption)
+        {
+            case Context::TimeSettingOptions::SetSunshine:
+            {
+                // TODO: add some storing
+            }
+            break;
+            case Context::TimeSettingOptions::SetSunrise:
+            {
+                // TODO: add some storing
+            }
+            break;
+            case Context::TimeSettingOptions::SetTime:
+            {
+                auto& t = context.timeSetting;
+                hal::time::Rtc::get().setTime(t.hours, t.minutes, t.seconds);
+            }
+            break;
+        }
 
         auto& display = context.display;
         drawFrame(context.display);
@@ -318,9 +407,6 @@ struct SetTimeSm
 
         u8 cursorX = (display.getWidth() - strlen(str) * (display.getFont().width + 1)) / 2;
         u8 cursorY = (display.getHeight() - display.getFont().height) / 2;
-
-        context.logger.debug() << "Set cursor to: " << cursorX << ", "
-                               << cursorY;
 
         display.setCursor(cursorX,
                           cursorY);
