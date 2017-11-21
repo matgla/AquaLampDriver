@@ -186,20 +186,31 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
             // read bit
             if (Bit::High == readBit())
             {
+                logger_.info() << "a1";
                 // read complementary bit
                 if (Bit::High == readBit())
                 {
+                    logger_.info() << "b1";
+
                     logger_.error() << "No device on bus";
                     return InterfaceStates::NoDevicesOnBus;
+                }
+                else
+                {
+                    logger_.info() << "c0";
                 }
                 address |= 0x01;
                 writeBit(Bit::High);
             }
             else // got "0"
             {
+                logger_.info() << "d0";
+
                 // read complementary bit
                 if (Bit::Low == readBit())
                 {
+                    logger_.info() << "e0";
+
                     // whops, we got conflict
                     // teraz trzeba wybrać 0 czy 1, dodaje pozycje do tablicy konfliktow
                     // sprawdzam czy pozycja juz jest w tablicy konfliktow
@@ -210,6 +221,8 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
                     // if some conflicts are known
                     if (conflictPositions.size())
                     {
+
+
                         // and if this conflict is last on conflicts lists, this mean that we are
                         // on lowest part of searching tree
                         if (i == conflictPositions.get_last())
@@ -220,22 +233,30 @@ InterfaceStates OneWire<NumberOfDevices>::performAutodetection()
                         }
                         else if (-1 != conflictPositions.find(i))
                         {
+                            logger_.info() << "found in conflicts array";
                             writeBit(Bit::Low);
                         }
                         else
                         {
                             conflictPositions.push_back(i);
+                            char buf[40];
+                            utils::itoa(i, buf, 10);
+                            logger_.info() << "Conflict: " << buf;
                             writeBit(Bit::Low);
                         }
                     }
                     else
                     {
                         conflictPositions.push_back(i);
+                        char buf[40];
+                        utils::itoa(i, buf, 10);
+                        logger_.info() << "Conflict: " << buf;
                         writeBit(Bit::Low);
                     }
                 }
                 else
                 {
+                    logger_.info() << "f1";
                     writeBit(Bit::Low);
                 }
             }
