@@ -4,15 +4,15 @@
 
 #include "bsp/board.hpp"
 #include "logger/logger.hpp"
-
+#include "serializer/serializer.hpp"
 //================
 //| ROM COMMANDS |
 //================
-#define READ_ROM 0x33
-#define MATCH_ROM 0x55
-#define SKIP_ROM 0xCC
-#define ALARM_SEARCH 0xec
-#define SEARCH_ROM 0xf0
+constexpr u8 READ_ROM     = 0x33;
+constexpr u8 MATCH_ROM    = 0x55;
+constexpr u8 SKIP_ROM     = 0xCC;
+constexpr u8 ALARM_SEARCH = 0xec;
+constexpr u8 SEARCH_ROM   = 0xf0;
 
 
 namespace drivers
@@ -41,6 +41,18 @@ public:
     OneWire(bsp::Board& board);
     InterfaceStates reset();
     void write(const u8 byte);
+    template <typename Type>
+    void write(const Type byte)
+    {
+        u8 data[sizeof(Type)];
+        serializer::serialize(data, byte);
+
+        for (u8 byte : data)
+        {
+            write(byte);
+        }
+    }
+
     u8 read();
     Bit readBit();
     void writeBit(const Bit& bit);
@@ -57,8 +69,7 @@ public:
         }
 
         write(MATCH_ROM);
-        write(static_cast<u8>(devicesAddresses_[deviceNumber] >> 32));
-        write(static_cast<u8>(devicesAddresses_[deviceNumber] & 0x00ff));
+        write(devicesAddresses_[deviceNumber]);
     }
 
 private:

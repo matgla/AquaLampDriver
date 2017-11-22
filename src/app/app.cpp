@@ -33,6 +33,10 @@ void App::start()
     sprintf(buffer, "test: %d echh\0", (int)test);
     logger_.info() << buffer;
 
+    test = termometers_.readTemperature(1);
+    sprintf(buffer, "test: %d echh\0", (int)test);
+    logger_.info() << buffer;
+
     logger_.info() << "Started";
 }
 

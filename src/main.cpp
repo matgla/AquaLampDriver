@@ -6,7 +6,6 @@
 
 // TODO: remove this ugly preprocessor
 
-
 #ifdef PCD8544_DISPLAY
 #include "drivers/lcd/pcd8544/displayPcd8544.hpp"
 #elif SFML_DISPLAY
@@ -31,6 +30,7 @@ int main()
     app::App app(display, board);
     app.start();
     app.run();
+
 
     return 0;
 }

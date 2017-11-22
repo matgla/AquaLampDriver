@@ -1,8 +1,10 @@
 #pragma once
 
 #include "utils/types.hpp"
+
 #include <cstring>
 #include <stdint.h>
+#include <type_traits>
 
 
 #define UNUSED1(x) (void)(x)
@@ -38,10 +40,6 @@
 #define ALL_UNUSED_IMPL(nargs) ALL_UNUSED_IMPL_(nargs)
 #define UNUSED(...) ALL_UNUSED_IMPL(VA_NUM_ARGS(__VA_ARGS__)) \
 \
-\
-\
-\
-\
 (__VA_ARGS__)
 /*
 ** reverse string in place 
@@ -52,7 +50,26 @@ char getNumber(int n);
 
 namespace utils
 {
-int itoa(int n, char* s, int base_n = 10);
+
+template <typename T>
+T itoa(T n, char* s, int base_n = 10)
+{
+    static_assert(std::is_arithmetic<T>::value, "Type provided for serialize isn't arithmetic");
+    T i, sign;
+
+    if ((sign = n) < 0) /* record sign */
+        n = -n;         /* make n positive */
+    i = 0;
+    do
+    {                                   /* generate digits in reverse order */
+        s[i++] = getNumber(n % base_n); /* get next digit */
+    } while ((n /= base_n) > 0);        /* delete it */
+    if (sign < 0)
+        s[i++] = '-';
+    s[i] = '\0';
+    reverse(s);
+    return i;
+}
 
 int writeToBufferAligned(char* buffer, int data, char suffix, u8 size = 2, char prefix = '0');
 int formatTime(char* buffer, const u8 bufferSize, std::tm* t);

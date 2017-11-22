@@ -17,7 +17,7 @@ void reverse(char* s)
     j = s + strlen(s) - 1;
     while (s < j)
     {
-        c = *s;
+        c    = *s;
         *s++ = *j;
         *j-- = c;
     }
@@ -37,23 +37,6 @@ char getNumber(int n)
 
 namespace utils
 {
-int itoa(int n, char* s, int base_n)
-{
-    int i, sign;
-
-    if ((sign = n) < 0) /* record sign */
-        n = -n;         /* make n positive */
-    i = 0;
-    do
-    {                                   /* generate digits in reverse order */
-        s[i++] = getNumber(n % base_n); /* get next digit */
-    } while ((n /= base_n) > 0);        /* delete it */
-    if (sign < 0)
-        s[i++] = '-';
-    s[i] = '\0';
-    reverse(s);
-    return i;
-}
 
 int pow(int base, int index)
 {
