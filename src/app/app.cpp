@@ -28,21 +28,13 @@ void App::start()
     board_.led.on();
     board_.registers.startupDone();
 
-    float test = termometers_.readTemperature(0);
-    char buffer[40];
-    sprintf(buffer, "test: %d echh\0", (int)test);
-    logger_.info() << buffer;
-
-    test = termometers_.readTemperature(1);
-    sprintf(buffer, "test: %d echh\0", (int)test);
-    logger_.info() << buffer;
-
     logger_.info() << "Started";
 }
 
 void App::update()
 {
     display_.backlightOn();
+
     statemachine_.process_event(statemachines::events::Update{});
 }
 
@@ -64,6 +56,21 @@ void App::run()
         if (board_.leftButton.isPressed())
         {
             logger_.info() << "left";
+
+            float test = termometers_.readTemperature(0);
+            test *= 16;
+            u8* a = reinterpret_cast<u8*>(&test);
+            u8 l  = *a;
+            a++;
+            u8 h = *a;
+
+            char buffer[40];
+            sprintf(buffer, "temp 1: %f", test);
+            logger_.info() << buffer;
+
+            sprintf(buffer, "temp 2: %d.%d", h, l);
+            logger_.info() << buffer;
+
             statemachine_.process_event(events::ButtonLeft{});
         }
         if (board_.rightButton.isPressed())
