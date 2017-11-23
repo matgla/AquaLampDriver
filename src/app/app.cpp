@@ -51,16 +51,11 @@ void App::run()
 
         float temperature = termometers_.readTemperature(0);
 
-        char buffer[40];
-        sprintf(buffer, "Temperature 1: %f", temperature);
-        logger_.info() << buffer;
         auto conv = utils::floatToInts(temperature, 4);
         logger_.info() << "Temperature 1: " << conv.first << "." << conv.second << "   conv !";
 
         temperature = termometers_.readTemperature(1);
-        sprintf(buffer, "Temperature 2: %f", temperature);
-        logger_.info() << buffer;
-        conv = utils::floatToInts(temperature, 4);
+        conv        = utils::floatToInts(temperature, 4);
         logger_.info() << "Temperature 2: " << conv.first << "." << conv.second << "   conv !";
 
     });

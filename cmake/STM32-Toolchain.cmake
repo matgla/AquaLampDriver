@@ -28,7 +28,7 @@ SET(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m3 -fno-builtin -Wall -std=gnu99 -fdata-
 SET(CMAKE_CXX_FLAGS "-mthumb -mcpu=cortex-m3 -fno-builtin -Wall -std=c++1z -fdata-sections -ffunction-sections -mfloat-abi=soft -fno-rtti -fno-use-cxa-atexit -fno-exceptions -fno-threadsafe-statics" CACHE INTERNAL "cxx compiler flags")
 SET(CMAKE_ASM_FLAGS "-mthumb -mcpu=cortex-m3" CACHE INTERNAL "asm compiler flags")
 
-SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m3 -T${CMAKE_SOURCE_DIR}/lkr/STM32F103C8Tx_FLASH.ld --specs=nano.specs -u _printf_float" CACHE INTERNAL "exe link flags")
+SET(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m3 -T${CMAKE_SOURCE_DIR}/lkr/STM32F103C8Tx_FLASH.ld --specs=nano.specs" CACHE INTERNAL "exe link flags")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
