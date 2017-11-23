@@ -1,6 +1,7 @@
 #include "utils.hpp"
 
 #include <cassert>
+#include <cmath>
 #include <cstring>
 #include <ctime>
 
@@ -93,4 +94,25 @@ void formatDateAndTime(char* buffer, const u8 bufferSize, std::tm* t)
     i += formatTime(buffer + i, bufferSize - i, t);
     HAL_ASSERT_MSG(i <= bufferSize, "Buffer overflow");
 }
+
+std::pair<u16, u16> floatToInts(float number, const u8 precision)
+{
+    u16 high;
+    u16 low;
+    high                = std::floor(number);
+    float floatingPoint = number - high;
+    int multiplier      = pow(10, precision);
+    if (floatingPoint < 0.1)
+    {
+        low = std::round(floatingPoint * 10) / 10 * 10;
+    }
+    else
+    {
+        low = std::round(floatingPoint * multiplier);
+    }
+
+
+    return std::pair<u16, u16>(high, low);
+}
+
 } // namespace utils

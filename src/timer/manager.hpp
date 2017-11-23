@@ -38,7 +38,7 @@ public:
             if (timeout.second == false)
             {
                 timeout.second = true;
-                timeout.first.start(milliseconds);
+                timeout.first.start(milliseconds, callback);
                 logger_.info() << "Started timer with id: " << id;
                 return id;
             }
@@ -48,7 +48,7 @@ public:
         return -1;
     }
 
-    TimerId setInterval(u32 milliseconds, TimerCallback callback, int times = -1)
+    TimerId setInterval(u64 milliseconds, TimerCallback callback, int times = -1)
     {
         for (TimerId id = 0; id < intervals_.size(); ++id)
         {
@@ -56,7 +56,7 @@ public:
             if (interval.second == false)
             {
                 interval.second = true;
-                interval.first.start(milliseconds);
+                interval.first.start(milliseconds, callback, times);
                 logger_.info() << "Started interval with id: " << id;
                 return id;
             }
@@ -130,13 +130,13 @@ public:
     }
 
 private:
-    using ManagedTimeout = std::pair<TimeoutTimer, bool>;
-    using ManagedInterval = std::pair<IntervalTimer, bool>;
-    using TimeoutContainer = std::array<ManagedTimeout, TimeoutsSize>;
+    using ManagedTimeout    = std::pair<TimeoutTimer, bool>;
+    using ManagedInterval   = std::pair<IntervalTimer, bool>;
+    using TimeoutContainer  = std::array<ManagedTimeout, TimeoutsSize>;
     using IntervalContainer = std::array<ManagedInterval, TimeoutsSize>;
 
     TimeoutContainer timeouts_;
-    TimeoutContainer intervals_;
+    IntervalContainer intervals_;
     logger::Logger logger_;
 };
 

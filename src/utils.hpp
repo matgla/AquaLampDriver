@@ -5,6 +5,7 @@
 #include <cstring>
 #include <stdint.h>
 #include <type_traits>
+#include <utility>
 
 
 #define UNUSED1(x) (void)(x)
@@ -40,6 +41,12 @@
 #define ALL_UNUSED_IMPL(nargs) ALL_UNUSED_IMPL_(nargs)
 #define UNUSED(...) ALL_UNUSED_IMPL(VA_NUM_ARGS(__VA_ARGS__)) \
 \
+\
+\
+\
+\
+\
+\
 (__VA_ARGS__)
 /*
 ** reverse string in place 
@@ -50,6 +57,7 @@ char getNumber(int n);
 
 namespace utils
 {
+int pow(int base, int index);
 
 template <typename T>
 T itoa(T n, char* s, int base_n = 10)
@@ -70,6 +78,8 @@ T itoa(T n, char* s, int base_n = 10)
     reverse(s);
     return i;
 }
+
+std::pair<u16, u16> floatToInts(float number, const u8 precision);
 
 int writeToBufferAligned(char* buffer, int data, char suffix, u8 size = 2, char prefix = '0');
 int formatTime(char* buffer, const u8 bufferSize, std::tm* t);

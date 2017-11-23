@@ -18,7 +18,7 @@ OneWire<NumberOfDevices>::OneWire(bsp::Board& board)
 template <std::size_t NumberOfDevices>
 InterfaceStates OneWire<NumberOfDevices>::reset()
 {
-    logger_.debug() << "reset";
+    // logger_.debug() << "reset";
     board_.oneWire.setAsOutput();
     board_.oneWire.setState(bsp::BusState::Low);
     hal::time::usleep(500);
@@ -31,7 +31,7 @@ InterfaceStates OneWire<NumberOfDevices>::reset()
         hal::time::usleep(500);
         if (bsp::BusState::High == board_.oneWire.getState())
         {
-            logger_.debug() << "Device pulse detected";
+            // logger_.debug() << "Device pulse detected";
             return InterfaceStates::Detected;
         }
         // bus must be in high state now, but is not
@@ -48,10 +48,6 @@ InterfaceStates OneWire<NumberOfDevices>::reset()
 template <std::size_t NumberOfDevices>
 void OneWire<NumberOfDevices>::write(const u8 byte)
 {
-    char data[4];
-    utils::itoa(byte, data, 16);
-
-    logger_.info() << "Write: 0x" << data;
     u8 tmp;
     for (u8 i = 0; i < 8; ++i)
     {

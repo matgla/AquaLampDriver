@@ -33,6 +33,7 @@ private:
     Context context_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
     drivers::devices::Ds18b20<2> termometers_;
+    timer::Manager<10, 10> timerManager_;
 };
 
 } // namespace app

@@ -3,6 +3,7 @@
 #include <array>
 
 #include "bsp/board.hpp"
+#include "hal/utils/assert.hpp"
 #include "logger/logger.hpp"
 #include "serializer/serializer.hpp"
 //================
@@ -70,6 +71,17 @@ public:
 
         write(MATCH_ROM);
         write(devicesAddresses_[deviceNumber]);
+    }
+
+    InterfaceStates initTranssmisionWithAllDevices()
+    {
+        const auto status = reset();
+        if (InterfaceStates::Detected != status)
+        {
+            return status;
+        }
+
+        write(SKIP_ROM);
     }
 
 private:

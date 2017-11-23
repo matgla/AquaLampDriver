@@ -1,7 +1,5 @@
 #include "bsp/board.hpp"
 
-#include "bsp/x86/window.hpp"
-
 namespace bsp
 {
 

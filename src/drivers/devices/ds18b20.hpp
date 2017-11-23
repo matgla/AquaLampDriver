@@ -3,6 +3,7 @@
 #include "bsp/board.hpp"
 #include "drivers/interfaces/onewire.hpp"
 #include "hal/time/sleep.hpp"
+#include "timer/timeoutTimer.hpp"
 
 #include "logger/logger.hpp"
 
@@ -32,15 +33,42 @@ public:
         bus_.performAutodetection();
     }
 
+    void measureTemperature()
+    {
+        runTimers();
+
+        bus_.initTranssmisionWithAllDevices();
+        bus_.write(CONVERT_TEMPERATURE);
+        measurementTimer_.start(800, [this] {
+            logger_.info() << "Measure ready";
+            for (u8 deviceId = 0; deviceId < NumberOfDevices; ++deviceId)
+            {
+                readTemperatureFromDevice(deviceId);
+            }
+        });
+    }
+
     float readTemperature(u8 deviceNumber)
     {
+        runTimers();
+        HAL_ASSERT_MSG(deviceNumber < NumberOfDevices, "Trying to read from not existing device");
+
+        return temperature_[deviceNumber];
+    }
+
+private:
+    void runTimers()
+    {
+        measurementTimer_.run();
+    }
+
+    void readTemperatureFromDevice(u8 deviceNumber)
+    {
+        runTimers();
+        HAL_ASSERT_MSG(deviceNumber < NumberOfDevices, "Trying to read from not existing device");
+
         u8 temperatureH = 0;
         u8 temperatureL = 0;
-
-        HAL_ASSERT_MSG(deviceNumber < NumberOfDevices, "Trying to read from not existing device");
-        bus_.initTranssmisionWithDevice(deviceNumber);
-        bus_.write(CONVERT_TEMPERATURE);
-        hal::time::msleep(800);
 
         bus_.initTranssmisionWithDevice(deviceNumber);
         bus_.write(READ_SCRATCHPAD);
@@ -48,12 +76,16 @@ public:
         temperatureH = bus_.read();
 
         bus_.reset();
-        return static_cast<float>(temperatureL + (temperatureH << 8)) / 16;
+        if (temperatureH != 255) /* device not ready */
+        {
+            temperature_[deviceNumber] = static_cast<float>(temperatureL + (temperatureH << 8)) / 16;
+        }
     }
 
-private:
     interfaces::OneWire<NumberOfDevices> bus_;
     logger::Logger logger_;
+    timer::TimeoutTimer measurementTimer_;
+    float temperature_[NumberOfDevices];
 };
 
 } // namespace devices

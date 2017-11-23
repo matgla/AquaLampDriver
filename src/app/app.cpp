@@ -1,9 +1,12 @@
 #include "app/app.hpp"
 
+#include <cmath>
+
 #include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
 #include "hal/time/rtc.hpp"
 #include "logger/logger.hpp"
+
 
 namespace app
 {
@@ -41,6 +44,27 @@ void App::update()
 void App::run()
 {
     using namespace statemachines;
+    timerManager_.setInterval(1000, [this]() {
+        logger_.info() << "Interval fire";
+
+        termometers_.measureTemperature();
+
+        float temperature = termometers_.readTemperature(0);
+
+        char buffer[40];
+        sprintf(buffer, "Temperature 1: %f", temperature);
+        logger_.info() << buffer;
+        auto conv = utils::floatToInts(temperature, 4);
+        logger_.info() << "Temperature 1: " << conv.first << "." << conv.second << "   conv !";
+
+        temperature = termometers_.readTemperature(1);
+        sprintf(buffer, "Temperature 2: %f", temperature);
+        logger_.info() << buffer;
+        conv = utils::floatToInts(temperature, 4);
+        logger_.info() << "Temperature 2: " << conv.first << "." << conv.second << "   conv !";
+
+    });
+
     while (!board_.exit())
     {
         if (board_.downButton.isPressed())
@@ -56,20 +80,6 @@ void App::run()
         if (board_.leftButton.isPressed())
         {
             logger_.info() << "left";
-
-            float test = termometers_.readTemperature(0);
-            test *= 16;
-            u8* a = reinterpret_cast<u8*>(&test);
-            u8 l  = *a;
-            a++;
-            u8 h = *a;
-
-            char buffer[40];
-            sprintf(buffer, "temp 1: %f", test);
-            logger_.info() << buffer;
-
-            sprintf(buffer, "temp 2: %d.%d", h, l);
-            logger_.info() << buffer;
 
             statemachine_.process_event(events::ButtonLeft{});
         }
@@ -93,6 +103,7 @@ void App::run()
 
         // make actions
         board_.run();
+        timerManager_.run();
     }
     hal::time::Rtc::get().stop();
 }
