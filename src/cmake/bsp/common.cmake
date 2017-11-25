@@ -10,4 +10,5 @@ set(bsp_common_includes
     ${COMMON_BSP_SOURCE_DIR}/led.hpp
     ${COMMON_BSP_SOURCE_DIR}/spi.hpp
     ${COMMON_BSP_SOURCE_DIR}/onewire.hpp
+    ${COMMON_BSP_SOURCE_DIR}/pwm.hpp
 )

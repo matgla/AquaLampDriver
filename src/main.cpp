@@ -23,14 +23,10 @@ int main()
     drivers::lcd::DisplaySfml lcdDriver;
 #endif
     display::Display display(board, lcdDriver, display::font_5x7);
-    display.clear(display::Colors::OFF);
-    display.print("Hej\nho\n");
-    display.print("Wyswietlacz dziala\n");
-    display.print("lalalal\n");
+
     app::App app(display, board);
     app.start();
     app.run();
-
 
     return 0;
 }

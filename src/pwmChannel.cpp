@@ -34,11 +34,11 @@ void Channel::setPulse(u8 width)
     TIM_OCInitTypeDef channel;
 
     TIM_OCStructInit(&channel);
-    channel.TIM_OCMode = TIM_OCMode_PWM1;
+    channel.TIM_OCMode      = TIM_OCMode_PWM1;
     channel.TIM_OutputState = TIM_OutputState_Enable;
-    float multiplier = (float)width / 100;
-    u32 pulse = (float)period_ * multiplier;
-    channel.TIM_Pulse = pulse;
+    float multiplier        = (float)width / 100;
+    u32 pulse               = (float)period_ * multiplier;
+    channel.TIM_Pulse       = pulse;
     //TIM_Cmd(timer_, DISABLE);
     switch (chNr_)
     {
@@ -87,8 +87,8 @@ void Channel::initGpio()
 {
     GPIO_InitTypeDef gpio;
     GPIO_StructInit(&gpio);
-    gpio.GPIO_Pin = channelPin_;
-    gpio.GPIO_Mode = GPIO_Mode_AF_PP;
+    gpio.GPIO_Pin   = channelPin_;
+    gpio.GPIO_Mode  = GPIO_Mode_AF_PP;
     gpio.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(channelPort_, &gpio);
 }
@@ -113,10 +113,10 @@ void Channel::initTimer(u32 freq)
     TIM_TimeBaseInitTypeDef tim;
     TIM_TimeBaseStructInit(&tim);
     tim.TIM_CounterMode = TIM_CounterMode_Up;
-    u32 pre = SystemCoreClock / 1000000 - 1;
-    tim.TIM_Prescaler = pre;
-    period_ = 1000000 / freq;
-    tim.TIM_Period = period_ - 1;
+    u32 pre             = SystemCoreClock / 1000000 - 1;
+    tim.TIM_Prescaler   = pre;
+    period_             = 1000000 / freq;
+    tim.TIM_Period      = period_ - 1;
     TIM_TimeBaseInit(timer_, &tim);
     setPulse(0);
 }
@@ -165,16 +165,16 @@ Channel3::Channel3()
 {
 }
 
-Channel4::Channel4()
-    : Channel(GPIO_Pin_0,
-              GPIOA,
-              TIM2,
-              RCC_APB1Periph_TIM2,
-              RCC_APB2Periph_GPIOA,
-              Channels::CH0,
-              false)
-{
-}
+// Channel4::Channel4()
+//     : Channel(GPIO_Pin_0,
+//               GPIOA,
+//               TIM2,
+//               RCC_APB1Periph_TIM2,
+//               RCC_APB2Periph_GPIOA,
+//               Channels::CH0,
+//               false)
+// {
+// }
 
 Channel5::Channel5()
     : Channel(GPIO_Pin_1,
@@ -198,27 +198,27 @@ Channel6::Channel6()
 {
 }
 
-Channel7::Channel7()
-    : Channel(GPIO_Pin_7,
-              GPIOA,
-              TIM3,
-              RCC_APB1Periph_TIM3,
-              RCC_APB2Periph_GPIOA,
-              Channels::CH1,
-              true)
-{
-}
+// Channel7::Channel7()
+//     : Channel(GPIO_Pin_7,
+//               GPIOA,
+//               TIM3,
+//               RCC_APB1Periph_TIM3,
+//               RCC_APB2Periph_GPIOA,
+//               Channels::CH1,
+//               true)
+// {
+// }
 
-Channel8::Channel8()
-    : Channel(GPIO_Pin_0,
-              GPIOB,
-              TIM3,
-              RCC_APB1Periph_TIM3,
-              RCC_APB2Periph_GPIOB,
-              Channels::CH2,
-              false)
-{
-}
+// Channel8::Channel8()
+//     : Channel(GPIO_Pin_0,
+//               GPIOB,
+//               TIM3,
+//               RCC_APB1Periph_TIM3,
+//               RCC_APB2Periph_GPIOB,
+//               Channels::CH2,
+//               false)
+// {
+// }
 
 Channel9::Channel9()
     : Channel(GPIO_Pin_1,

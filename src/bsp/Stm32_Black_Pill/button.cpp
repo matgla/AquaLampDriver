@@ -2,85 +2,238 @@
 
 #include "bsp/stm32f1_common/helpers.hpp"
 
+#include "logger/logger.hpp"
+#include <stm32f10x_adc.h>
+
+constexpr uint16_t BOUNDARY_OFFSET         = 150;
+constexpr uint16_t BUTTON_LEFT_THRESHOLD   = 3950;
+constexpr uint16_t BUTTON_DOWN_THRESHOLD   = 3200;
+constexpr uint16_t BUTTON_RIGHT_THRESHOLD  = 2730;
+constexpr uint16_t BUTTON_SELECT_THRESHOLD = 700;
+constexpr uint16_t BUTTON_UP_THRESHOLD     = 1380;
+constexpr uint16_t BUTTON_BACK_THRESHOLD   = 1820;
+
+constexpr uint32_t COUNTER_THRESHOLD = 40;
+
 namespace bsp
 {
+
+bool wasInitialized = false;
+
+static uint32_t buttonLeftCounter   = 0;
+static uint32_t buttonDownCounter   = 0;
+static uint32_t buttonRightCounter  = 0;
+static uint32_t buttonSelectCounter = 0;
+static uint32_t buttonUpCounter     = 0;
+static uint32_t buttonBackCounter   = 0;
+
+void init()
+{
+    if (!wasInitialized)
+    {
+        logger::Logger logger("ADC");
+        GPIO_InitTypeDef gpio;
+        ADC_InitTypeDef adc;
+
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+
+        RCC_ADCCLKConfig(RCC_PCLK2_Div6);
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+
+        gpio.GPIO_Pin  = GPIO_Pin_0;
+        gpio.GPIO_Mode = GPIO_Mode_AIN;
+        GPIO_Init(GPIOA, &gpio);
+
+        ADC_StructInit(&adc);
+        adc.ADC_ContinuousConvMode = ENABLE;
+        adc.ADC_NbrOfChannel       = 1;
+        adc.ADC_ExternalTrigConv   = ADC_ExternalTrigConv_None;
+        ADC_Init(ADC1, &adc);
+
+        ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_71Cycles5);
+        ADC_Cmd(ADC1, ENABLE);
+
+        ADC_ResetCalibration(ADC1);
+        while (ADC_GetResetCalibrationStatus(ADC1))
+            ;
+
+        ADC_StartCalibration(ADC1);
+        while (ADC_GetCalibrationStatus(ADC1))
+            ;
+
+        ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+        wasInitialized = true;
+        logger.info() << "adc initalized";
+    }
+}
 
 template <>
 Button<Buttons::Left>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-    Helper::configureGpio(GPIOA, GPIO_Pin_13, GPIO_Mode_IPD, GPIO_Speed_2MHz);
+    init();
 }
 
 template <>
 Button<Buttons::Right>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    Helper::configureGpio(GPIOA, GPIO_Pin_5, GPIO_Mode_IPD, GPIO_Speed_50MHz);
+    init();
 }
 
 template <>
 Button<Buttons::Up>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-    Helper::configureGpio(GPIOB, GPIO_Pin_15, GPIO_Mode_IPD, GPIO_Speed_50MHz);
+    init();
 }
 
 template <>
 Button<Buttons::Down>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    Helper::configureGpio(GPIOA, GPIO_Pin_12, GPIO_Mode_IN_FLOATING, GPIO_Speed_50MHz);
+    init();
 }
 
 template <>
 Button<Buttons::Back>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-    Helper::configureGpio(GPIOB, GPIO_Pin_13, GPIO_Mode_IPD, GPIO_Speed_50MHz);
+    init();
 }
 
 template <>
 Button<Buttons::Select>::Button()
 {
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-    Helper::configureGpio(GPIOB, GPIO_Pin_14, GPIO_Mode_IPD, GPIO_Speed_50MHz);
+    init();
 }
 
 template <>
 bool Button<Buttons::Left>::isPinPressed()
 {
-    return GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13);
-}
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    if (adc > BUTTON_LEFT_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_LEFT_THRESHOLD + BOUNDARY_OFFSET)
+    {
+        ++buttonLeftCounter;
+    }
+    else
+    {
+        buttonLeftCounter = 0;
+    }
 
-template <>
-bool Button<Buttons::Right>::isPinPressed()
-{
-    return GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_5);
-}
+    if (buttonLeftCounter > COUNTER_THRESHOLD)
+    {
+        buttonLeftCounter = 0;
+        return true;
+    }
 
-template <>
-bool Button<Buttons::Up>::isPinPressed()
-{
-    return GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_15);
+    return false;
 }
 
 template <>
 bool Button<Buttons::Down>::isPinPressed()
 {
-    return 0 == GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12);
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    if (adc > BUTTON_DOWN_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_DOWN_THRESHOLD + BOUNDARY_OFFSET)
+    {
+        ++buttonDownCounter;
+    }
+    else
+    {
+        buttonDownCounter = 0;
+    }
+
+    if (buttonDownCounter > COUNTER_THRESHOLD)
+    {
+        buttonDownCounter = 0;
+        return true;
+    }
+
+    return false;
 }
 
 template <>
-bool Button<Buttons::Back>::isPinPressed()
+bool Button<Buttons::Right>::isPinPressed()
 {
-    return GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_13);
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    if (adc > BUTTON_RIGHT_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_RIGHT_THRESHOLD + BOUNDARY_OFFSET)
+    {
+        ++buttonRightCounter;
+    }
+    else
+    {
+        buttonRightCounter = 0;
+    }
+
+    if (buttonRightCounter > COUNTER_THRESHOLD)
+    {
+        buttonRightCounter = 0;
+        return true;
+    }
+
+    return false;
 }
 
 template <>
 bool Button<Buttons::Select>::isPinPressed()
 {
-    return GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_14);
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    if (adc > BUTTON_SELECT_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_SELECT_THRESHOLD + BOUNDARY_OFFSET)
+    {
+        ++buttonSelectCounter;
+    }
+    else
+    {
+        buttonSelectCounter = 0;
+    }
+
+    if (buttonSelectCounter > COUNTER_THRESHOLD)
+    {
+        buttonSelectCounter = 0;
+        return true;
+    }
+
+    return false;
+}
+
+template <>
+bool Button<Buttons::Up>::isPinPressed()
+{
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    if (adc > BUTTON_UP_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_UP_THRESHOLD + BOUNDARY_OFFSET)
+    {
+        ++buttonUpCounter;
+    }
+    else
+    {
+        buttonUpCounter = 0;
+    }
+
+    if (buttonUpCounter > COUNTER_THRESHOLD)
+    {
+        buttonUpCounter = 0;
+        return true;
+    }
+
+    return false;
+}
+
+template <>
+bool Button<Buttons::Back>::isPinPressed()
+{
+    uint16_t adc = ADC_GetConversionValue(ADC1);
+    if (adc > BUTTON_BACK_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_BACK_THRESHOLD + BOUNDARY_OFFSET)
+    {
+        ++buttonBackCounter;
+    }
+    else
+    {
+        buttonBackCounter = 0;
+    }
+
+    if (buttonBackCounter > COUNTER_THRESHOLD)
+    {
+        buttonBackCounter = 0;
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace bsp

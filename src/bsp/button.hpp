@@ -29,7 +29,7 @@ public:
         timer_.run();
         isLongTimer_.run();
         bool wasPressed = isPinPressed();
-        if (!wasPressed && timer_.elapsed() > 100)
+        if (!wasPressed && timer_.elapsed() > 200)
         {
             isLongTimer_.cancel();
             isLong_ = false;

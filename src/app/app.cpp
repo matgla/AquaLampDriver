@@ -50,14 +50,15 @@ void App::run()
         termometers_.measureTemperature();
 
         float temperature = termometers_.readTemperature(0);
+        temperatures_[0]  = temperature;
+        auto conv         = utils::floatToInts(temperature, 4);
+        logger_.info() << "Temperature 1: " << conv.first << "." << conv.second;
 
-        auto conv = utils::floatToInts(temperature, 4);
-        logger_.info() << "Temperature 1: " << conv.first << "." << conv.second << "   conv !";
+        temperature      = termometers_.readTemperature(1);
+        conv             = utils::floatToInts(temperature, 4);
+        temperatures_[1] = temperature;
 
-        temperature = termometers_.readTemperature(1);
-        conv        = utils::floatToInts(temperature, 4);
-        logger_.info() << "Temperature 2: " << conv.first << "." << conv.second << "   conv !";
-
+        logger_.info() << "Temperature 2: " << conv.first << "." << conv.second;
     });
 
     while (!board_.exit())
@@ -96,11 +97,34 @@ void App::run()
 
         // measure temperature
 
+        processTemperature();
+
         // make actions
         board_.run();
         timerManager_.run();
     }
     hal::time::Rtc::get().stop();
+}
+
+void App::processTemperature()
+{
+    for (std::size_t i = 0; i < temperatures_.size(); ++i)
+    {
+        if (temperatures_[i] >= TEMPERATURE_TRESHOLD && (temperatures_[i] - temperaturesHistory_[i]) > TEMPERATURE_HIST)
+        {
+            board_.fanPwm1.setPulse(100);
+            board_.fanPwm2.setPulse(100);
+            temperaturesHistory_[i] = temperatures_[i];
+            logger_.info() << "Fan: 100%";
+        }
+        else if (temperatures_[i] < TEMPERATURE_TRESHOLD && (temperatures_[i] - temperaturesHistory_[i]) < -1 * TEMPERATURE_HIST)
+        {
+            board_.fanPwm1.setPulse(0);
+            board_.fanPwm2.setPulse(0);
+            temperaturesHistory_[i] = temperatures_[i];
+            logger_.info() << "Fan: 0%";
+        }
+    }
 }
 
 } // namespace app

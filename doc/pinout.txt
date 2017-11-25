@@ -46,18 +46,20 @@ Potrzebuje
 	        PA3  PA2
 2) SPI      RST   D/C  DN   SCLK CE    BL
                        MOSI SCK
-	        PA15 PB4   PB5  PB3  PB12  PA4
+	        PB15  PB13 PA7  PA5  PB12  PA4
 3) 14 x timer
     TIM1 - PA8, PA9, PA10, PA11
-	TIM2 - PA0, PA1
-	TIM3 - PA6, PA7, PB0, PB1
+	TIM2 - PA15, PB3, PB10, PB11
+	TIM3 - PB4, PB5, PB0, PB1
 	TIM4 - PB6, PB7, PB8, PB9
 	
-4) termometry i2c
+4) termometry 1wire
    SCL   SDA
-   PB10, PB11
+   PB14
+
 5) przyciski
-   L    P    G    D    1    2
-   PC13  PA5 PB15  PA12 PB13 PB14
-   
+   PA0 (ADC)
+
+    L -2,2k
+    D - 4,7k
 	
