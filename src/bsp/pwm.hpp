@@ -20,7 +20,9 @@ enum class Channels
     Channel11,
     Channel12,
     Channel13,
-    Channel14
+    Channel14,
+    Channel15,
+    Channel16
 };
 
 template <Channels Channel>

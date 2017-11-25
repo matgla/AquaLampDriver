@@ -5,15 +5,15 @@
 #include "logger/logger.hpp"
 #include <stm32f10x_adc.h>
 
-constexpr uint16_t BOUNDARY_OFFSET         = 150;
-constexpr uint16_t BUTTON_LEFT_THRESHOLD   = 3950;
-constexpr uint16_t BUTTON_DOWN_THRESHOLD   = 3200;
-constexpr uint16_t BUTTON_RIGHT_THRESHOLD  = 2730;
-constexpr uint16_t BUTTON_SELECT_THRESHOLD = 700;
-constexpr uint16_t BUTTON_UP_THRESHOLD     = 1380;
-constexpr uint16_t BUTTON_BACK_THRESHOLD   = 1820;
+constexpr uint16_t BOUNDARY_OFFSET         = 300;
+constexpr uint16_t BUTTON_LEFT_THRESHOLD   = 3650;
+constexpr uint16_t BUTTON_DOWN_THRESHOLD   = 3000;
+constexpr uint16_t BUTTON_RIGHT_THRESHOLD  = 2500;
+constexpr uint16_t BUTTON_SELECT_THRESHOLD = 650;
+constexpr uint16_t BUTTON_UP_THRESHOLD     = 1270;
+constexpr uint16_t BUTTON_BACK_THRESHOLD   = 1670;
 
-constexpr uint32_t COUNTER_THRESHOLD = 40;
+constexpr uint32_t COUNTER_THRESHOLD = 100;
 
 namespace bsp
 {
@@ -41,7 +41,7 @@ void init()
         RCC_ADCCLKConfig(RCC_PCLK2_Div6);
         RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
 
-        gpio.GPIO_Pin  = GPIO_Pin_0;
+        gpio.GPIO_Pin  = GPIO_Pin_6;
         gpio.GPIO_Mode = GPIO_Mode_AIN;
         GPIO_Init(GPIOA, &gpio);
 
@@ -51,7 +51,7 @@ void init()
         adc.ADC_ExternalTrigConv   = ADC_ExternalTrigConv_None;
         ADC_Init(ADC1, &adc);
 
-        ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_71Cycles5);
+        ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 1, ADC_SampleTime_71Cycles5);
         ADC_Cmd(ADC1, ENABLE);
 
         ADC_ResetCalibration(ADC1);
@@ -107,7 +107,9 @@ Button<Buttons::Select>::Button()
 template <>
 bool Button<Buttons::Left>::isPinPressed()
 {
+    // logger::Logger logger("ADC");
     uint16_t adc = ADC_GetConversionValue(ADC1);
+    // logger.info() << adc;
     if (adc > BUTTON_LEFT_THRESHOLD - BOUNDARY_OFFSET && adc < BUTTON_LEFT_THRESHOLD + BOUNDARY_OFFSET)
     {
         ++buttonLeftCounter;
@@ -119,7 +121,6 @@ bool Button<Buttons::Left>::isPinPressed()
 
     if (buttonLeftCounter > COUNTER_THRESHOLD)
     {
-        buttonLeftCounter = 0;
         return true;
     }
 
@@ -141,7 +142,6 @@ bool Button<Buttons::Down>::isPinPressed()
 
     if (buttonDownCounter > COUNTER_THRESHOLD)
     {
-        buttonDownCounter = 0;
         return true;
     }
 
@@ -163,7 +163,6 @@ bool Button<Buttons::Right>::isPinPressed()
 
     if (buttonRightCounter > COUNTER_THRESHOLD)
     {
-        buttonRightCounter = 0;
         return true;
     }
 
@@ -185,7 +184,6 @@ bool Button<Buttons::Select>::isPinPressed()
 
     if (buttonSelectCounter > COUNTER_THRESHOLD)
     {
-        buttonSelectCounter = 0;
         return true;
     }
 
@@ -207,7 +205,6 @@ bool Button<Buttons::Up>::isPinPressed()
 
     if (buttonUpCounter > COUNTER_THRESHOLD)
     {
-        buttonUpCounter = 0;
         return true;
     }
 
@@ -229,7 +226,6 @@ bool Button<Buttons::Back>::isPinPressed()
 
     if (buttonBackCounter > COUNTER_THRESHOLD)
     {
-        buttonBackCounter = 0;
         return true;
     }
 

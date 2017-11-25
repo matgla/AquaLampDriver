@@ -28,9 +28,6 @@ Spi::Spi()
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
 
-    // GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
-    // GPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE);
-
     bsp::Helper::configureGpio(RST_PORT, RST_PIN, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
     bsp::Helper::configureGpio(DC_PORT, DC_PIN, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
     bsp::Helper::configureGpio(CE_PORT, CE_PIN, GPIO_Mode_Out_PP, GPIO_Speed_50MHz);
