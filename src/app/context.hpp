@@ -6,6 +6,8 @@
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
 
+constexpr std::size_t NUMBER_OF_TERMOMETERS = 2;
+
 namespace app
 {
 
@@ -31,6 +33,7 @@ struct Context
         SetSunrise
     };
     TimeSettingOptions timeSettingOption;
+    std::array<float, NUMBER_OF_TERMOMETERS> temperatures_;
 };
 
 } // namespace app

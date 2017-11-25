@@ -12,10 +12,9 @@
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
 
-constexpr std::size_t NUMBER_OF_TERMOMETERS = 2;
-constexpr float TEMPERATURE_TRESHOLD        = 28;
-constexpr float TEMPERATURE_STEP            = 2;
-constexpr float TEMPERATURE_HIST            = 2;
+constexpr float TEMPERATURE_TRESHOLD = 28;
+constexpr float TEMPERATURE_STEP     = 2;
+constexpr float TEMPERATURE_HIST     = 2;
 
 
 namespace app
@@ -39,7 +38,6 @@ private:
     Context context_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
     drivers::devices::Ds18b20<NUMBER_OF_TERMOMETERS> termometers_;
-    std::array<float, NUMBER_OF_TERMOMETERS> temperatures_;
     std::array<float, NUMBER_OF_TERMOMETERS> temperaturesHistory_;
     timer::Manager<10, 10> timerManager_;
 };

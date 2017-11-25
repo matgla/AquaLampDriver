@@ -4,6 +4,7 @@
 
 #include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
+#include "hal/core/criticalSection.hpp"
 #include "hal/time/rtc.hpp"
 #include "logger/logger.hpp"
 
@@ -23,6 +24,7 @@ App::App(display::Display& display, bsp::Board& board)
 void App::start()
 {
     display_.backlightOff();
+    display_.clear(display::Colors::OFF);
     logger_.info() << "Startup";
     hal::time::Rtc::get().setSecondsHandler([this] {
         this->update();
@@ -36,9 +38,11 @@ void App::start()
 
 void App::update()
 {
+    hal::core::startCriticalSection();
     display_.backlightOn();
 
     statemachine_.process_event(statemachines::events::Update{});
+    hal::core::stopCriticalSection();
 }
 
 void App::run()
@@ -49,14 +53,14 @@ void App::run()
 
         termometers_.measureTemperature();
 
-        float temperature = termometers_.readTemperature(0);
-        temperatures_[0]  = temperature;
-        auto conv         = utils::floatToInts(temperature, 4);
+        float temperature         = termometers_.readTemperature(0);
+        context_.temperatures_[0] = temperature;
+        auto conv                 = utils::floatToInts(temperature, 4);
         logger_.info() << "Temperature 1: " << conv.first << "." << conv.second;
 
-        temperature      = termometers_.readTemperature(1);
-        conv             = utils::floatToInts(temperature, 4);
-        temperatures_[1] = temperature;
+        temperature               = termometers_.readTemperature(1);
+        conv                      = utils::floatToInts(temperature, 4);
+        context_.temperatures_[1] = temperature;
 
         logger_.info() << "Temperature 2: " << conv.first << "." << conv.second;
     });
@@ -108,20 +112,22 @@ void App::run()
 
 void App::processTemperature()
 {
-    for (std::size_t i = 0; i < temperatures_.size(); ++i)
+    for (std::size_t i = 0; i < context_.temperatures_.size(); ++i)
     {
-        if (temperatures_[i] >= TEMPERATURE_TRESHOLD && (temperatures_[i] - temperaturesHistory_[i]) > TEMPERATURE_HIST)
+        if (context_.temperatures_[i] >= TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) > TEMPERATURE_HIST)
         {
+            update();
             board_.fanPwm1.setPulse(100);
             board_.fanPwm2.setPulse(100);
-            temperaturesHistory_[i] = temperatures_[i];
+            temperaturesHistory_[i] = context_.temperatures_[i];
             logger_.info() << "Fan: 100%";
         }
-        else if (temperatures_[i] < TEMPERATURE_TRESHOLD && (temperatures_[i] - temperaturesHistory_[i]) < -1 * TEMPERATURE_HIST)
+        else if (context_.temperatures_[i] < TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) < -1 * TEMPERATURE_HIST)
         {
+            update();
             board_.fanPwm1.setPulse(0);
             board_.fanPwm2.setPulse(0);
-            temperaturesHistory_[i] = temperatures_[i];
+            temperaturesHistory_[i] = context_.temperatures_[i];
             logger_.info() << "Fan: 0%";
         }
     }

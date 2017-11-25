@@ -58,8 +58,8 @@ DisplayPcd8544::DisplayPcd8544(bsp::Board& board)
     reset();
 
     sendCommand(FUNCTION_SET | EXTENDED_INSTRUCTION_SET);
-    sendCommand(BIAS_4);
-    sendCommand(SET_VOP | 0x2a);
+    sendCommand(BIAS_3);
+    sendCommand(SET_VOP | 0xbf);
     sendCommand(FUNCTION_SET | BASIC_INSTRUCTION_SET);
     sendCommand(DISPLAY_NORMAL);
 
