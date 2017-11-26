@@ -33,6 +33,8 @@ private:
     void update();
     void processTemperature();
     void delayedBacklightOff();
+    bool isLightTime();
+    void applyBrightness();
 
     logger::Logger logger_;
     display::Display& display_;

@@ -41,67 +41,16 @@ struct AppSm
             [](Context& context)
             {
                 DisplayTime(context); 
-                if (isLightTime(context)) 
-                {
-                    context.masterPower = context.settings.channelPowers[0];
-                    ApplyBrightness(context);
-                }
-                else 
-                {
-                    if (!context.forcedLight)
-                    {
-                        context.masterPower = 0;
-                        ApplyBrightness(context);
-                    }
-                }
+                
             } = state<DisplayInfo>,           
             state<MenuSm> + event<ButtonBack> / [](Context& context){DisplayTime(context);} = state<DisplayInfo>
         );
         // clang-format on
     }
 
-    static void
-        init(Context& context)
+    static void init(Context& context)
     {
-        context.readSettings();
-        context.temporarySettings = context.settings;
-        if (!isLightTime(context))
-        {
-            context.masterPower = 0;
-        }
-        ApplyBrightness(context);
         DisplayTime(context);
-    }
-
-    static bool isLightTime(Context& context)
-    {
-        time_t now             = std::time(nullptr);
-        struct tm sunshineTime = *std::localtime(&now);
-        struct tm sunriseTime  = *std::localtime(&now);
-        struct tm nowt         = *std::localtime(&now);
-        sunshineTime.tm_hour   = context.settings.sunshine.hours;
-        sunshineTime.tm_min    = context.settings.sunshine.minutes;
-        sunshineTime.tm_sec    = context.settings.sunshine.seconds;
-
-        sunriseTime.tm_hour = context.settings.sunrise.hours;
-        sunriseTime.tm_min  = context.settings.sunrise.minutes;
-        sunriseTime.tm_sec  = context.settings.sunrise.seconds;
-
-        logger::Logger logger("time");
-        // clang-format off
-        logger.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec 
-            << ", sunrise: " << sunriseTime.tm_hour << ":" << sunriseTime.tm_min << ":" << sunriseTime.tm_sec 
-            << ", sunshine: " << sunshineTime.tm_hour << ":" << sunshineTime.tm_min << ":" << sunshineTime.tm_sec
-            << ", diff1: " << (long)(std::difftime(now, mktime(&sunriseTime)))
-            << ", diff2: " << (long)(std::difftime(now, mktime(&sunshineTime)));
-        // clang-format on
-        if (std::difftime(now, mktime(&sunriseTime)) >= 0 && std::difftime(now, mktime(&sunshineTime)) < 0)
-        {
-            return true;
-        }
-
-
-        return false;
     }
 
     static void DisplayTime(Context& context)
