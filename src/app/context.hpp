@@ -24,13 +24,13 @@ struct Settings
 struct Context
 {
     Context(bsp::Board& board, display::Display& lcd, logger::Logger& log)
-        : board_(board), display(lcd), logger(log), changedPower(false)
+        : board_(board), display(lcd), logger(log), changedPower(false), forcedLight(false)
     {
     }
 
     bsp::Board& board_;
     display::Display& display;
-    timer::Manager<5, 5> timerManager;
+    timer::Manager<10, 10> timerManager;
 
     TimeSetting timeSetting;
     logger::Logger& logger;
@@ -47,7 +47,8 @@ struct Context
     hal::memory::Eeprom eeprom;
 
     Settings settings;
-    u8& masterPower = settings.channelPowers[0];
+    Settings temporarySettings;
+    u8 masterPower;
 
     void readSettings()
     {
@@ -74,6 +75,8 @@ struct Context
 
         eeprom.write(0x0, settings);
     }
+
+    bool forcedLight;
 };
 
 } // namespace app

@@ -42,13 +42,18 @@ struct TimeSettingsSm
             state<SunriseSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 2); } = state<DateSettings>,
             state<SunshineSettings> + event<ButtonUp> / [](Context& context) { onDrawMenu(context, 3); } = state<SunriseSettings>,
             state<TimeSettings> + event<ButtonSelect> / [](Context& context) { onSetTime(context); } = state<SetTimeSm>,
-            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<TimeSettings>,
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1);} = state<TimeSettings>,
             state<SunshineSettings> + event<ButtonSelect> / [](Context& context) { onSetSunshine(context); } = state<SetTimeSm>,
-            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunshineSettings>,
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); onSave(context); } = state<SunshineSettings>,
             state<SunriseSettings> + event<ButtonSelect> / [](Context& context) { onSetSunrise(context); } = state<SetTimeSm>,
-            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1); } = state<SunriseSettings>
+            state<SetTimeSm> + event<ButtonBack> / [](Context& context) { onDrawMenu(context, 1);  onSave(context);} = state<SunriseSettings>
         );
         // clang-format on
+    }
+
+    static void onSave(Context& context)
+    {
+        context.saveSettings();
     }
 
     static void onDrawMenu(Context& context, u8 selectedPosition)
@@ -83,7 +88,7 @@ struct TimeSettingsSm
         {
             display.drawImage(display::Images::emptyTriangle);
         }
-        display.print("Set sunshine\n");
+        display.print("Set sunrise\n");
         if (4 == selectedPosition)
         {
             display.drawImage(display::Images::fullTriangle);
@@ -92,7 +97,7 @@ struct TimeSettingsSm
         {
             display.drawImage(display::Images::emptyTriangle);
         }
-        display.print("Set sunrise\n");
+        display.print("Set sunshine\n");
     }
 
     static void onSetTime(Context& context)

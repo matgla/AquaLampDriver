@@ -47,8 +47,7 @@ struct SetTimeSm
             state<SetMinutes> +event<ButtonSelect> / onSave = state<Saved>,
             state<SetSeconds> +event<ButtonSelect> / onSave = state<Saved>,
 
-            state<Saved> + event<ButtonSelect> = X,
-            state<Saved> +event<ButtonBack> = X,
+            state<Saved> + event<ButtonSelect> = state<SetHours>,
 
             state<SetHours> + event<ButtonUp> / onHoursIncrement = state<SetHours>,
             state<SetHours> + event<ButtonDown> / onHoursDecrement = state<SetHours>,
@@ -78,12 +77,12 @@ struct SetTimeSm
         {
             case Context::TimeSettingOptions::SetSunshine:
             {
-                // TODO: implement read from registers
+                context.temporarySettings = context.settings;
             }
             break;
             case Context::TimeSettingOptions::SetSunrise:
             {
-                // TODO: implement read from registers
+                context.temporarySettings = context.settings;
             }
             break;
             case Context::TimeSettingOptions::SetTime:
@@ -105,11 +104,11 @@ struct SetTimeSm
         TimeSetting* settingsPtr = nullptr;
         if (Context::TimeSettingOptions::SetSunshine == context.timeSettingOption)
         {
-            settingsPtr = &context.settings.sunshine;
+            settingsPtr = &context.temporarySettings.sunshine;
         }
         else if (Context::TimeSettingOptions::SetSunrise == context.timeSettingOption)
         {
-            settingsPtr = &context.settings.sunrise;
+            settingsPtr = &context.temporarySettings.sunrise;
         }
         else if (Context::TimeSettingOptions::SetTime == context.timeSettingOption)
         {
@@ -262,16 +261,16 @@ struct SetTimeSm
         {
             case Context::TimeSettingOptions::SetSunshine:
             {
-                time.tm_hour = context.settings.sunshine.hours;
-                time.tm_min  = context.settings.sunshine.minutes;
-                time.tm_sec  = context.settings.sunshine.seconds;
+                time.tm_hour = context.temporarySettings.sunshine.hours;
+                time.tm_min  = context.temporarySettings.sunshine.minutes;
+                time.tm_sec  = context.temporarySettings.sunshine.seconds;
             }
             break;
             case Context::TimeSettingOptions::SetSunrise:
             {
-                time.tm_hour = context.settings.sunrise.hours;
-                time.tm_min  = context.settings.sunrise.minutes;
-                time.tm_sec  = context.settings.sunrise.seconds;
+                time.tm_hour = context.temporarySettings.sunrise.hours;
+                time.tm_min  = context.temporarySettings.sunrise.minutes;
+                time.tm_sec  = context.temporarySettings.sunrise.seconds;
             }
             break;
             case Context::TimeSettingOptions::SetTime:
@@ -381,6 +380,7 @@ struct SetTimeSm
     }
 
     const Action onSave = [](Context& context) {
+        context.settings = context.temporarySettings;
         switch (context.timeSettingOption)
         {
             case Context::TimeSettingOptions::SetSunshine:

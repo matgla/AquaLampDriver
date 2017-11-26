@@ -32,15 +32,17 @@ public:
 private:
     void update();
     void processTemperature();
+    void delayedBacklightOff();
 
     logger::Logger logger_;
     display::Display& display_;
     bsp::Board& board_;
     Context context_;
+    timer::TimerId backlightTimer_;
+    bool backlight_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
     drivers::devices::Ds18b20<NUMBER_OF_TERMOMETERS> termometers_;
     std::array<float, NUMBER_OF_TERMOMETERS> temperaturesHistory_;
-    timer::Manager<10, 10> timerManager_;
 };
 
 } // namespace app

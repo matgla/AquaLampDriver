@@ -3,6 +3,8 @@
 #include "hal/time/time.hpp"
 #include "utils/types.hpp"
 
+#include "logger/logger.hpp"
+
 namespace timer
 {
 

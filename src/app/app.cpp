@@ -17,6 +17,7 @@ App::App(display::Display& display, bsp::Board& board)
       display_(display),
       board_(board),
       context_(board, display, logger_),
+      backlight_(false),
       statemachine_(context_),
       termometers_(board)
 {
@@ -30,7 +31,7 @@ void App::start()
         context_.initSettings();
     }
 
-    display_.backlightOff();
+    delayedBacklightOff();
     display_.clear(display::Colors::OFF);
     logger_.info() << "Startup";
 
@@ -49,16 +50,37 @@ void App::start()
 void App::update()
 {
     hal::core::startCriticalSection();
-    display_.backlightOn();
-
     statemachine_.process_event(statemachines::events::Update{});
     hal::core::stopCriticalSection();
 }
 
+void App::delayedBacklightOff()
+{
+    if (backlight_ == false)
+    {
+        display_.backlightOn();
+        backlightTimer_ = context_.timerManager.setTimeout(10000, [this] {
+            display_.backlightOff();
+            logger_.info() << "Backlight off";
+            backlight_ = false;
+        });
+        backlight_      = true;
+    }
+    else
+    {
+        auto* timer = context_.timerManager.getTimeoutTimer(backlightTimer_);
+        if (timer)
+        {
+            timer->restart(10000);
+        }
+    }
+}
+
+
 void App::run()
 {
     using namespace statemachines;
-    timerManager_.setInterval(1000, [this]() {
+    context_.timerManager.setInterval(1000, [this]() {
         termometers_.measureTemperature();
         context_.temperatures_[0] = termometers_.readTemperature(0);
         context_.temperatures_[1] = termometers_.readTemperature(1);
@@ -69,32 +91,38 @@ void App::run()
         hal::time::WatchDog::feed();
         if (board_.downButton.isPressed())
         {
+            delayedBacklightOff();
             logger_.info() << "down";
             statemachine_.process_event(events::ButtonDown{});
         }
         if (board_.upButton.isPressed())
         {
+            delayedBacklightOff();
             logger_.info() << "up";
             statemachine_.process_event(events::ButtonUp{});
         }
         if (board_.leftButton.isPressed())
         {
+            delayedBacklightOff();
             logger_.info() << "left";
 
             statemachine_.process_event(events::ButtonLeft{});
         }
         if (board_.rightButton.isPressed())
         {
+            delayedBacklightOff();
             logger_.info() << "right";
             statemachine_.process_event(events::ButtonRight{});
         }
         if (board_.selectButton.isPressed())
         {
+            delayedBacklightOff();
             logger_.info() << "select";
             statemachine_.process_event(events::ButtonSelect{});
         }
         if (board_.backButton.isPressed())
         {
+            delayedBacklightOff();
             logger_.info() << "back";
             statemachine_.process_event(events::ButtonBack{});
         }
@@ -105,7 +133,7 @@ void App::run()
 
         // make actions
         board_.run();
-        timerManager_.run();
+        context_.timerManager.run();
     }
     hal::time::Rtc::get().stop();
 }

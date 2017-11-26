@@ -116,6 +116,10 @@ public:
             if (timeout.second)
             {
                 timeout.first.run();
+                if (!timeout.first.enabled())
+                {
+                    timeout.second = false;
+                }
             }
         }
 
@@ -124,6 +128,10 @@ public:
             if (interval.second)
             {
                 interval.first.run();
+                if (!interval.first.enabled())
+                {
+                    interval.second = false;
+                }
             }
         }
     }

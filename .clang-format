@@ -1,5 +1,6 @@
 ---
 Language: Cpp
+ColumnLimit: 110
 AlignConsecutiveAssignments: true
 AccessModifierOffset: -4
 AlignEscapedNewlinesLeft: false
@@ -7,7 +8,7 @@ AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false 
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
 BinPackParameters: true
