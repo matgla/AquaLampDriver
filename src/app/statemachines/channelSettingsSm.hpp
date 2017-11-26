@@ -29,7 +29,9 @@ struct ChannelSettingsSm
             state<ChannelSettings> + event<ButtonDown> / [](Context& context) { onIncrementChannel(context); } = state<ChannelSettings>,
             state<ChannelSettings> + event<ButtonUp> / [](Context& context) { onDecrementChannel(context); } = state<ChannelSettings>,
             state<ChannelSettings> + event<ButtonLeft> / [](Context& context) { onDecrementPower(context); } = state<ChannelSettings>,
-            state<ChannelSettings> + event<ButtonRight> / [](Context& context) { onIncrementPower(context); } = state<ChannelSettings>
+            state<ChannelSettings> + event<ButtonRight> / [](Context& context) { onIncrementPower(context); } = state<ChannelSettings>,
+            state<ChannelSettings> + event<ButtonSelect> / onSave = state<Saved>,
+            state<Saved> + event<ButtonSelect> = state<ChannelSettings>
         );
         // clang-format on
     }
@@ -41,20 +43,20 @@ struct ChannelSettingsSm
         context.display.print("Channel conf:\n\n\n");
         char buffer[5];
 
-        if (context.channelSetting.index == 0)
+        if (context.settings.channelIndex == 0)
         {
             context.display.print(" Master: ");
-            utils::writeToBufferAligned(buffer, context.channelSetting.masterPower, '\0', 3, ' ');
+            utils::writeToBufferAligned(buffer, context.masterPower, '\0', 3, ' ');
             context.display.print(buffer);
             context.display.print(" %");
         }
         else
         {
             context.display.print(" CH");
-            utils::writeToBufferAligned(buffer, context.channelSetting.index, '\0', 2);
+            utils::writeToBufferAligned(buffer, context.settings.channelIndex, '\0', 2);
             context.display.print(buffer);
             context.display.print(": ");
-            utils::writeToBufferAligned(buffer, context.channelSetting.power[context.channelSetting.index], '\0', 3, ' ');
+            utils::writeToBufferAligned(buffer, context.settings.channelPowers[context.settings.channelIndex], '\0', 3, ' ');
             context.display.print(buffer);
             context.display.print(" %");
         }
@@ -67,154 +69,235 @@ struct ChannelSettingsSm
 
     static void onIncrementChannel(Context& context)
     {
-        if (context.channelSetting.index < MAX_CHANNELS)
+        if (context.settings.channelIndex < MAX_CHANNELS)
         {
-            ++context.channelSetting.index;
+            ++context.settings.channelIndex;
         }
         else
         {
-            context.channelSetting.index = 0;
+            context.settings.channelIndex = 0;
         }
     }
 
     static void onDecrementChannel(Context& context)
     {
-        if (context.channelSetting.index > 0)
+        if (context.settings.channelIndex > 0)
         {
-            --context.channelSetting.index;
+            --context.settings.channelIndex;
         }
         else
         {
-            context.channelSetting.index = MAX_CHANNELS;
+            context.settings.channelIndex = MAX_CHANNELS;
         }
     }
 
     static void onIncrementPower(Context& context)
     {
-        if (context.channelSetting.board_.rightButton.isLongPressed())
+        if (context.board_.rightButton.isLongPressed())
         {
-            context.channelSetting.power[context.channelSetting.index] += 5;
+            context.settings.channelPowers[context.settings.channelIndex] += 5;
         }
         else
         {
-            ++context.channelSetting.power[context.channelSetting.index];
+            ++context.settings.channelPowers[context.settings.channelIndex];
         }
 
-        if (context.channelSetting.power[context.channelSetting.index] > 100)
+        if (context.settings.channelPowers[context.settings.channelIndex] > 100)
         {
-            context.channelSetting.power[context.channelSetting.index] = 100;
+            context.settings.channelPowers[context.settings.channelIndex] = 100;
         }
         apply(context);
     }
 
     static void onDecrementPower(Context& context)
     {
-        if (context.channelSetting.board_.leftButton.isLongPressed())
+        if (context.board_.leftButton.isLongPressed())
         {
-            context.channelSetting.power[context.channelSetting.index] -= 5;
+            context.settings.channelPowers[context.settings.channelIndex] -= 5;
         }
         else
         {
-            --context.channelSetting.power[context.channelSetting.index];
+            --context.settings.channelPowers[context.settings.channelIndex];
         }
 
-        if (context.channelSetting.power[context.channelSetting.index] > 101)
+        if (context.settings.channelPowers[context.settings.channelIndex] > 101)
         {
-            context.channelSetting.power[context.channelSetting.index] = 0;
+            context.settings.channelPowers[context.settings.channelIndex] = 0;
         }
         apply(context);
     }
 
+    using Action = std::function<void(Context&)>;
+
     static void apply(Context& context)
     {
-        const auto& index = context.channelSetting.index;
-        auto& board       = context.channelSetting.board_;
+        const auto& index = context.settings.channelIndex;
+        auto& board       = context.board_;
         switch (index)
         {
             case 0:
             {
-                board.ledPwm1.setPulse(context.channelSetting.power[1] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm2.setPulse(context.channelSetting.power[2] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm3.setPulse(context.channelSetting.power[3] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm4.setPulse(context.channelSetting.power[4] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm5.setPulse(context.channelSetting.power[5] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm6.setPulse(context.channelSetting.power[6] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm7.setPulse(context.channelSetting.power[7] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm8.setPulse(context.channelSetting.power[8] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm9.setPulse(context.channelSetting.power[9] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm10.setPulse(context.channelSetting.power[10] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm11.setPulse(context.channelSetting.power[11] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm12.setPulse(context.channelSetting.power[12] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-                board.ledPwm13.setPulse(context.channelSetting.power[13] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm1.setPulse(context.settings.channelPowers[1] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm2.setPulse(context.settings.channelPowers[2] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm3.setPulse(context.settings.channelPowers[3] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm4.setPulse(context.settings.channelPowers[4] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm5.setPulse(context.settings.channelPowers[5] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm6.setPulse(context.settings.channelPowers[6] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm7.setPulse(context.settings.channelPowers[7] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm8.setPulse(context.settings.channelPowers[8] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm9.setPulse(context.settings.channelPowers[9] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm10.setPulse(context.settings.channelPowers[10] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm11.setPulse(context.settings.channelPowers[11] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm12.setPulse(context.settings.channelPowers[12] * (static_cast<float>(context.masterPower) / 100));
+                board.ledPwm13.setPulse(context.settings.channelPowers[13] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 1:
             {
-                board.ledPwm1.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm1.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 2:
             {
-                board.ledPwm2.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm2.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 3:
             {
-                board.ledPwm3.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm3.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 4:
             {
-                board.ledPwm4.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm4.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 5:
             {
-                board.ledPwm5.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm5.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 6:
             {
-                board.ledPwm6.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm6.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 7:
             {
-                board.ledPwm7.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm7.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 8:
             {
-                board.ledPwm8.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm8.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 9:
             {
-                board.ledPwm9.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm9.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 10:
             {
-                board.ledPwm10.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm10.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 11:
             {
-                board.ledPwm11.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm11.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 12:
             {
-                board.ledPwm12.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm12.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
             case 13:
             {
-                board.ledPwm13.setPulse(context.channelSetting.power[index] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+                board.ledPwm13.setPulse(context.settings.channelPowers[index] * (static_cast<float>(context.masterPower) / 100));
             }
             break;
         }
     }
+
+    static void drawFrame(display::Display& display)
+    {
+        display.clear(display::Colors::OFF);
+
+        for (int i = 0; i < 84; i += 2)
+        {
+            display.drawImage(display::Images::ChessboardMosaic);
+        }
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 1 - 1);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 1 - 1);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 2 - 2);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 2 - 2);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 3 - 3);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 3 - 3);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 4 - 4);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 4 - 4);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 5 - 5);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 5 - 5);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 6 - 6);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(84 - display::Images::ChessboardMosaic.width * 3, display::Images::ChessboardMosaic.height * 6 - 6);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.drawImage(display::Images::ChessboardMosaic);
+        display.setCursor(0, display::Images::ChessboardMosaic.height * 7 - 7);
+        for (int i = 0; i < 84; i += 2)
+        {
+            display.drawImage(display::Images::ChessboardMosaic);
+        }
+    }
+
+    const Action onSave = [](Context& context) {
+
+        context.saveSettings();
+
+        auto& display = context.display;
+        drawFrame(context.display);
+        const char* str = "Saved!";
+
+        u8 cursorX = (display.getWidth() - strlen(str) * (display.getFont().width + 1)) / 2;
+        u8 cursorY = (display.getHeight() - display.getFont().height) / 2;
+
+        display.setCursor(cursorX,
+                          cursorY);
+        display.print(str);
+    };
 };
 
 } // namespace statemachines

@@ -105,11 +105,11 @@ struct SetTimeSm
         TimeSetting* settingsPtr = nullptr;
         if (Context::TimeSettingOptions::SetSunshine == context.timeSettingOption)
         {
-            settingsPtr = &context.sunshine;
+            settingsPtr = &context.settings.sunshine;
         }
         else if (Context::TimeSettingOptions::SetSunrise == context.timeSettingOption)
         {
-            settingsPtr = &context.sunrise;
+            settingsPtr = &context.settings.sunrise;
         }
         else if (Context::TimeSettingOptions::SetTime == context.timeSettingOption)
         {
@@ -123,7 +123,7 @@ struct SetTimeSm
     const Action onHoursIncrement = [](Context& context) {
 
         auto& hours = getTimeSettings(context)->hours;
-        if (context.channelSetting.board_.upButton.isLongPressed())
+        if (context.board_.upButton.isLongPressed())
         {
             hours += 5;
         }
@@ -142,7 +142,7 @@ struct SetTimeSm
     const Action onHoursDecrement = [](Context& context) {
         auto& hours = getTimeSettings(context)->hours;
 
-        if (context.channelSetting.board_.downButton.isLongPressed())
+        if (context.board_.downButton.isLongPressed())
         {
             hours -= 5;
         }
@@ -160,7 +160,7 @@ struct SetTimeSm
     const Action onMinutesIncrement = [](Context& context) {
         auto& minutes = getTimeSettings(context)->minutes;
 
-        if (context.channelSetting.board_.upButton.isLongPressed())
+        if (context.board_.upButton.isLongPressed())
         {
             minutes += 5;
         }
@@ -178,7 +178,7 @@ struct SetTimeSm
     const Action onMinutesDecrement = [](Context& context) {
         auto& minutes = getTimeSettings(context)->minutes;
 
-        if (context.channelSetting.board_.downButton.isLongPressed())
+        if (context.board_.downButton.isLongPressed())
         {
             minutes -= 5;
         }
@@ -197,7 +197,7 @@ struct SetTimeSm
     const Action onSecondsIncrement = [](Context& context) {
         auto& seconds = getTimeSettings(context)->seconds;
 
-        if (context.channelSetting.board_.upButton.isLongPressed())
+        if (context.board_.upButton.isLongPressed())
         {
             seconds += 5;
         }
@@ -215,7 +215,7 @@ struct SetTimeSm
     const Action onSecondsDecrement = [](Context& context) {
         auto& seconds = getTimeSettings(context)->seconds;
 
-        if (context.channelSetting.board_.upButton.isLongPressed())
+        if (context.board_.upButton.isLongPressed())
         {
             seconds -= 5;
         }
@@ -262,16 +262,16 @@ struct SetTimeSm
         {
             case Context::TimeSettingOptions::SetSunshine:
             {
-                time.tm_hour = context.sunshine.hours;
-                time.tm_min  = context.sunshine.minutes;
-                time.tm_sec  = context.sunshine.seconds;
+                time.tm_hour = context.settings.sunshine.hours;
+                time.tm_min  = context.settings.sunshine.minutes;
+                time.tm_sec  = context.settings.sunshine.seconds;
             }
             break;
             case Context::TimeSettingOptions::SetSunrise:
             {
-                time.tm_hour = context.sunrise.hours;
-                time.tm_min  = context.sunrise.minutes;
-                time.tm_sec  = context.sunrise.seconds;
+                time.tm_hour = context.settings.sunrise.hours;
+                time.tm_min  = context.settings.sunrise.minutes;
+                time.tm_sec  = context.settings.sunrise.seconds;
             }
             break;
             case Context::TimeSettingOptions::SetTime:
@@ -385,12 +385,12 @@ struct SetTimeSm
         {
             case Context::TimeSettingOptions::SetSunshine:
             {
-                // TODO: add some storing
+                context.saveSettings();
             }
             break;
             case Context::TimeSettingOptions::SetSunrise:
             {
-                // TODO: add some storing
+                context.saveSettings();
             }
             break;
             case Context::TimeSettingOptions::SetTime:

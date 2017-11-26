@@ -36,6 +36,7 @@ file(GLOB STM32_SOURCES ${SOURCES_DIR}/misc.c
                         ${SOURCES_DIR}/stm32f10x_exti.c
                         ${SOURCES_DIR}/stm32f10x_spi.c
                         ${SOURCES_DIR}/stm32f10x_adc.c
+                        ${SOURCES_DIR}/stm32f10x_iwdg.c
                         ${STM32_STARTUP_SOURCE})
 
 find_package(PackageHandleStandardArgs)

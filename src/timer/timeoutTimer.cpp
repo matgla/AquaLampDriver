@@ -46,10 +46,17 @@ u64 TimeoutTimer::elapsed()
 
 void TimeoutTimer::start(u64 time, TimerCallback callback)
 {
-    callback_ = callback;
-    time_ = time;
+    callback_  = callback;
+    time_      = time;
     startTime_ = hal::time::Time::milliseconds();
-    enabled_ = true;
+    enabled_   = true;
+}
+
+void TimeoutTimer::restart(u64 milliseconds)
+{
+    time_      = milliseconds;
+    startTime_ = hal::time::Time::milliseconds();
+    enabled_   = true;
 }
 
 

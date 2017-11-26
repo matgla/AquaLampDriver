@@ -195,7 +195,6 @@ Pwm<Channels::Channel10>::Pwm()
     period_ = configureHardware(TIM3, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB,
                                 GPIOB, GPIO_Pin_5);
     GPIO_PinRemapConfig(GPIO_PartialRemap_TIM3, ENABLE);
-    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 
     setPulse(0);
 }
@@ -206,7 +205,6 @@ Pwm<Channels::Channel11>::Pwm()
     period_ = configureHardware(TIM3, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB,
                                 GPIOB, GPIO_Pin_0);
     GPIO_PinRemapConfig(GPIO_PartialRemap_TIM3, ENABLE);
-    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 
     setPulse(0);
 }
@@ -217,7 +215,6 @@ Pwm<Channels::Channel12>::Pwm()
     period_ = configureHardware(TIM3, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB,
                                 GPIOB, GPIO_Pin_1);
     GPIO_PinRemapConfig(GPIO_PartialRemap_TIM3, ENABLE);
-    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
 
     setPulse(0);
 }

@@ -40,7 +40,6 @@ public:
         bus_.initTranssmisionWithAllDevices();
         bus_.write(CONVERT_TEMPERATURE);
         measurementTimer_.start(800, [this] {
-            logger_.info() << "Measure ready";
             for (u8 deviceId = 0; deviceId < NumberOfDevices; ++deviceId)
             {
                 readTemperatureFromDevice(deviceId);

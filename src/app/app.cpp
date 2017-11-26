@@ -6,6 +6,7 @@
 #include "bsp/board.hpp"
 #include "hal/core/criticalSection.hpp"
 #include "hal/time/rtc.hpp"
+#include "hal/time/watchdog.hpp"
 #include "logger/logger.hpp"
 
 
@@ -23,15 +24,24 @@ App::App(display::Display& display, bsp::Board& board)
 
 void App::start()
 {
+    if (hal::core::BackupRegisters::get().isFirstStartup())
+    {
+        logger_.info() << "Settings initializing";
+        context_.initSettings();
+    }
+
     display_.backlightOff();
     display_.clear(display::Colors::OFF);
     logger_.info() << "Startup";
+
     hal::time::Rtc::get().setSecondsHandler([this] {
         this->update();
     });
 
     board_.led.on();
     board_.registers.startupDone();
+
+    hal::time::WatchDog::enable(2000); // 2s
 
     logger_.info() << "Started";
 }
@@ -49,24 +59,14 @@ void App::run()
 {
     using namespace statemachines;
     timerManager_.setInterval(1000, [this]() {
-        logger_.info() << "Interval fire";
-
         termometers_.measureTemperature();
-
-        float temperature         = termometers_.readTemperature(0);
-        context_.temperatures_[0] = temperature;
-        auto conv                 = utils::floatToInts(temperature, 4);
-        logger_.info() << "Temperature 1: " << conv.first << "." << conv.second;
-
-        temperature               = termometers_.readTemperature(1);
-        conv                      = utils::floatToInts(temperature, 4);
-        context_.temperatures_[1] = temperature;
-
-        logger_.info() << "Temperature 2: " << conv.first << "." << conv.second;
+        context_.temperatures_[0] = termometers_.readTemperature(0);
+        context_.temperatures_[1] = termometers_.readTemperature(1);
     });
 
     while (!board_.exit())
     {
+        hal::time::WatchDog::feed();
         if (board_.downButton.isPressed())
         {
             logger_.info() << "down";

@@ -7,6 +7,7 @@ namespace bsp
 
 void BoardInit()
 {
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);
     SystemInit();
 }
 

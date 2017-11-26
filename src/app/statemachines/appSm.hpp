@@ -28,7 +28,7 @@ struct AppSm
         using namespace events;
         // clang-format off
         return make_transition_table(
-            *state<Init> / [](Context& context){DisplayTime(context);} = state<DisplayInfo>,
+            *state<Init> / [](Context& context){init(context);} = state<DisplayInfo>,
             state<DisplayInfo> + event<ButtonDown> = state<MenuSm>,
             state<DisplayInfo> + event<ButtonLeft> / [](Context& context){DecrementBrightness(context);} = state<DisplayInfo>,
             state<DisplayInfo> + event<ButtonRight> / [](Context& context){IncrementBrightness(context);} = state<DisplayInfo>,
@@ -38,6 +38,13 @@ struct AppSm
             state<MenuSm> + event<ButtonBack> / [](Context& context){DisplayTime(context);} = state<DisplayInfo>
         );
         // clang-format on
+    }
+
+    static void init(Context& context)
+    {
+        context.readSettings();
+        ApplyBrightness(context);
+        DisplayTime(context);
     }
 
     static void DisplayTime(Context& context)
@@ -57,7 +64,7 @@ struct AppSm
         context.display.print(timeBuffer);
         context.display.print("\nPower: ");
         char buffer[5];
-        utils::writeToBufferAligned(buffer, context.channelSetting.masterPower, '\0', 3, ' ');
+        utils::writeToBufferAligned(buffer, context.masterPower, '\0', 3, ' ');
         context.display.print(buffer);
         context.display.print(" %\nTL: ");
         float temp = context.temperatures_[0];
@@ -77,59 +84,85 @@ struct AppSm
         context.display.print(buffer);
     }
 
-    static void IncrementBrightness(Context& context)
+    static void delayedSave(Context& context)
     {
-        if (context.channelSetting.board_.rightButton.isLongPressed())
+        if (context.changedPower)
         {
-            context.channelSetting.masterPower += 5;
+            auto* timer = context.timerManager.getTimeoutTimer(context.saveTimer);
+            if (timer)
+            {
+                timer->restart(5000);
+            }
         }
         else
         {
-            ++context.channelSetting.masterPower;
+            context.saveTimer    = context.timerManager.setTimeout(5000, [&context] {
+                context.saveSettings();
+                context.changedPower = false;
+            });
+            context.changedPower = true;
+        }
+    }
+
+    static void IncrementBrightness(Context& context)
+    {
+
+        if (context.board_.rightButton.isLongPressed())
+        {
+            context.masterPower += 5;
+        }
+        else
+        {
+            ++context.masterPower;
         }
 
-        if (context.channelSetting.masterPower > 100)
+        if (context.masterPower > 100)
         {
-            context.channelSetting.masterPower = 100;
+            context.masterPower = 100;
         }
+        delayedSave(context);
         ApplyBrightness(context);
     }
 
     static void DecrementBrightness(Context& context)
     {
-        if (context.channelSetting.board_.leftButton.isLongPressed())
+
+
+        if (context.board_.leftButton.isLongPressed())
         {
-            context.channelSetting.masterPower -= 5;
+            context.masterPower -= 5;
         }
         else
         {
-            --context.channelSetting.masterPower;
+            --context.masterPower;
         }
 
-        if (context.channelSetting.masterPower > 101)
+        if (context.masterPower > 101)
         {
-            context.channelSetting.masterPower = 0;
+            context.masterPower = 0;
         }
+
+        delayedSave(context);
         ApplyBrightness(context);
     }
 
     static void ApplyBrightness(Context& context)
     {
-        auto& board = context.channelSetting.board_;
+        auto& board = context.board_;
 
-        board.ledPwm1.setPulse(context.channelSetting.power[1] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm2.setPulse(context.channelSetting.power[2] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm3.setPulse(context.channelSetting.power[3] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm4.setPulse(context.channelSetting.power[4] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm5.setPulse(context.channelSetting.power[5] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm6.setPulse(context.channelSetting.power[6] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm7.setPulse(context.channelSetting.power[7] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm8.setPulse(context.channelSetting.power[8] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm9.setPulse(context.channelSetting.power[9] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm10.setPulse(context.channelSetting.power[10] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm11.setPulse(context.channelSetting.power[11] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm12.setPulse(context.channelSetting.power[12] * (static_cast<float>(context.channelSetting.masterPower) / 100));
-        board.ledPwm13.setPulse(context.channelSetting.power[13] * (static_cast<float>(context.channelSetting.masterPower) / 100));
+        board.ledPwm1.setPulse(context.settings.channelPowers[1] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm2.setPulse(context.settings.channelPowers[2] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm3.setPulse(context.settings.channelPowers[3] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm4.setPulse(context.settings.channelPowers[4] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm5.setPulse(context.settings.channelPowers[5] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm6.setPulse(context.settings.channelPowers[6] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm7.setPulse(context.settings.channelPowers[7] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm8.setPulse(context.settings.channelPowers[8] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm9.setPulse(context.settings.channelPowers[9] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm10.setPulse(context.settings.channelPowers[10] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm11.setPulse(context.settings.channelPowers[11] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm12.setPulse(context.settings.channelPowers[12] * (static_cast<float>(context.masterPower) / 100));
+        board.ledPwm13.setPulse(context.settings.channelPowers[13] * (static_cast<float>(context.masterPower) / 100));
         hal::core::startCriticalSection();
         DisplayTime(context);
         hal::core::stopCriticalSection();

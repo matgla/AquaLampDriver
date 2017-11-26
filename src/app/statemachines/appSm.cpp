@@ -119,7 +119,7 @@ void AppSm::displayTime()
     constexpr const int DateBufferSize = 10;
     char timeBuffer[TimeBufferSize];
     char dateBuffer[DateBufferSize];
-    auto t = std::time(nullptr);
+    auto t                 = std::time(nullptr);
     struct tm* currentTime = std::localtime(&t);
     utils::formatDate(dateBuffer, DateBufferSize, currentTime);
     utils::formatTime(timeBuffer, TimeBufferSize, currentTime);

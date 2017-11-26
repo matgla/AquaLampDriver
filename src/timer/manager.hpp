@@ -9,13 +9,12 @@
 
 namespace timer
 {
+using TimerId = u16;
 
 template <std::size_t IntervalsSize, std::size_t TimeoutsSize>
 class Manager
 {
 public:
-    using TimerId = u16;
-
     Manager()
         : logger_("TimerManager")
     {
@@ -66,24 +65,24 @@ public:
         return -1;
     }
 
-    TimeoutTimer& getTimeoutTimer(TimerId id)
+    TimeoutTimer* getTimeoutTimer(TimerId id)
     {
-        if (0 > id || timeouts_.length() <= id)
+        if (0 > id || timeouts_.size() <= id)
         {
             logger_.error() << "Requested nonexisting timeout, id: " << id;
             return nullptr;
         }
-        return timeouts_[id].first;
+        return &timeouts_[id].first;
     }
 
-    IntervalTimer& getIntervalTimer(TimerId id)
+    IntervalTimer* getIntervalTimer(TimerId id)
     {
-        if (0 > id || intervals_.length() <= id)
+        if (0 > id || intervals_.size() <= id)
         {
             logger_.error() << "Requested nonexisting interval, id: " << id;
             return nullptr;
         }
-        return intervals_[id].first;
+        return &intervals_[id].first;
     }
 
     bool removeTimeoutTimer(TimerId id)

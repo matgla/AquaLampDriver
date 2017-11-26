@@ -9,6 +9,7 @@
 #include "bsp/board.hpp"
 #include "display/display.hpp"
 #include "drivers/devices/ds18b20.hpp"
+#include "hal/memory/eeprom.hpp"
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
 

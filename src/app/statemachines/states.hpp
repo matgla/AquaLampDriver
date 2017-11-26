@@ -16,6 +16,7 @@ class TimeSettings;
 class GeneralSettings;
 class EffectSettings;
 class About;
+class Saved;
 
 } // namespace states
 } // namespace statemachines

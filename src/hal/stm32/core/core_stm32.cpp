@@ -14,7 +14,7 @@ namespace core
 void Core::initializeClocks()
 {
     // systick interrupt at 1 ms
-    if (SysTick_Config(SystemCoreClock / 1000000 * 1000) != 0)
+    if (SysTick_Config(SystemCoreClock / 1000) != 0)
     {
         HAL_ASSERT_MSG(false, "Systick initialization failed");
     }

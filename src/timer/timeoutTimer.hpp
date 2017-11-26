@@ -14,6 +14,7 @@ public:
     void run();
     void cancel();
     u64 elapsed();
+    void restart(u64 milliseconds);
     bool enabled() const;
 
 protected:

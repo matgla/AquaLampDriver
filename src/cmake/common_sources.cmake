@@ -37,6 +37,7 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/hal/time/time.hpp
     ${COMMON_SRC_DIR}/hal/time/rtc.hpp
     ${COMMON_SRC_DIR}/hal/time/sleep.hpp
+    ${COMMON_SRC_DIR}/hal/time/watchdog.hpp
     ${COMMON_SRC_DIR}/hal/utils/assert.hpp
 
     ${COMMON_SRC_DIR}/logger/logger.hpp
