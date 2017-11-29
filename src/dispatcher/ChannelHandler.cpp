@@ -4,20 +4,20 @@
 
 namespace handler
 {
-ChannelHandler::ChannelHandler(char *name, pwm::ChannelsGroup &channelsGroup)
+ChannelHandler::ChannelHandler(char* name, pwm::ChannelsGroup& channelsGroup)
     : HandlerBase(name),
       channelsGroup_(channelsGroup)
 {
 }
 
-bool ChannelHandler::accept(char *cmd, char *arg)
+bool ChannelHandler::accept(char* cmd, char* arg)
 {
     return strcmp(cmd, "CH") == 0;
 }
 
-void ChannelHandler::handle(char *cmd, char *arg)
+void ChannelHandler::handle(char* cmd, char* arg)
 {
-    char *command = strtok(arg, " ");
+    char* command = strtok(arg, " ");
     if (!command)
     {
         logger_.error() << "Didn't receive command\n";
@@ -35,7 +35,7 @@ void ChannelHandler::handle(char *cmd, char *arg)
 
     while (arg != nullptr)
     {
-        char *value;
+        char* value;
         value = strtok(nullptr, " ");
         if (!value)
         {
@@ -43,7 +43,7 @@ void ChannelHandler::handle(char *cmd, char *arg)
         }
 
         int chNr = atoi(arg);
-        int val = atoi(value);
+        int val  = atoi(value);
         logger_.info() << "Channel" << chNr << " will be set to: " << val << "\n";
 
         if (strcmp(command, "SET") == 0)

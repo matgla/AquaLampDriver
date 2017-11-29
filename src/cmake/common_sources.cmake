@@ -19,7 +19,6 @@ set(common_porting_sources
 
 set(common_porting_includes
     ${COMMON_SRC_DIR}/app/app.hpp
-    ${COMMON_SRC_DIR}/app/channelSetting.hpp
     ${COMMON_SRC_DIR}/app/context.hpp
     ${COMMON_SRC_DIR}/app/timeSetting.hpp
     ${COMMON_SRC_DIR}/app/statemachines/appSm.hpp

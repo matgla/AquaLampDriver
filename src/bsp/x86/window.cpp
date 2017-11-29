@@ -14,6 +14,7 @@ static sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Aqua
 
 Window::Window()
 {
+    std::cout << "Created SMFL window" << std::endl;
 }
 
 Window& Window::get()

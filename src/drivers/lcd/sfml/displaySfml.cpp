@@ -20,6 +20,7 @@ namespace lcd
 DisplaySfml::DisplaySfml()
     : logger_("DisplaySmfl")
 {
+    logger_.info() << "Created SMFL display";
     buffer_.create(DISPLAY_WIDTH, DISPLAY_HEIGHT, PIXEL_OFF_COLOR);
     display();
 }
