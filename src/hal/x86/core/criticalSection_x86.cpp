@@ -1,5 +1,6 @@
 #include "hal/core/criticalSection.hpp"
 
+#include <iostream>
 #include <mutex>
 
 namespace hal
@@ -13,7 +14,7 @@ bool locked = false;
 void startCriticalSection()
 {
     std::lock_guard<std::mutex> lock(lockedMutex);
-    globalLock.lock();
+    globalLock.try_lock();
     locked = true;
 }
 
