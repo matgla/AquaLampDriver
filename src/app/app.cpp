@@ -19,7 +19,8 @@ App::App(display::Display& display, bsp::Board& board)
       context_(board, display, logger_),
       backlight_(false),
       statemachine_(context_),
-      termometers_(board)
+      termometers_(board),
+      lightState_(LightStates::Off)
 {
 }
 
@@ -38,6 +39,166 @@ void App::applyBrightness()
     board_.ledPwm11.setPulse(context_.temporarySettings.channelPowers[11] * (static_cast<float>(context_.masterPower) / 100));
     board_.ledPwm12.setPulse(context_.temporarySettings.channelPowers[12] * (static_cast<float>(context_.masterPower) / 100));
     board_.ledPwm13.setPulse(context_.temporarySettings.channelPowers[13] * (static_cast<float>(context_.masterPower) / 100));
+}
+
+void App::performSunriseStep(std::time_t now, int sunriseTime)
+{
+    int masterPower       = context_.settings.channelPowers[0];
+    std::time_t timeToEnd = sunriseTime + now;
+    int powerDiff         = masterPower - context_.masterPower;
+    int stepBase          = std::abs(now);
+    if (powerDiff != 0)
+    {
+        stepBase = std::abs(timeToEnd / powerDiff);
+    }
+    bool increase = powerDiff > 0 ? true : false;
+    int step      = stepBase + context_.masterPower * stepBase;
+    logger_.info() << "masterPower: " << masterPower << ", timeToEnd: " << timeToEnd << ", powerDiff: " << powerDiff << ", stepBase: " << stepBase
+                   << ", increase: " << increase << ", step: " << step;
+    if (step + now < 0)
+    {
+        if (increase)
+        {
+
+            context_.masterPower += 1;
+            logger_.info() << "current power: " << context_.masterPower;
+        }
+        else
+        {
+            context_.masterPower -= 1;
+            logger_.info() << "current power: " << context_.masterPower;
+        }
+
+        applyBrightness();
+    }
+}
+
+
+void App::processLight(std::time_t time)
+{
+    switch (lightState_)
+    {
+        case LightStates::On:
+        {
+            logger_.info() << "On: " << time;
+            if (!isLightTime() && getTimeToSunshine(time) <= 1000) // 1000 = time when decide that we have startup system, and rise should be quick
+            {
+                lightState_ = LightStates::Sunshine;
+                lightSteps_ = 0;
+            }
+            else if (!isLightTime() && getTimeToSunshine(time) > 1000)
+            {
+                lightState_ = LightStates::QuickSunshine;
+                lightSteps_ = 0;
+            }
+        }
+        break;
+        case LightStates::Off:
+        {
+            logger_.info() << "Off: " << time;
+
+            if (isLightTime() && getTimeToSunrise(time) <= 1000) // 1000 = time when decide that we have startup system, and rise should be quick
+            {
+                lightState_ = LightStates::Sunrise;
+                lightSteps_ = 0;
+            }
+            else if (isLightTime() && getTimeToSunrise(time) > 1000)
+            {
+                lightState_ = LightStates::QuickSunrise;
+                lightSteps_ = 0;
+            }
+        }
+        break;
+        case LightStates::QuickSunrise:
+        {
+            logger_.info() << "QuickSunrise: " << time;
+
+            int offset = 0;
+            if (quickSunriseTime_ - time < context_.settings.channelPowers[0] - context_.masterPower)
+            {
+                offset = context_.settings.channelPowers[0] - context_.masterPower - (quickSunriseTime_ - time);
+            }
+            if (time < quickSunriseTime_ + offset)
+            {
+                performSunriseStep(time, getTimeToSunrise(time));
+            }
+            else
+            {
+                lightState_ = LightStates::On;
+            }
+        }
+        break;
+        case LightStates::Sunrise:
+        {
+            logger_.info() << "Sunrise: " << time;
+
+            int offset = 0;
+            if (getTimeToSunrise(time) + sunriseTime_ < context_.settings.channelPowers[0] - context_.masterPower)
+            {
+                offset = context_.settings.channelPowers[0] - context_.masterPower - (sunriseTime_ - time);
+            }
+            logger_.info() << "Offset: " << offset;
+
+            if (getTimeToSunrise(time) < sunriseTime_ + offset)
+            {
+                performSunriseStep(-1 * getTimeToSunrise(time), sunriseTime_ + offset);
+            }
+            else
+            {
+                lightState_ = LightStates::On;
+            }
+        }
+        break;
+        case LightStates::QuickSunshine:
+        {
+            logger_.info() << "Quick Sunshine: " << time;
+
+            int offset = 0;
+            if (quickSunshineTime_ - time < context_.settings.channelPowers[0] - context_.masterPower)
+            {
+                offset = context_.settings.channelPowers[0] - context_.masterPower - (quickSunshineTime_ - time);
+            }
+            if (time < quickSunshineTime_ + offset)
+            {
+                performSunriseStep(time, getTimeToSunshine(time));
+            }
+            else
+            {
+                lightState_ = LightStates::Off;
+            }
+        }
+        break;
+        case LightStates::Sunshine:
+        {
+            logger_.info() << "Sunshine: " << time;
+
+            int offset = 0;
+            if (getTimeToSunshine(time) + sunshineTime_ < std::abs(context_.masterPower - context_.settings.channelPowers[0]))
+            {
+                offset = context_.settings.channelPowers[0] - context_.masterPower - (sunshineTime_ - time);
+            }
+            logger_.info() << "Offset: " << offset;
+
+            if (getTimeToSunshine(time) < sunshineTime_ + offset)
+            {
+                performSunriseStep(-1 * getTimeToSunshine(time), sunshineTime_ + offset);
+            }
+            else
+            {
+                lightState_ = LightStates::Off;
+            }
+        }
+        break;
+        case LightStates::Night:
+        {
+            if (isLightTime())
+            {
+                lightState_ = LightStates::Sunrise;
+                lightSteps_ = 0;
+            }
+        }
+        break;
+    }
 }
 
 void App::start()
@@ -72,15 +233,10 @@ void App::start()
     applyBrightness();
 }
 
-bool App::isLightTime()
+time_t App::getTimeToSunrise(std::time_t now)
 {
-    time_t now             = std::time(nullptr);
-    struct tm sunshineTime = *std::localtime(&now);
-    struct tm sunriseTime  = *std::localtime(&now);
-    struct tm nowt         = *std::localtime(&now);
-    sunshineTime.tm_hour   = context_.settings.sunshine.hours;
-    sunshineTime.tm_min    = context_.settings.sunshine.minutes;
-    sunshineTime.tm_sec    = context_.settings.sunshine.seconds;
+    struct tm sunriseTime = *std::localtime(&now);
+    struct tm nowt        = *std::localtime(&now);
 
     sunriseTime.tm_hour = context_.settings.sunrise.hours;
     sunriseTime.tm_min  = context_.settings.sunrise.minutes;
@@ -89,34 +245,43 @@ bool App::isLightTime()
     // clang-format off
         logger_.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec 
             << ", sunrise: " << sunriseTime.tm_hour << ":" << sunriseTime.tm_min << ":" << sunriseTime.tm_sec 
+            << ", diff1: " << (long)(std::difftime(now, mktime(&sunriseTime)));
+    // clang-format on
+    return std::difftime(now, mktime(&sunriseTime));
+}
+
+time_t App::getTimeToSunshine(std::time_t now)
+{
+    struct tm sunshineTime = *std::localtime(&now);
+    struct tm nowt         = *std::localtime(&now);
+    sunshineTime.tm_hour   = context_.settings.sunshine.hours;
+    sunshineTime.tm_min    = context_.settings.sunshine.minutes;
+    sunshineTime.tm_sec    = context_.settings.sunshine.seconds;
+    // clang-format off
+        logger_.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec 
             << ", sunshine: " << sunshineTime.tm_hour << ":" << sunshineTime.tm_min << ":" << sunshineTime.tm_sec
-            << ", diff1: " << (long)(std::difftime(now, mktime(&sunriseTime)))
             << ", diff2: " << (long)(std::difftime(now, mktime(&sunshineTime)));
     // clang-format on
-    if (std::difftime(now, mktime(&sunriseTime)) >= 0 && std::difftime(now, mktime(&sunshineTime)) < 0)
+
+    return std::difftime(now, mktime(&sunshineTime));
+}
+
+bool App::isLightTime()
+{
+    time_t now = std::time(nullptr);
+
+    if (getTimeToSunrise(now) >= 0 && getTimeToSunshine(now) < 0)
     {
         return true;
     }
-
 
     return false;
 }
 
 void App::update()
 {
-    if (isLightTime())
-    {
-        context_.masterPower = context_.settings.channelPowers[0];
-        applyBrightness();
-    }
-    else
-    {
-        if (!context_.forcedLight)
-        {
-            context_.masterPower = 0;
-            applyBrightness();
-        }
-    }
+    time_t now = std::time(nullptr);
+    processLight(now);
 
     hal::core::startCriticalSection();
     statemachine_.process_event(statemachines::events::Update{});

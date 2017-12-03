@@ -9,6 +9,9 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
     ${COMMON_SRC_DIR}/utils.cpp
 
+    ${COMMON_SRC_DIR}/controller/sunlightController.cpp
+    
+
     ${COMMON_SRC_DIR}/display/font.cpp
     ${COMMON_SRC_DIR}/display/images.cpp
     ${COMMON_SRC_DIR}/display/display.cpp
@@ -29,6 +32,8 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/app/statemachines/helpers.hpp
     ${COMMON_SRC_DIR}/app/statemachines/menuSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/states.hpp
+
+    ${COMMON_SRC_DIR}/controller/sunlightController.hpp
 
     ${COMMON_SRC_DIR}/hal/core/core.hpp
     ${COMMON_SRC_DIR}/hal/core/criticalSection.hpp

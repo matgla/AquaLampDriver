@@ -1,0 +1,17 @@
+Final master power as master
+
+while (getTime() < sunriseTime + offset), where offset is calculated when master power changed to impossible value
+
+master_power(t) -> set by user settings
+time_to_end(t) = sunrise_time(t) - getTime(t)
+diff_power(t) = master_power(t) - current_power(t)
+div(t) = (diff_power != 0) ? time_to_end(t) / diff_power(t) : abs(getTime(t))
+increase(t) = diff_power(t) > 0 ? true : false
+step(t) = div(t) + current_power(t) * div(t)
+current_power(t(+1), but set in t)= step(t) + get_time(t) < 0 ? 
+    (increase(t) ? current_power(t-1)+1 : current_power(t-1)-1) : current_power(t)
+
+after all check if everything is ok, if not align with soft light change
+
+
+if someone change master_power, change also time for startup if needed

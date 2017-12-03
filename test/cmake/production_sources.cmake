@@ -8,6 +8,7 @@ set(production_includes
     ${PRODUCTION_SOURCES_DIR}/timer/timeoutTimer.hpp
     ${PRODUCTION_SOURCES_DIR}/timer/manager.hpp
     ${PRODUCTION_SOURCES_DIR}/utils.hpp
+    ${PRODUCTION_SOURCES_DIR}/controller/sunlightController.hpp
 
     ${HAL_SOURCES_DIR}/core/criticalSection.hpp
     ${HAL_SOURCES_DIR}/core/core.hpp
@@ -25,7 +26,8 @@ set(production_sources
     ${PRODUCTION_SOURCES_DIR}/utils.cpp
     ${PRODUCTION_SOURCES_DIR}/timer/intervalTimer.cpp
     ${PRODUCTION_SOURCES_DIR}/timer/timeoutTimer.cpp
-
+    ${PRODUCTION_SOURCES_DIR}/controller/sunlightController.cpp
+    
 
     ${HAL_SOURCES_DIR}/x86/core/criticalSection_x86.cpp
     ${HAL_SOURCES_DIR}/x86/core/core_x86.cpp

@@ -12,6 +12,7 @@ set(bsp_sources
     ${BSP_TEST_SOURCES_DIR}/led_x86_testing.cpp
     ${BSP_TEST_SOURCES_DIR}/onewire_x86_testing.cpp
     ${BSP_TEST_SOURCES_DIR}/spi_x86_testing.cpp
+    ${BSP_TEST_SOURCES_DIR}/pwm_x86_testing.cpp
 
     ${bsp_includes}
 )
