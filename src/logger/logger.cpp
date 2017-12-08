@@ -9,7 +9,7 @@ namespace logger
 {
 
 Logger::Logger(std::experimental::string_view name, bool insertNewlineWhenDestruct)
-    : name_(std::move(name)), insertNewlineWhenDestruct_(insertNewlineWhenDestruct), fd_(1)
+    : name_(std::move(name)), insertNewlineWhenDestruct_(insertNewlineWhenDestruct)
 {
 }
 
@@ -24,15 +24,16 @@ Logger::~Logger()
 
 void Logger::printHeader(std::experimental::string_view level)
 {
+    uint8_t fd = LoggerConf::get().getFileDescriptior();
     hal::core::startCriticalSection();
-    write(fd_, "<", 1);
+    write(fd, "<", 1);
     printTimeAndDate();
-    write(fd_, "> ", 2);
+    write(fd, "> ", 2);
 
-    write(fd_, level.data(), strlen(level.data()));
-    write(fd_, "/", 1);
-    write(fd_, name_.data(), strlen(name_.data()));
-    write(fd_, ": ", 2);
+    write(fd, level.data(), strlen(level.data()));
+    write(fd, "/", 1);
+    write(fd, name_.data(), strlen(name_.data()));
+    write(fd, ": ", 2);
 }
 
 Logger Logger::debug()
@@ -68,7 +69,7 @@ void Logger::printTimeAndDate()
     struct tm* currentTime = std::localtime(&t);
 
     utils::formatDateAndTime(buffer, BufferSize, currentTime);
-    write(fd_, buffer, strlen(buffer));
+    write(LoggerConf::get().getFileDescriptior(), buffer, strlen(buffer));
 }
 
 } // namespace logger

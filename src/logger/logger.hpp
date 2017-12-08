@@ -5,8 +5,8 @@
 
 #include <unistd.h>
 
+#include "logger/loggerConf.hpp"
 #include "utils.hpp"
-
 
 namespace logger
 {
@@ -23,7 +23,7 @@ public:
 
     Logger& operator<<(const std::experimental::string_view& str)
     {
-        write(fd_, str.data(), std::strlen(str.data()));
+        write(LoggerConf::get().getFileDescriptior(), str.data(), std::strlen(str.data()));
         return *this;
     }
 
@@ -31,7 +31,7 @@ public:
     {
         char number[21];
         utils::itoa(data, number);
-        write(fd_, number, std::strlen(number));
+        write(LoggerConf::get().getFileDescriptior(), number, std::strlen(number));
         return *this;
     }
 
@@ -46,7 +46,6 @@ protected:
 
     std::experimental::string_view name_;
     bool insertNewlineWhenDestruct_;
-    u8 fd_;
 };
 
 } // namespace logger

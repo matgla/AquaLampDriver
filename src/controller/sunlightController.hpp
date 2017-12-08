@@ -2,6 +2,8 @@
 
 #include <ctime>
 
+#include "logger/logger.hpp"
+
 namespace controller
 {
 
@@ -11,7 +13,8 @@ public:
     enum class State
     {
         Off,
-        Sunrise
+        Sunrise,
+        Sunshine
     };
 
     SunlightController();
@@ -26,13 +29,15 @@ public:
     void setSunriseStartTime(const std::time_t sunriseStartTime);
     void setSunshineStartTime(const std::time_t sunshineStartTime);
     void setSunriseLength(const std::time_t sunriseLength);
-    void setSunriseLength(const std::time_t sunshineLength);
+    void setSunshineLength(const std::time_t sunshineLength);
 
 private:
     std::time_t sunriseStartTime_;
     std::time_t sunshineStartTime_;
     std::time_t sunriseLength_;
     std::time_t sunshineLength_;
+
+    logger::Logger logger_;
 
     State state_;
 };

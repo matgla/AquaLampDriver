@@ -4,7 +4,8 @@ namespace controller
 {
 
 SunlightController::SunlightController()
-    : state_(SunlightController::State::Off)
+    : logger_("SunlightController"),
+    state_(SunlightController::State::Off)
 {
 }
 
@@ -15,7 +16,9 @@ SunlightController::SunlightController(const std::time_t sunriseStartTime,
     : sunriseStartTime_(sunriseStartTime),
       sunriseLength_(sunriseLength),
       sunshineStartTime_(sunshineStartTime),
-      sunshineLength_(sunshineLength)
+      sunshineLength_(sunshineLength),
+      logger_("SunlightController"),
+      state_(SunlightController::State::Off)
 {
 }
 
@@ -30,6 +33,19 @@ void SunlightController::run(std::time_t currentTime)
     {
         case State::Off:
         {
+            if (currentTime >= sunshineStartTime_)
+            {
+                logger_.info() << "Go from off to sunshine";
+                state_ = State::Sunshine;
+                return;
+            }
+
+            if (currentTime >= sunriseStartTime_)
+            {
+                logger_.info() << "Go from off to sunrise";
+                state_ = State::Sunrise;
+                return;
+            }
         }
         break;
     }
@@ -50,7 +66,7 @@ void SunlightController::setSunriseLength(const std::time_t sunriseLength)
     sunriseLength_ = sunriseLength;
 }
 
-void SunlightController::setSunriseLength(const std::time_t sunshineLength)
+void SunlightController::setSunshineLength(const std::time_t sunshineLength)
 {
     sunshineLength_ = sunshineLength;
 }
