@@ -6,7 +6,7 @@ constexpr uint8_t STDERR_FILE_DESCRIPTOR = 2;
 namespace logger
 {
 
-LoggerConf::LoggerConf& LoggerConf::get()
+LoggerConf& LoggerConf::get()
 {
     static LoggerConf conf;
     return conf;
@@ -14,17 +14,22 @@ LoggerConf::LoggerConf& LoggerConf::get()
 
 void LoggerConf::setLogToStderr()
 {
-    fd_ = STDERR_FILE_DESCRIPTOR;
+    fileDescriptor_ = STDERR_FILE_DESCRIPTOR;
 }
 
 void LoggerConf::setLogToStdout()
 {
-    fd_ = STDOUT_FILE_DESCRIPTOR;
+    fileDescriptor_ = STDOUT_FILE_DESCRIPTOR;
 }
 
-uint8_t getFileDescriptior()
+uint8_t LoggerConf::getFileDescriptior()
 {
-    return fd_;
+    return fileDescriptor_;
+}
+
+LoggerConf::LoggerConf()
+    : fileDescriptor_(STDOUT_FILE_DESCRIPTOR)
+{
 }
 
 } // namespace logger

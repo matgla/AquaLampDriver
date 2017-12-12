@@ -8,17 +8,17 @@ namespace logger
 class LoggerConf
 {
 public:
-LoggerConf& get();
+    static LoggerConf& get();
 
-void setLogToStderr();
-void setLogToStdout();
+    void setLogToStderr();
+    void setLogToStdout();
 
-uint8_t getFileDescriptior();
+    uint8_t getFileDescriptior();
 
 private:
-LoggerConf();
+    LoggerConf();
 
-uint8_t fileDescriptor_;
+    uint8_t fileDescriptor_;
 };
 
 } // namespace logger

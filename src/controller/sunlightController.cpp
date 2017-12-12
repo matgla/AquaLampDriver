@@ -5,7 +5,7 @@ namespace controller
 
 SunlightController::SunlightController()
     : logger_("SunlightController"),
-    state_(SunlightController::State::Off)
+      state_(SunlightController::State::Off)
 {
 }
 
@@ -29,10 +29,12 @@ const SunlightController::State SunlightController::state() const
 
 void SunlightController::run(std::time_t currentTime)
 {
+    logger_.info() << "run: " << currentTime;
     switch (state_)
     {
         case State::Off:
         {
+            logger_.info() << "State Off entry, time: " << currentTime;
             if (currentTime >= sunshineStartTime_)
             {
                 logger_.info() << "Go from off to sunshine";

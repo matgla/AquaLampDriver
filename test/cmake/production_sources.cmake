@@ -4,6 +4,7 @@ set(HAL_SOURCES_DIR "${PROJECT_SOURCE_DIR}/src/hal")
 set(production_includes
     ${PRODUCTION_SOURCES_DIR}/containers/staticVector.hpp
     ${PRODUCTION_SOURCES_DIR}/logger/logger.hpp
+    ${PRODUCTION_SOURCES_DIR}/logger/loggerConf.hpp
     ${PRODUCTION_SOURCES_DIR}/timer/intervalTimer.hpp
     ${PRODUCTION_SOURCES_DIR}/timer/timeoutTimer.hpp
     ${PRODUCTION_SOURCES_DIR}/timer/manager.hpp
@@ -23,6 +24,7 @@ set(production_includes
 set(production_sources
     ${production_includes}
     ${PRODUCTION_SOURCES_DIR}/logger/logger.cpp
+    ${PRODUCTION_SOURCES_DIR}/logger/loggerConf.cpp    
     ${PRODUCTION_SOURCES_DIR}/utils.cpp
     ${PRODUCTION_SOURCES_DIR}/timer/intervalTimer.cpp
     ${PRODUCTION_SOURCES_DIR}/timer/timeoutTimer.cpp

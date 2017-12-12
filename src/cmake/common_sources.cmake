@@ -5,6 +5,7 @@ set(common_porting_sources
     ${COMMON_SRC_DIR}/app/app.cpp
     ${COMMON_SRC_DIR}/main.cpp
     ${COMMON_SRC_DIR}/logger/logger.cpp
+    ${COMMON_SRC_DIR}/logger/loggerConf.cpp
     ${COMMON_SRC_DIR}/timer/intervalTimer.cpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.cpp
     ${COMMON_SRC_DIR}/utils.cpp
@@ -45,6 +46,7 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/hal/utils/assert.hpp
 
     ${COMMON_SRC_DIR}/logger/logger.hpp
+    ${COMMON_SRC_DIR}/logger/loggerConf.hpp
     ${COMMON_SRC_DIR}/timer/intervalTimer.hpp
     ${COMMON_SRC_DIR}/timer/timeoutTimer.hpp
 

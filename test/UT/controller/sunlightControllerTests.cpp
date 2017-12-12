@@ -5,6 +5,8 @@
 
 #include "controller/sunlightController.hpp"
 
+#include <iostream>
+
 class TimeStub
 {
 public:
@@ -50,12 +52,13 @@ protected:
 
 std::time_t getTime(int hour, int minute, int second)
 {
-    std::tm timeData;
-    timeData.tm_hour = hour;
-    timeData.tm_min  = minute;
-    timeData.tm_sec  = second;
+    std::time_t currentTime = std::time(nullptr);
+    std::tm* timeData       = localtime(&currentTime);
+    timeData->tm_hour       = hour;
+    timeData->tm_min        = minute;
+    timeData->tm_sec        = second;
 
-    return std::mktime(&timeData);
+    return std::mktime(timeData);
 }
 
 TEST_F(SunlightControllerShould, StartInOffState)
@@ -70,6 +73,8 @@ TEST_F(SunlightControllerShould, GoToSunriseOnTime)
     const std::time_t sunriseLength  = 3600; // seconds
     const std::time_t sunshineLength = 3600; // seconds
 
+    controller_.setSunriseStartTime(sunriseStart);
+    controller_.setSunriseLength(sunriseLength);
     TimeStub time(getTime(10, 10, 9));
     EXPECT_EQ(SunlightController::State::Off, controller_.state());
     controller_.run(time.getCurrentTime());
