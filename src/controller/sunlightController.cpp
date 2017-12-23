@@ -9,19 +9,6 @@ SunlightController::SunlightController()
 {
 }
 
-SunlightController::SunlightController(const std::time_t sunriseStartTime,
-                                       const std::time_t sunriseLength,
-                                       const std::time_t sunshineStartTime,
-                                       const std::time_t sunshineLength)
-    : sunriseStartTime_(sunriseStartTime),
-      sunriseLength_(sunriseLength),
-      sunshineStartTime_(sunshineStartTime),
-      sunshineLength_(sunshineLength),
-      logger_("SunlightController"),
-      state_(SunlightController::State::Off)
-{
-}
-
 const SunlightController::State SunlightController::state() const
 {
     return state_;
@@ -30,6 +17,7 @@ const SunlightController::State SunlightController::state() const
 void SunlightController::run(std::time_t currentTime)
 {
     logger_.info() << "run: " << currentTime;
+
     switch (state_)
     {
         case State::Off:
@@ -50,17 +38,26 @@ void SunlightController::run(std::time_t currentTime)
             }
         }
         break;
+        case State::Sunrise:
+        {
+            
+        }
+        break;
     }
 }
 
-void SunlightController::setSunriseStartTime(const std::time_t sunriseStartTime)
+void SunlightController::setSunriseStartTime(const u8 hour, const u8 minute, const u8 second)
 {
-    sunriseStartTime_ = sunriseStartTime;
+    sunriseStartHour_ = hour;
+    sunriseStartMinute_ = minute;
+    sunriseStartSecond_ = second;
 }
 
-void SunlightController::setSunshineStartTime(const std::time_t sunshineStartTime)
+void SunlightController::setSunshineStartTime(const u8 hour, const u8 minute, const u8 second)
 {
-    sunshineStartTime_ = sunshineStartTime;
+    sunshineStartHour_ = hour;
+    sunshineStartMinute_ = minute;
+    sunshineStartSecond_ = second;
 }
 
 void SunlightController::setSunriseLength(const std::time_t sunriseLength)
@@ -73,5 +70,15 @@ void SunlightController::setSunshineLength(const std::time_t sunshineLength)
     sunshineLength_ = sunshineLength;
 }
 
+std::time_t SunlightController::getSeconds(int hour, int minute, int second)
+{
+    std::time_t currentTime = std::time(nullptr);
+    std::tm* timeData       = localtime(&currentTime);
+    timeData->tm_hour       = hour;
+    timeData->tm_min        = minute;
+    timeData->tm_sec        = second;
+
+    return std::mktime(timeData);
+}
 
 } // namespace controller

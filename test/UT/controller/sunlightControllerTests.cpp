@@ -74,8 +74,10 @@ TEST_F(SunlightControllerShould, GoToSunriseOnTime)
     const std::time_t sunshineLength = 3600; // seconds
 
     controller_.setSunriseStartTime(sunriseStart);
+    controller_.setSunshineStartTime(sunshineStart);
     controller_.setSunriseLength(sunriseLength);
-    TimeStub time(getTime(10, 10, 9));
+    controller_.setSunshineLength(sunshineLength);
+    TimeStub time(getTime(10, 10, 8));
     EXPECT_EQ(SunlightController::State::Off, controller_.state());
     controller_.run(time.getCurrentTime());
     EXPECT_EQ(SunlightController::State::Off, controller_.state());
