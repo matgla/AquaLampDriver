@@ -16,22 +16,30 @@ class Logger
 public:
     Logger(std::experimental::string_view name, bool insertNewlineWhenDestruct = false);
     Logger(const Logger&) = default;
-    Logger(Logger&&) = default;
+    Logger(Logger&&)      = default;
     Logger& operator=(const Logger&& other) = delete;
     Logger& operator=(const Logger& other) = delete;
     ~Logger();
 
     Logger& operator<<(const std::experimental::string_view& str)
     {
-        write(LoggerConf::get().getFileDescriptior(), str.data(), std::strlen(str.data()));
+        if (!LoggerConf::get().enabled())
+        {
+            return *this;
+        }
+        write(LoggerConf::get().getFileDescriptor(), str.data(), std::strlen(str.data()));
         return *this;
     }
 
     Logger& operator<<(int data)
     {
+        if (!LoggerConf::get().enabled())
+        {
+            return *this;
+        }
         char number[21];
         utils::itoa(data, number);
-        write(LoggerConf::get().getFileDescriptior(), number, std::strlen(number));
+        write(LoggerConf::get().getFileDescriptor(), number, std::strlen(number));
         return *this;
     }
 

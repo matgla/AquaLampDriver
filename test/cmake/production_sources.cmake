@@ -3,6 +3,8 @@ set(HAL_SOURCES_DIR "${PROJECT_SOURCE_DIR}/src/hal")
 
 set(production_includes
     ${PRODUCTION_SOURCES_DIR}/containers/staticVector.hpp
+    ${PRODUCTION_SOURCES_DIR}/display/font.hpp
+    ${PRODUCTION_SOURCES_DIR}/display/display.hpp
     ${PRODUCTION_SOURCES_DIR}/logger/logger.hpp
     ${PRODUCTION_SOURCES_DIR}/logger/loggerConf.hpp
     ${PRODUCTION_SOURCES_DIR}/timer/intervalTimer.hpp
@@ -15,6 +17,7 @@ set(production_includes
     ${HAL_SOURCES_DIR}/core/core.hpp
     ${HAL_SOURCES_DIR}/core/backupRegisters.hpp
     ${HAL_SOURCES_DIR}/utils/assert.hpp
+    ${HAL_SOURCES_DIR}/memory/eeprom.hpp
     ${HAL_SOURCES_DIR}/time/sleep.hpp
     ${HAL_SOURCES_DIR}/time/time.hpp
     ${HAL_SOURCES_DIR}/time/rtc.hpp
@@ -23,6 +26,9 @@ set(production_includes
 
 set(production_sources
     ${production_includes}
+    ${PRODUCTION_SOURCES_DIR}/display/font.cpp
+    ${PRODUCTION_SOURCES_DIR}/display/display.cpp
+    
     ${PRODUCTION_SOURCES_DIR}/logger/logger.cpp
     ${PRODUCTION_SOURCES_DIR}/logger/loggerConf.cpp    
     ${PRODUCTION_SOURCES_DIR}/utils.cpp
@@ -35,6 +41,7 @@ set(production_sources
     ${HAL_SOURCES_DIR}/x86/core/core_x86.cpp
     ${HAL_SOURCES_DIR}/x86/core/backupRegisters_x86.cpp
     ${HAL_SOURCES_DIR}/x86/utils/assert_x86.cpp
+    ${HAL_SOURCES_DIR}/x86/memory/eeprom_x86.cpp
     ${HAL_SOURCES_DIR}/x86/time/sleep_x86.cpp
     ${HAL_SOURCES_DIR}/x86/time/time_x86.cpp
     ${HAL_SOURCES_DIR}/x86/time/rtc_x86.cpp

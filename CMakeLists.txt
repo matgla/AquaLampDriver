@@ -22,7 +22,7 @@ if (${ARCH} STREQUAL "STM32")
     include("cmake/STM32.cmake")
 endif (${ARCH} STREQUAL "STM32")
 
-project(AquaLampDriver CXX C)
+project(AquaLampDriver ASM CXX C)
 
 if (ASAN_ENABLED)
     if (${ARCH} STREQUAL "STM32")

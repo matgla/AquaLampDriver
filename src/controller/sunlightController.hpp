@@ -2,6 +2,7 @@
 
 #include <ctime>
 
+#include "app/context.hpp"
 #include "logger/logger.hpp"
 
 namespace controller
@@ -12,27 +13,32 @@ class SunlightController
 public:
     enum class State
     {
-        Off,
         Sunrise,
-        Sunshine
+        Sunset,
+        FastSunrise,
+        FastSunset,
+        Finished
     };
 
-    SunlightController();
-    SunlightController(const std::time_t sunriseStartTime,
-                       const std::time_t sunriseLength,
-                       const std::time_t sunshineStartTime,
-                       const std::time_t sunshineLength);
-    
-    const State state() const;
+    SunlightController(app::Context& context);
+
+    void updateState(std::time_t currentTime);
+
+    State state() const;
     void run(std::time_t currentTime);
+    bool finished();
 
     void setSunriseStartTime(const u8 hours, const u8 minutes, const u8 seconds);
-    void setSunshineStartTime(const u8 hours, const u8 minutes, const u8 seconds);
+    void setSunsetStartTime(const u8 hours, const u8 minutes, const u8 seconds);
     void setSunriseLength(const std::time_t sunriseLength);
-    void setSunshineLength(const std::time_t sunshineLength);
+    void setSunsetLength(const std::time_t sunsetLength);
+
+    void stop();
 
 private:
-    std::time_t getSeconds(int hour, int minute, int second);
+    std::time_t getSeconds(int hour, int minute, int second) const;
+    std::time_t getSunriseStartTime() const;
+    std::time_t getSunsetStartTime() const;
 
     u8 sunriseStartHour_;
     u8 sunriseStartMinute_;
@@ -40,15 +46,18 @@ private:
     std::time_t sunriseLength_;
     std::time_t sunriseStartTime_;
 
-    u8 sunshineStartHour_;
-    u8 sunshineStartMinute_;
-    u8 sunshineStartSecond_;
-    std::time_t sunshineStartTime_;
-    std::time_t sunshineLength_;
+    u8 sunsetStartHour_;
+    u8 sunsetStartMinute_;
+    u8 sunsetStartSecond_;
+    std::time_t sunsetStartTime_;
+    std::time_t sunsetLength_;
 
     logger::Logger logger_;
 
     State state_;
+
+    app::Context& context_;
+    float currentPower_;
 };
 
 } // namespace controller

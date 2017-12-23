@@ -40,6 +40,9 @@ message("BSP sources: ${bsp_sources}")
 
 set(production_srcs ${production_srcs} ${bsp_sources})
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
 if (${ARCH} STREQUAL "X86") 
     include(cmake/x86_sources.cmake)
     set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
@@ -57,9 +60,10 @@ if (${ARCH} STREQUAL "X86")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
     else (DEBUG)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Os")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
     endif (DEBUG)
+
     if (WIN32)
         set(target_libs ${target_libs} ws2_32 wsock32)
     elseif (UNIX)

@@ -26,7 +26,8 @@ enum class InterfaceStates : u8
     Detected,
     NotDetected,
     BusError,
-    NoDevicesOnBus
+    NoDevicesOnBus,
+    Ok
 };
 
 enum class Bit : u8
@@ -71,6 +72,7 @@ public:
 
         write(MATCH_ROM);
         write(devicesAddresses_[deviceNumber]);
+        return InterfaceStates::Ok;
     }
 
     InterfaceStates initTranssmisionWithAllDevices()
@@ -82,6 +84,7 @@ public:
         }
 
         write(SKIP_ROM);
+        return InterfaceStates::Ok;
     }
 
 private:

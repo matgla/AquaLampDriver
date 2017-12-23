@@ -24,7 +24,12 @@ Logger::~Logger()
 
 void Logger::printHeader(std::experimental::string_view level)
 {
-    uint8_t fd = LoggerConf::get().getFileDescriptior();
+    if (!LoggerConf::get().enabled())
+    {
+        return;
+    }
+
+    uint8_t fd = LoggerConf::get().getFileDescriptor();
     hal::core::startCriticalSection();
     write(fd, "<", 1);
     printTimeAndDate();
@@ -63,13 +68,18 @@ Logger Logger::error()
 
 void Logger::printTimeAndDate()
 {
+    if (!LoggerConf::get().enabled())
+    {
+        return;
+    }
+
     constexpr const int BufferSize = 20;
     char buffer[BufferSize];
-    auto t = std::time(nullptr);
+    auto t                 = std::time(nullptr);
     struct tm* currentTime = std::localtime(&t);
 
     utils::formatDateAndTime(buffer, BufferSize, currentTime);
-    write(LoggerConf::get().getFileDescriptior(), buffer, strlen(buffer));
+    write(LoggerConf::get().getFileDescriptor(), buffer, strlen(buffer));
 }
 
 } // namespace logger

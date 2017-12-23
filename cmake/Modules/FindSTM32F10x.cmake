@@ -39,6 +39,8 @@ file(GLOB STM32_SOURCES ${SOURCES_DIR}/misc.c
                         ${SOURCES_DIR}/stm32f10x_iwdg.c
                         ${STM32_STARTUP_SOURCE})
 
+message("src stm32: ${STM32_SOURCES}")
+
 find_package(PackageHandleStandardArgs)
 find_package_handle_standard_args(CMSIS DEFAULT_MSG
         STM32_LIBRARY_ROOT_DIR
