@@ -8,6 +8,7 @@
 #include "controller/sunlightController.hpp"
 #include "display/font.hpp"
 #include "drivers/lcd/displayDriver.hpp"
+#include "utils/types.hpp"
 
 #include <iostream>
 
@@ -103,16 +104,16 @@ TEST_F(SunlightControllerShould, StartInFinishedState)
 
 TEST_F(SunlightControllerShould, PerformSunrise)
 {
-    constexpr uint8_t initialPower = 0;
-    constexpr uint8_t finalPower   = 60;
+    constexpr u8 initialPower = 0;
+    constexpr u8 finalPower   = 60;
 
-    constexpr uint8_t sunriseHour   = 11;
-    constexpr uint8_t sunriseMinute = 1;
-    constexpr uint8_t sunriseSecond = 30;
+    constexpr u8 sunriseHour   = 11;
+    constexpr u8 sunriseMinute = 1;
+    constexpr u8 sunriseSecond = 30;
 
-    constexpr uint8_t initialHour   = 10;
-    constexpr uint8_t initialMinute = 59;
-    constexpr uint8_t initialSecond = 0;
+    constexpr u8 initialHour   = 10;
+    constexpr u8 initialMinute = 59;
+    constexpr u8 initialSecond = 0;
 
     constexpr std::time_t sunriseLength = 3600;
 
@@ -159,16 +160,16 @@ TEST_F(SunlightControllerShould, PerformSunrise)
 
 TEST_F(SunlightControllerShould, PerformSunset)
 {
-    constexpr uint8_t initialPower = 75;
-    constexpr uint8_t finalPower   = 5;
+    constexpr u8 initialPower = 75;
+    constexpr u8 finalPower   = 5;
 
-    constexpr uint8_t sunsetHour   = 20;
-    constexpr uint8_t sunsetMinute = 0;
-    constexpr uint8_t sunsetSecond = 0;
+    constexpr u8 sunsetHour   = 20;
+    constexpr u8 sunsetMinute = 0;
+    constexpr u8 sunsetSecond = 0;
 
-    constexpr uint8_t initialHour   = 19;
-    constexpr uint8_t initialMinute = 55;
-    constexpr uint8_t initialSecond = 0;
+    constexpr u8 initialHour   = 19;
+    constexpr u8 initialMinute = 55;
+    constexpr u8 initialSecond = 0;
 
     constexpr std::time_t sunsetLength = 3600;
 
@@ -216,22 +217,22 @@ TEST_F(SunlightControllerShould, PerformSunset)
 
 TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
 {
-    constexpr uint8_t initialPower = 5;
-    constexpr uint8_t finalPower   = 5;
-    constexpr uint8_t dayPower     = 80;
-    constexpr uint8_t nightPower   = 10;
+    constexpr u8 initialPower = 5;
+    constexpr u8 finalPower   = 5;
+    constexpr u8 dayPower     = 80;
+    constexpr u8 nightPower   = 10;
 
-    constexpr uint8_t sunriseHour   = 19;
-    constexpr uint8_t sunriseMinute = 45;
-    constexpr uint8_t sunriseSecond = 0;
+    constexpr u8 sunriseHour   = 19;
+    constexpr u8 sunriseMinute = 45;
+    constexpr u8 sunriseSecond = 0;
 
-    constexpr uint8_t sunsetHour   = 20;
-    constexpr uint8_t sunsetMinute = 0;
-    constexpr uint8_t sunsetSecond = 0;
+    constexpr u8 sunsetHour   = 20;
+    constexpr u8 sunsetMinute = 0;
+    constexpr u8 sunsetSecond = 0;
 
-    constexpr uint8_t initialHour   = 19;
-    constexpr uint8_t initialMinute = 15;
-    constexpr uint8_t initialSecond = 0;
+    constexpr u8 initialHour   = 19;
+    constexpr u8 initialMinute = 15;
+    constexpr u8 initialSecond = 0;
 
     constexpr std::time_t sunriseLength = 3600;
     constexpr std::time_t sunsetLength  = 3600;
@@ -303,54 +304,50 @@ TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
     EXPECT_EQ(nightPower, context_.currentChannelsSettings().masterPower());
 }
 
-// TEST_F(SunlightControllerShould, PerformFastSunrise)
-// {
-//     constexpr uint8_t initialPower = 10;
-//     constexpr uint8_t finalPower   = 90;
+TEST_F(SunlightControllerShould, PerformFastSunrise)
+{
+    constexpr u8 initialPower = 10;
+    constexpr u8 finalPower   = 90;
 
-//     constexpr std::time_t sunsetLength = 3600;
+    constexpr u8 initialHour   = 0;
+    constexpr u8 initialMinute = 0;
+    constexpr u8 initialSecond = 12;
 
-//     const std::time_t sunsetStartTime = getTime(sunsetHour, sunsetMinute, sunsetSecond);
-//     context_.currentChannelsSettings().masterPower(initialPower);
-//     context_.nightChannelsSettings().masterPower(finalPower);
+    constexpr std::time_t fastSunriseLength = 100;
 
-//     context_.sunsetSettings().set(sunsetHour, sunsetMinute, sunsetSecond);
-//     context_.sunsetSettings().length(sunsetLength);
+    context_.currentChannelsSettings().masterPower(initialPower);
+    context_.dayChannelsSettings().masterPower(finalPower);
+    context_.fastSunriseLength(fastSunriseLength);
 
-//     std::time_t currentTime = getTime(initialHour, initialMinute, initialSecond);
-//     std::time_t endTime     = sunsetStartTime + sunsetLength;
+    std::time_t currentTime          = getTime(initialHour, initialMinute, initialSecond);
+    std::time_t fastSunriseStartTime = currentTime;
+    std::time_t endTime              = currentTime + fastSunriseLength;
 
-//     EXPECT_EQ(SunlightController::State::Finished, controller_.state());
-//     for (currentTime; currentTime < sunsetStartTime; ++currentTime)
-//     {
-//         controller_.run(currentTime);
-//     }
-//     EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+    EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+    controller_.fastSunrise(currentTime);
 
-//     controller_.run(++currentTime);
-//     EXPECT_EQ(SunlightController::State::Sunset, controller_.state());
+    EXPECT_EQ(SunlightController::State::FastSunrise, controller_.state());
 
+    int part          = fastSunriseLength / 10;
+    int powerPart     = (finalPower - initialPower) / 10;
+    int expectedPower = initialPower;
+    for (currentTime; currentTime < endTime; ++currentTime)
+    {
+        controller_.run(currentTime);
+        if ((currentTime - fastSunriseStartTime) % part == 0)
+        {
+            EXPECT_GE(context_.currentChannelsSettings().masterPower(), expectedPower - 2);
+            EXPECT_LE(context_.currentChannelsSettings().masterPower(), expectedPower + 2);
+            expectedPower += powerPart;
+        }
+    }
 
-//     int part          = sunsetLength / 10;
-//     int powerPart     = (initialPower - finalPower) / 10;
-//     int expectedPower = initialPower - powerPart;
-//     for (currentTime; currentTime < endTime; ++currentTime)
-//     {
-//         controller_.run(currentTime);
-//         if ((currentTime - sunsetStartTime) % part == 0)
-//         {
-//             EXPECT_GE(context_.currentChannelsSettings().masterPower(), expectedPower - 2);
-//             EXPECT_LE(context_.currentChannelsSettings().masterPower(), expectedPower + 2);
-//             expectedPower -= powerPart;
-//         }
-//     }
+    EXPECT_EQ(SunlightController::State::FastSunrise, controller_.state());
+    controller_.run(++currentTime);
+    EXPECT_EQ(SunlightController::State::Finished, controller_.state());
 
-//     EXPECT_EQ(SunlightController::State::Sunset, controller_.state());
-
-//     controller_.run(++currentTime);
-//     EXPECT_EQ(SunlightController::State::Finished, controller_.state());
-//     EXPECT_EQ(finalPower, context_.currentChannelsSettings().masterPower());
-// }
+    EXPECT_EQ(finalPower, context_.currentChannelsSettings().masterPower());
+}
 
 
 } // namespace controller

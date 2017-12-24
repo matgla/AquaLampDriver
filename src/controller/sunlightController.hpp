@@ -22,22 +22,24 @@ public:
 
     SunlightController(app::Context& context);
 
-    void updateState(std::time_t currentTime);
 
     State state() const;
+    void fastSunrise(std::time_t startTime);
+    void fastSunset(std::time_t startTime);
     void run(std::time_t currentTime);
     bool finished();
 
     void stop();
 
 private:
+    void updateState(std::time_t currentTime);
+
     std::time_t getSeconds(int hour, int minute, int second) const;
     std::time_t getSunriseStartTime() const;
     std::time_t getSunsetStartTime() const;
 
-    std::time_t sunriseStartTime_;
-    std::time_t sunsetStartTime_;
-
+    std::time_t fastSunriseStartTime_;
+    std::time_t fastSunsetStartTime_;
     std::time_t fastSunriseLength_;
     std::time_t fastSunsetLength_;
 
