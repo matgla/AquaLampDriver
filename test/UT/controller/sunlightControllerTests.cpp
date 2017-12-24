@@ -524,4 +524,71 @@ TEST_F(SunlightControllerShould, PerformFastSunset)
     EXPECT_EQ(finalPower, context_.currentChannelsSettings().masterPower());
 }
 
+TEST_F(SunlightControllerShould, PerformFastSunsetAgainIfDifferenceMoreThan5)
+{
+    constexpr u8 initialPower = 90;
+    constexpr u8 finalPower   = 10;
+
+    constexpr u8 initialHour   = 0;
+    constexpr u8 initialMinute = 0;
+    constexpr u8 initialSecond = 12;
+
+    constexpr std::time_t fastSunsetLength = 100;
+
+    context_.currentChannelsSettings().masterPower(initialPower);
+    context_.nightChannelsSettings().masterPower(finalPower);
+    context_.fastSunsetLength(fastSunsetLength);
+
+    std::time_t currentTime         = getTime(initialHour, initialMinute, initialSecond);
+    std::time_t fastSunsetStartTime = currentTime;
+    std::time_t endTime             = currentTime + fastSunsetLength;
+
+    EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+    controller_.fastSunset(currentTime);
+
+    EXPECT_EQ(SunlightController::State::FastSunset, controller_.state());
+
+    int part          = fastSunsetLength / 10;
+    int powerPart     = (initialPower - finalPower) / 10;
+    int expectedPower = initialPower;
+    for (currentTime; currentTime < endTime - fastSunsetStartTime; ++currentTime)
+    {
+        controller_.run(currentTime);
+        if ((currentTime - fastSunsetStartTime) % part == 0)
+        {
+            EXPECT_GE(context_.currentChannelsSettings().masterPower(), expectedPower - 2);
+            EXPECT_LE(context_.currentChannelsSettings().masterPower(), expectedPower + 2);
+            expectedPower -= powerPart;
+        }
+    }
+
+    // make some delay
+    currentTime += fastSunsetStartTime;
+    controller_.run(currentTime);
+    EXPECT_EQ(SunlightController::State::FastSunset, controller_.state());
+    // perform fast sunrise for rest power
+    part          = fastSunsetStartTime / 10;
+    powerPart     = (context_.currentChannelsSettings().masterPower() - context_.nightChannelsSettings().masterPower()) / 10;
+    expectedPower = context_.nightChannelsSettings().masterPower();
+    endTime       = currentTime + fastSunsetLength;
+    for (currentTime; currentTime < endTime; ++currentTime)
+    {
+        controller_.run(currentTime);
+        if ((currentTime - fastSunsetLength) % part == 0)
+        {
+            EXPECT_GE(context_.currentChannelsSettings().masterPower(), expectedPower - 2);
+            EXPECT_LE(context_.currentChannelsSettings().masterPower(), expectedPower + 2);
+            expectedPower += powerPart;
+        }
+    }
+
+
+    EXPECT_EQ(SunlightController::State::FastSunset, controller_.state());
+    controller_.run(++currentTime);
+    EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+
+    EXPECT_EQ(finalPower, context_.currentChannelsSettings().masterPower());
+}
+
+
 } // namespace controller
