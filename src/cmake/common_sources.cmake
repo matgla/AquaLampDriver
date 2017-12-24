@@ -3,6 +3,9 @@ set(DRIVERS_SRC_DIR "${PROJECT_SOURCE_DIR}/src/drivers")
 
 set(common_porting_sources
     ${COMMON_SRC_DIR}/app/app.cpp
+    ${COMMON_SRC_DIR}/app/context.cpp
+    ${COMMON_SRC_DIR}/app/settings/timeEventSettings.cpp
+    ${COMMON_SRC_DIR}/app/settings/channelsSettings.cpp
     ${COMMON_SRC_DIR}/main.cpp
     ${COMMON_SRC_DIR}/logger/logger.cpp
     ${COMMON_SRC_DIR}/logger/loggerConf.cpp
@@ -33,6 +36,8 @@ set(common_porting_includes
     ${COMMON_SRC_DIR}/app/statemachines/helpers.hpp
     ${COMMON_SRC_DIR}/app/statemachines/menuSm.hpp
     ${COMMON_SRC_DIR}/app/statemachines/states.hpp
+    ${COMMON_SRC_DIR}/app/settings/timeEventSettings.hpp
+    ${COMMON_SRC_DIR}/app/settings/channelsSettings.hpp
 
     ${COMMON_SRC_DIR}/controller/sunlightController.hpp
 
@@ -57,6 +62,7 @@ set(common_porting_includes
 
     ${COMMON_SRC_DIR}/timer/manager.hpp
     ${COMMON_SRC_DIR}/utils.hpp
+    ${COMMON_SRC_DIR}/utils/constants.hpp
 
     ${DRIVERS_SRC_DIR}/lcd/displayDriver.hpp
     ${DRIVERS_SRC_DIR}/lcd/pcd8544/displayPcd8544.hpp

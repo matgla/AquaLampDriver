@@ -120,8 +120,8 @@ TEST_F(SunlightControllerShould, PerformSunrise)
     context_.currentChannelsSettings().masterPower(initialPower);
     context_.dayChannelsSettings().masterPower(finalPower);
 
-    controller_.setSunriseStartTime(sunriseHour, sunriseMinute, sunriseSecond);
-    controller_.setSunriseLength(sunriseLength);
+    context_.sunriseSettings().set(sunriseHour, sunriseMinute, sunriseSecond);
+    context_.sunriseSettings().length(sunriseLength);
 
     std::time_t currentTime = getTime(initialHour, initialMinute, initialSecond);
     std::time_t endTime     = sunriseStartTime + sunriseLength;
@@ -176,8 +176,8 @@ TEST_F(SunlightControllerShould, PerformSunset)
     context_.currentChannelsSettings().masterPower(initialPower);
     context_.nightChannelsSettings().masterPower(finalPower);
 
-    controller_.setSunsetStartTime(sunsetHour, sunsetMinute, sunsetSecond);
-    controller_.setSunsetLength(sunsetLength);
+    context_.sunsetSettings().set(sunsetHour, sunsetMinute, sunsetSecond);
+    context_.sunsetSettings().length(sunsetLength);
 
     std::time_t currentTime = getTime(initialHour, initialMinute, initialSecond);
     std::time_t endTime     = sunsetStartTime + sunsetLength;
@@ -244,10 +244,10 @@ TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
     context_.nightChannelsSettings().masterPower(nightPower);
     context_.dayChannelsSettings().masterPower(dayPower);
 
-    controller_.setSunriseStartTime(sunriseHour, sunriseMinute, sunriseSecond);
-    controller_.setSunriseLength(sunriseLength);
-    controller_.setSunsetStartTime(sunsetHour, sunsetMinute, sunsetSecond);
-    controller_.setSunsetLength(sunsetLength);
+    context_.sunriseSettings().set(sunriseHour, sunriseMinute, sunriseSecond);
+    context_.sunriseSettings().length(sunriseLength);
+    context_.sunsetSettings().set(sunsetHour, sunsetMinute, sunsetSecond);
+    context_.sunsetSettings().length(sunsetLength);
 
     std::time_t currentTime = getTime(initialHour, initialMinute, initialSecond);
 
@@ -302,5 +302,55 @@ TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
 
     EXPECT_EQ(nightPower, context_.currentChannelsSettings().masterPower());
 }
+
+// TEST_F(SunlightControllerShould, PerformFastSunrise)
+// {
+//     constexpr uint8_t initialPower = 10;
+//     constexpr uint8_t finalPower   = 90;
+
+//     constexpr std::time_t sunsetLength = 3600;
+
+//     const std::time_t sunsetStartTime = getTime(sunsetHour, sunsetMinute, sunsetSecond);
+//     context_.currentChannelsSettings().masterPower(initialPower);
+//     context_.nightChannelsSettings().masterPower(finalPower);
+
+//     context_.sunsetSettings().set(sunsetHour, sunsetMinute, sunsetSecond);
+//     context_.sunsetSettings().length(sunsetLength);
+
+//     std::time_t currentTime = getTime(initialHour, initialMinute, initialSecond);
+//     std::time_t endTime     = sunsetStartTime + sunsetLength;
+
+//     EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+//     for (currentTime; currentTime < sunsetStartTime; ++currentTime)
+//     {
+//         controller_.run(currentTime);
+//     }
+//     EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+
+//     controller_.run(++currentTime);
+//     EXPECT_EQ(SunlightController::State::Sunset, controller_.state());
+
+
+//     int part          = sunsetLength / 10;
+//     int powerPart     = (initialPower - finalPower) / 10;
+//     int expectedPower = initialPower - powerPart;
+//     for (currentTime; currentTime < endTime; ++currentTime)
+//     {
+//         controller_.run(currentTime);
+//         if ((currentTime - sunsetStartTime) % part == 0)
+//         {
+//             EXPECT_GE(context_.currentChannelsSettings().masterPower(), expectedPower - 2);
+//             EXPECT_LE(context_.currentChannelsSettings().masterPower(), expectedPower + 2);
+//             expectedPower -= powerPart;
+//         }
+//     }
+
+//     EXPECT_EQ(SunlightController::State::Sunset, controller_.state());
+
+//     controller_.run(++currentTime);
+//     EXPECT_EQ(SunlightController::State::Finished, controller_.state());
+//     EXPECT_EQ(finalPower, context_.currentChannelsSettings().masterPower());
+// }
+
 
 } // namespace controller

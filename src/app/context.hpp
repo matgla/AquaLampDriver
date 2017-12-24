@@ -1,5 +1,9 @@
 #pragma once
 
+#include <type_traits>
+
+#include "app/settings/channelsSettings.hpp"
+#include "app/settings/timeEventSettings.hpp"
 #include "app/timeSetting.hpp"
 #include "display/display.hpp"
 #include "hal/memory/eeprom.hpp"
@@ -20,28 +24,6 @@ struct Settings
     u8 channelPowers[NUMBER_OF_PWM_CHANNELS + 1]; // with master on 0 position
 };
 
-struct ChannelsSettings
-{
-    u8 masterPower() const
-    {
-        return masterPower_;
-    }
-
-    void masterPower(u8 power)
-    {
-        masterPower_ = power;
-    }
-
-    u8& powers()
-    {
-        return *channelPowers_;
-    }
-
-private:
-    u8 masterPower_;
-    u8 channelPowers_[NUMBER_OF_PWM_CHANNELS];
-};
-
 struct Context
 {
     Context(bsp::Board& board, display::Display& lcd, logger::Logger& log)
@@ -49,34 +31,54 @@ struct Context
     {
     }
 
-    const ChannelsSettings& currentChannelsSettings() const
+    const settings::ChannelsSettings& currentChannelsSettings() const
     {
         return currentChannelsSettings_;
     }
 
-    ChannelsSettings& currentChannelsSettings()
+    settings::ChannelsSettings& currentChannelsSettings()
     {
         return currentChannelsSettings_;
     }
 
-    const ChannelsSettings& dayChannelsSettings() const
+    const settings::ChannelsSettings& dayChannelsSettings() const
     {
         return dayChannelsSettings_;
     }
 
-    ChannelsSettings& dayChannelsSettings()
+    settings::ChannelsSettings& dayChannelsSettings()
     {
         return dayChannelsSettings_;
     }
 
-    const ChannelsSettings& nightChannelsSettings() const
+    const settings::ChannelsSettings& nightChannelsSettings() const
     {
         return nightChannelsSettings_;
     }
 
-    ChannelsSettings& nightChannelsSettings()
+    settings::ChannelsSettings& nightChannelsSettings()
     {
         return nightChannelsSettings_;
+    }
+
+    const settings::TimeEventSettings& sunriseSettings() const
+    {
+        return sunriseSettings_;
+    }
+
+    settings::TimeEventSettings& sunriseSettings()
+    {
+        return sunriseSettings_;
+    }
+
+    const settings::TimeEventSettings& sunsetSettings() const
+    {
+        return sunsetSettings_;
+    }
+
+    settings::TimeEventSettings& sunsetSettings()
+    {
+        return sunsetSettings_;
     }
 
 
@@ -130,10 +132,36 @@ struct Context
 
     bool forcedLight;
 
+    void fastSunriseLength(u8 length)
+    {
+        fastSunriseLength_ = length;
+    }
+
+    void fastSunsetLength(u8 length)
+    {
+        fastSunsetLength_ = length;
+    }
+
+    int fastSunriseLength()
+    {
+        return fastSunriseLength_;
+    }
+
+    int fastSunsetLength()
+    {
+        return fastSunsetLength_;
+    }
+
 private:
-    ChannelsSettings currentChannelsSettings_;
-    ChannelsSettings dayChannelsSettings_;
-    ChannelsSettings nightChannelsSettings_;
+    settings::ChannelsSettings currentChannelsSettings_;
+    settings::ChannelsSettings dayChannelsSettings_;
+    settings::ChannelsSettings nightChannelsSettings_;
+
+    settings::TimeEventSettings sunriseSettings_;
+    settings::TimeEventSettings sunsetSettings_;
+
+    int fastSunriseLength_;
+    int fastSunsetLength_;
 };
 
 } // namespace app

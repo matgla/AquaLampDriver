@@ -20,7 +20,7 @@ SunlightController::State SunlightController::state() const
 void SunlightController::updateState(std::time_t currentTime)
 {
     const std::time_t sunsetStart = getSunsetStartTime();
-    if (currentTime >= sunsetStart && currentTime < sunsetStart + sunsetLength_)
+    if (currentTime >= sunsetStart && currentTime < sunsetStart + context_.sunsetSettings().length())
     {
         if (state_ != State::Sunset)
         {
@@ -35,7 +35,7 @@ void SunlightController::updateState(std::time_t currentTime)
 
     const std::time_t sunriseStart = getSunriseStartTime();
 
-    if (currentTime >= sunriseStart && currentTime < sunriseStart + sunriseLength_)
+    if (currentTime >= sunriseStart && currentTime < sunriseStart + context_.sunriseSettings().length())
     {
         if (state_ != State::Sunrise)
         {
@@ -59,7 +59,7 @@ void SunlightController::run(std::time_t currentTime)
 
         case State::Sunset:
         {
-            const int timeToEnd = getSunsetStartTime() + sunsetLength_ - currentTime;
+            const int timeToEnd = getSunsetStartTime() + context_.sunsetSettings().length() - currentTime;
 
             if (timeToEnd <= 0)
             {
@@ -92,7 +92,7 @@ void SunlightController::run(std::time_t currentTime)
 
         case State::Sunrise:
         {
-            const int timeToEnd = getSunriseStartTime() + sunriseLength_ - currentTime;
+            const int timeToEnd = getSunriseStartTime() + context_.sunriseSettings().length() - currentTime;
 
             if (timeToEnd <= 0)
             {
@@ -135,30 +135,6 @@ void SunlightController::run(std::time_t currentTime)
     }
 }
 
-void SunlightController::setSunriseStartTime(const u8 hour, const u8 minute, const u8 second)
-{
-    sunriseStartHour_   = hour;
-    sunriseStartMinute_ = minute;
-    sunriseStartSecond_ = second;
-}
-
-void SunlightController::setSunsetStartTime(const u8 hour, const u8 minute, const u8 second)
-{
-    sunsetStartHour_   = hour;
-    sunsetStartMinute_ = minute;
-    sunsetStartSecond_ = second;
-}
-
-void SunlightController::setSunriseLength(const std::time_t sunriseLength)
-{
-    sunriseLength_ = sunriseLength;
-}
-
-void SunlightController::setSunsetLength(const std::time_t sunsetLength)
-{
-    sunsetLength_ = sunsetLength;
-}
-
 void SunlightController::stop()
 {
     state_ = State::Finished;
@@ -178,12 +154,14 @@ std::time_t SunlightController::getSeconds(int hour, int minute, int second) con
 
 std::time_t SunlightController::getSunriseStartTime() const
 {
-    return getSeconds(sunriseStartHour_, sunriseStartMinute_, sunriseStartSecond_);
+    return getSeconds(context_.sunriseSettings().hour(), context_.sunriseSettings().minute(),
+                      context_.sunriseSettings().second());
 }
 
 std::time_t SunlightController::getSunsetStartTime() const
 {
-    return getSeconds(sunsetStartHour_, sunsetStartMinute_, sunsetStartSecond_);
+    return getSeconds(context_.sunsetSettings().hour(), context_.sunsetSettings().minute(),
+                      context_.sunsetSettings().second());
 }
 
 } // namespace controller

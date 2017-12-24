@@ -2,6 +2,9 @@ set(PRODUCTION_SOURCES_DIR "${PROJECT_SOURCE_DIR}/src")
 set(HAL_SOURCES_DIR "${PROJECT_SOURCE_DIR}/src/hal")
 
 set(production_includes
+    ${PRODUCTION_SOURCES_DIR}/app/context.hpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.hpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/channelsSettings.hpp
     ${PRODUCTION_SOURCES_DIR}/containers/staticVector.hpp
     ${PRODUCTION_SOURCES_DIR}/display/font.hpp
     ${PRODUCTION_SOURCES_DIR}/display/display.hpp
@@ -11,6 +14,7 @@ set(production_includes
     ${PRODUCTION_SOURCES_DIR}/timer/timeoutTimer.hpp
     ${PRODUCTION_SOURCES_DIR}/timer/manager.hpp
     ${PRODUCTION_SOURCES_DIR}/utils.hpp
+    ${PRODUCTION_SOURCES_DIR}/utils/constants.hpp
     ${PRODUCTION_SOURCES_DIR}/controller/sunlightController.hpp
 
     ${HAL_SOURCES_DIR}/core/criticalSection.hpp
@@ -26,6 +30,9 @@ set(production_includes
 
 set(production_sources
     ${production_includes}
+    ${PRODUCTION_SOURCES_DIR}/app/context.cpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.cpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/channelsSettings.cpp
     ${PRODUCTION_SOURCES_DIR}/display/font.cpp
     ${PRODUCTION_SOURCES_DIR}/display/display.cpp
     
