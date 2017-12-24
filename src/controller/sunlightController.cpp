@@ -144,6 +144,56 @@ void SunlightController::run(std::time_t currentTime)
 
         case State::FastSunset:
         {
+            const int timeToEnd = fastSunsetStartTime_ + context_.fastSunsetLength() - currentTime;
+            if (timeToEnd <= 0)
+            {
+                int diff  = context_.currentChannelsSettings().masterPower() - context_.nightChannelsSettings().masterPower();
+                int error = std::abs(diff);
+                if (error == 0)
+                {
+                    logger_.info() << "Fast sunset finished";
+                    state_ = State::Finished;
+                    return;
+                }
+
+                if (error < 5)
+                {
+                    logger_.info() << "Corrected, sunset finished";
+                    state_ = State::Finished;
+                    return;
+                }
+
+                if (diff >= 5)
+                {
+                    logger_.info() << "Error to high, performing fast sunset...";
+                    fastSunset(currentTime);
+                    return;
+                }
+
+                if (diff <= -5)
+                {
+                    logger_.info() << "Error to high, performing fast sunrise...";
+                    fastSunrise(currentTime);
+                    return;
+                }
+            }
+
+            const u8 leftPower = context_.currentChannelsSettings().masterPower() - context_.nightChannelsSettings().masterPower(); // TODO: get
+            logger_.info() << "Power left: " << leftPower;
+            const float step = static_cast<const float>(leftPower) / timeToEnd;
+            if (std::abs(currentPower_ - context_.currentChannelsSettings().masterPower()) > 1)
+            {
+                currentPower_ = context_.currentChannelsSettings().masterPower();
+            }
+
+            currentPower_ -= step;
+            const u8 newPower = static_cast<u8>(currentPower_);
+
+            if (newPower != context_.currentChannelsSettings().masterPower())
+            {
+                logger_.info() << "Set power to: " << newPower;
+                context_.currentChannelsSettings().masterPower(newPower);
+            }
         }
         break;
 
