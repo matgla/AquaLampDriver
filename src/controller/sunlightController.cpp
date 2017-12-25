@@ -163,17 +163,10 @@ void SunlightController::run(std::time_t currentTime)
                     return;
                 }
 
-                if (diff >= 5)
+                if (error >= 5)
                 {
                     logger_.info() << "Error to high, performing fast sunset...";
-                    fastSunset(currentTime);
-                    return;
-                }
-
-                if (diff <= -5)
-                {
-                    logger_.info() << "Error to high, performing fast sunrise...";
-                    fastSunrise(currentTime);
+                    fastCorrection(currentTime, context_.nightChannelsSettings().masterPower());
                     return;
                 }
             }
@@ -218,17 +211,10 @@ void SunlightController::run(std::time_t currentTime)
                     return;
                 }
 
-                if (diff >= 5)
+                if (error >= 5)
                 {
-                    logger_.info() << "Error to high, performing fast sunrise...";
-                    fastSunrise(currentTime);
-                    return;
-                }
-
-                if (diff <= -5)
-                {
-                    logger_.info() << "Error to high, performing fast sunset...";
-                    fastSunset(currentTime);
+                    logger_.info() << "Error to high, performing fast correction...";
+                    fastCorrection(currentTime, context_.dayChannelsSettings().masterPower());
                     return;
                 }
             }
@@ -251,7 +237,62 @@ void SunlightController::run(std::time_t currentTime)
             }
         }
         break;
+        case State::FastCorrection:
+        {
+            const int timeToEnd = startTime_ + 100 - currentTime;
+            if (timeToEnd <= 0)
+            {
+                int diff  = setPointValue_ - context_.currentChannelsSettings().masterPower();
+                int error = std::abs(diff);
+                if (error == 0)
+                {
+                    logger_.info() << "Fast sunrise finished";
+                    state_ = State::Finished;
+                    return;
+                }
+
+                if (error < 5)
+                {
+                    logger_.info() << "Corrected, sunrise finished";
+                    state_ = State::Finished;
+                    return;
+                }
+
+                if (error >= 5)
+                {
+                    logger_.info() << "Error to high, performing fast correction...";
+                    fastCorrection(currentTime, setPointValue_);
+                    return;
+                }
+            }
+
+            const int leftPower = setPointValue_ - context_.currentChannelsSettings().masterPower(); // TODO: get
+            logger_.info() << "Power left: " << leftPower;
+            const float step = static_cast<const float>(leftPower) / timeToEnd;
+            if (std::abs(currentPower_ - context_.currentChannelsSettings().masterPower()) > 1)
+            {
+                currentPower_ = context_.currentChannelsSettings().masterPower();
+            }
+
+            currentPower_ += step;
+            const u8 newPower = static_cast<u8>(currentPower_);
+
+            if (newPower != context_.currentChannelsSettings().masterPower())
+            {
+                logger_.info() << "Set power to: " << newPower;
+                context_.currentChannelsSettings().masterPower(newPower);
+            }
+        }
+        break;
     }
+}
+
+void SunlightController::fastCorrection(std::time_t startTime, u8 setPointValue)
+{
+    state_         = State::FastCorrection;
+    setPointValue_ = setPointValue;
+    startTime_     = startTime;
+    currentPower_  = context_.currentChannelsSettings().masterPower();
 }
 
 void SunlightController::stop()

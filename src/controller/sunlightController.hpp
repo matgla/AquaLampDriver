@@ -17,6 +17,7 @@ public:
         Sunset,
         FastSunrise,
         FastSunset,
+        FastCorrection,
         Finished
     };
 
@@ -33,6 +34,7 @@ public:
 
 private:
     void updateState(std::time_t currentTime);
+    void fastCorrection(std::time_t startTime, u8 setPointValue);
 
     std::time_t getSeconds(int hour, int minute, int second) const;
     std::time_t getSunriseStartTime() const;
@@ -42,6 +44,9 @@ private:
     std::time_t fastSunsetStartTime_;
     std::time_t fastSunriseLength_;
     std::time_t fastSunsetLength_;
+
+    std::time_t startTime_;
+    u8 setPointValue_;
 
     logger::Logger logger_;
 
