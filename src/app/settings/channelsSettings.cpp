@@ -11,6 +11,11 @@ u8 ChannelsSettings::masterPower() const
     return masterPower_;
 }
 
+u8& ChannelsSettings::masterPower()
+{
+    return masterPower_;
+}
+
 void ChannelsSettings::masterPower(u8 power)
 {
     masterPower_ = power;

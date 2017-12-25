@@ -15,6 +15,7 @@ namespace settings
 struct ChannelsSettings
 {
     u8 masterPower() const;
+    u8& masterPower();
     void masterPower(u8 power);
     gsl::span<u8> powers();
 

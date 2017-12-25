@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include "app/context.hpp"
+#include "controller/channelController.hpp"
 #include "logger/logger.hpp"
 
 namespace controller
@@ -35,6 +36,7 @@ public:
 private:
     void updateState(std::time_t currentTime);
     void fastCorrection(std::time_t startTime, u8 setPointValue);
+    void process(std::time_t currentTime);
 
     std::time_t getSeconds(int hour, int minute, int second) const;
     std::time_t getSunriseStartTime() const;
@@ -46,7 +48,9 @@ private:
     std::time_t fastSunsetLength_;
 
     std::time_t startTime_;
+    std::time_t processLength_;
     u8 setPointValue_;
+
 
     logger::Logger logger_;
 
@@ -54,6 +58,7 @@ private:
 
     app::Context& context_;
     float currentPower_;
+    ChannelController channelController_;
 };
 
 } // namespace controller
