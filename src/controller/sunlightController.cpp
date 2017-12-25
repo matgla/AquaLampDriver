@@ -9,7 +9,7 @@ SunlightController::SunlightController(app::Context& context)
     : logger_("SunlightController"),
       state_(State::Finished),
       context_(context),
-      channelController_(context.currentChannelsSettings().masterPower())
+      channelController_(context.currentMasterPower())
 {
 }
 
@@ -25,15 +25,18 @@ void SunlightController::updateState(std::time_t currentTime)
         return;
     }
     const std::time_t sunsetStart = getSunsetStartTime();
-    if (currentTime >= sunsetStart && currentTime < sunsetStart + context_.sunsetSettings().length())
+    if (currentTime >= sunsetStart && currentTime < sunsetStart + context_.channelsSettings().masterNight().time().length())
     {
         if (state_ != State::Sunset)
         {
             logger_.info() << "It's sunset time";
-            std::time_t startTime = getSeconds(context_.sunsetSettings().hour(), context_.sunsetSettings().minute(),
-                                               context_.sunsetSettings().second());
+            std::time_t startTime = getSeconds(context_.channelsSettings().masterNight().time().hour(),
+                                               context_.channelsSettings().masterNight().time().minute(),
+                                               context_.channelsSettings().masterNight().time().second());
             state_                = State::Sunset;
-            channelController_.start(startTime, context_.sunriseSettings().length(), context_.dayChannelsSettings().masterPower());
+            channelController_.start(startTime,
+                                     context_.channelsSettings().masterNight().time().length(),
+                                     context_.channelsSettings().masterNight().power());
         }
 
         return;
@@ -41,16 +44,17 @@ void SunlightController::updateState(std::time_t currentTime)
 
     const std::time_t sunriseStart = getSunriseStartTime();
 
-    if (currentTime >= sunriseStart && currentTime < sunriseStart + context_.sunriseSettings().length())
+    if (currentTime >= sunriseStart && currentTime < sunriseStart + context_.channelsSettings().masterDay().time().length())
     {
         if (state_ != State::Sunrise)
         {
             logger_.info() << "It's sunrise time";
-            std::time_t startTime = getSeconds(context_.sunriseSettings().hour(), context_.sunriseSettings().minute(),
-                                               context_.sunriseSettings().second());
+            std::time_t startTime = getSeconds(context_.channelsSettings().masterDay().time().hour(),
+                                               context_.channelsSettings().masterDay().time().minute(),
+                                               context_.channelsSettings().masterDay().time().second());
             state_                = State::Sunrise;
-            channelController_.start(startTime, context_.sunriseSettings().length(),
-                                     context_.dayChannelsSettings().masterPower());
+            channelController_.start(startTime, context_.channelsSettings().masterDay().time().length(),
+                                     context_.channelsSettings().masterDay().power());
         }
         return;
     }
@@ -60,18 +64,17 @@ void SunlightController::fastSunrise(std::time_t startTime)
 {
     logger_.info() << "Performing fast sunrise";
     state_ = State::FastSunrise;
-    channelController_.start(startTime, context_.fastSunriseLength(),
-                             context_.dayChannelsSettings().masterPower());
+    channelController_.start(startTime, context_.channelsSettings().masterDay().fastLength(),
+                             context_.channelsSettings().masterDay().power());
 }
 
 void SunlightController::fastSunset(std::time_t startTime)
 {
     logger_.info() << "Performing fast sunset";
     state_ = State::FastSunset;
-    channelController_.start(startTime, context_.fastSunsetLength(),
-                             context_.nightChannelsSettings().masterPower());
+    channelController_.start(startTime, context_.channelsSettings().masterNight().fastLength(),
+                             context_.channelsSettings().masterNight().power());
 }
-
 
 void SunlightController::run(std::time_t currentTime)
 {
@@ -85,29 +88,29 @@ void SunlightController::run(std::time_t currentTime)
 
         case State::Sunset:
         {
-            channelController_.update(context_.sunsetSettings().length(),
-                                      context_.nightChannelsSettings().masterPower());
+            channelController_.update(context_.channelsSettings().masterNight().time().length(),
+                                      context_.channelsSettings().masterNight().power());
         }
         break;
 
         case State::Sunrise:
         {
-            channelController_.update(context_.sunriseSettings().length(),
-                                      context_.dayChannelsSettings().masterPower());
+            channelController_.update(context_.channelsSettings().masterDay().time().length(),
+                                      context_.channelsSettings().masterDay().power());
         }
         break;
 
         case State::FastSunset:
         {
-            channelController_.update(context_.fastSunsetLength(),
-                                      context_.nightChannelsSettings().masterPower());
+            channelController_.update(context_.channelsSettings().masterNight().fastLength(),
+                                      context_.channelsSettings().masterNight().power());
         }
         break;
 
         case State::FastSunrise:
         {
-            channelController_.update(context_.fastSunriseLength(),
-                                      context_.dayChannelsSettings().masterPower());
+            channelController_.update(context_.channelsSettings().masterDay().fastLength(),
+                                      context_.channelsSettings().masterDay().power());
         }
         break;
         case State::FastCorrection:
@@ -130,58 +133,9 @@ void SunlightController::run(std::time_t currentTime)
 
 void SunlightController::fastCorrection(std::time_t startTime, u8 setPointValue)
 {
-    state_         = State::FastCorrection;
-    setPointValue_ = setPointValue;
-    startTime_     = startTime;
-    currentPower_  = context_.currentChannelsSettings().masterPower();
-    processLength_ = 100;
+    state_ = State::FastCorrection;
+    // TODO: remove hardcode
     channelController_.start(startTime, 100, setPointValue);
-}
-
-void SunlightController::process(std::time_t currentTime)
-{
-    const int timeToEnd = startTime_ + processLength_ - currentTime;
-    if (timeToEnd <= 0)
-    {
-        int error = std::abs(setPointValue_ - context_.currentChannelsSettings().masterPower());
-        if (error == 0)
-        {
-            logger_.info() << "Fast sunrise finished";
-            state_ = State::Finished;
-            return;
-        }
-
-        if (error < 5)
-        {
-            logger_.info() << "Corrected, sunrise finished";
-            state_ = State::Finished;
-            return;
-        }
-
-        if (error >= 5)
-        {
-            logger_.info() << "Error to high, performing fast correction...";
-            fastCorrection(currentTime, setPointValue_);
-            return;
-        }
-    }
-
-    const int leftPower = setPointValue_ - context_.currentChannelsSettings().masterPower(); // TODO: get
-    logger_.info() << "Power left: " << leftPower;
-    const float step = static_cast<const float>(leftPower) / timeToEnd;
-    if (std::abs(currentPower_ - context_.currentChannelsSettings().masterPower()) > 1)
-    {
-        currentPower_ = context_.currentChannelsSettings().masterPower();
-    }
-
-    currentPower_ += step;
-    const u8 newPower = static_cast<u8>(currentPower_);
-
-    if (newPower != context_.currentChannelsSettings().masterPower())
-    {
-        logger_.info() << "Set power to: " << newPower;
-        context_.currentChannelsSettings().masterPower(newPower);
-    }
 }
 
 void SunlightController::stop()
@@ -200,17 +154,18 @@ std::time_t SunlightController::getSeconds(int hour, int minute, int second) con
     return std::mktime(timeData);
 }
 
-
 std::time_t SunlightController::getSunriseStartTime() const
 {
-    return getSeconds(context_.sunriseSettings().hour(), context_.sunriseSettings().minute(),
-                      context_.sunriseSettings().second());
+    return getSeconds(context_.channelsSettings().masterDay().time().hour(),
+                      context_.channelsSettings().masterDay().time().minute(),
+                      context_.channelsSettings().masterDay().time().second());
 }
 
 std::time_t SunlightController::getSunsetStartTime() const
 {
-    return getSeconds(context_.sunsetSettings().hour(), context_.sunsetSettings().minute(),
-                      context_.sunsetSettings().second());
+    return getSeconds(context_.channelsSettings().masterNight().time().hour(),
+                      context_.channelsSettings().masterNight().time().minute(),
+                      context_.channelsSettings().masterNight().time().second());
 }
 
 } // namespace controller

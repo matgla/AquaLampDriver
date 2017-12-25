@@ -6,24 +6,44 @@ namespace app
 namespace settings
 {
 
-u8 ChannelsSettings::masterPower() const
+ChannelSettings& ChannelsSettings::masterDay()
 {
-    return masterPower_;
+    return masterDaySettings_;
 }
 
-u8& ChannelsSettings::masterPower()
+// const ChannelSettings& ChannelsSettings::masterDay() const
+// {
+//     return masterDaySettings_;
+// }
+
+ChannelSettings& ChannelsSettings::masterNight()
 {
-    return masterPower_;
+    return masterNightSettings_;
 }
 
-void ChannelsSettings::masterPower(u8 power)
+const ChannelSettings& ChannelsSettings::masterNight() const
 {
-    masterPower_ = power;
+    return masterNightSettings_;
 }
 
-gsl::span<u8> ChannelsSettings::powers()
+gsl::span<ChannelSettings> ChannelsSettings::day()
 {
-    return gsl::span<u8>{channelPowers_};
+    return gsl::span<ChannelSettings>{channelsDaySettings_};
+}
+
+gsl::span<const ChannelSettings> ChannelsSettings::day() const
+{
+    return gsl::span<const ChannelSettings>{channelsDaySettings_};
+}
+
+gsl::span<ChannelSettings> ChannelsSettings::night()
+{
+    return gsl::span<ChannelSettings>{channelsNightSettings_};
+}
+
+gsl::span<const ChannelSettings> ChannelsSettings::night() const
+{
+    return gsl::span<const ChannelSettings>{channelsNightSettings_};
 }
 
 } // namespace settings

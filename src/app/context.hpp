@@ -31,56 +31,40 @@ struct Context
     {
     }
 
-    const settings::ChannelsSettings& currentChannelsSettings() const
+    const settings::ChannelsSettings& channelsSettings() const
     {
-        return currentChannelsSettings_;
+        return channelsSettings_;
     }
 
-    settings::ChannelsSettings& currentChannelsSettings()
+    settings::ChannelsSettings& channelsSettings()
     {
-        return currentChannelsSettings_;
+        return channelsSettings_;
     }
 
-    const settings::ChannelsSettings& dayChannelsSettings() const
+    u8 currentMasterPower() const
     {
-        return dayChannelsSettings_;
+        return masterPower_;
     }
 
-    settings::ChannelsSettings& dayChannelsSettings()
+    void currentMasterPower(u8 power)
     {
-        return dayChannelsSettings_;
+        masterPower_ = power;
     }
 
-    const settings::ChannelsSettings& nightChannelsSettings() const
+    u8& currentMasterPower()
     {
-        return nightChannelsSettings_;
+        return masterPower_;
     }
 
-    settings::ChannelsSettings& nightChannelsSettings()
+    gsl::span<const u8> currentChannelsPowers() const
     {
-        return nightChannelsSettings_;
+        return gsl::span<const u8>{channelPowers_};
     }
 
-    const settings::TimeEventSettings& sunriseSettings() const
+    gsl::span<u8> currentChannelsPowers()
     {
-        return sunriseSettings_;
+        return gsl::span<u8>{channelPowers_};
     }
-
-    settings::TimeEventSettings& sunriseSettings()
-    {
-        return sunriseSettings_;
-    }
-
-    const settings::TimeEventSettings& sunsetSettings() const
-    {
-        return sunsetSettings_;
-    }
-
-    settings::TimeEventSettings& sunsetSettings()
-    {
-        return sunsetSettings_;
-    }
-
 
     bsp::Board& board_;
     display::Display& display;
@@ -153,12 +137,9 @@ struct Context
     }
 
 private:
-    settings::ChannelsSettings currentChannelsSettings_;
-    settings::ChannelsSettings dayChannelsSettings_;
-    settings::ChannelsSettings nightChannelsSettings_;
-
-    settings::TimeEventSettings sunriseSettings_;
-    settings::TimeEventSettings sunsetSettings_;
+    settings::ChannelsSettings channelsSettings_;
+    u8 channelPowers_[utils::NUMBER_OF_PWM_CHANNELS];
+    u8 masterPower_;
 
     int fastSunriseLength_;
     int fastSunsetLength_;

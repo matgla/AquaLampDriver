@@ -5,6 +5,7 @@ set(production_includes
     ${PRODUCTION_SOURCES_DIR}/app/context.hpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.hpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/channelsSettings.hpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/channelSettings.hpp
     ${PRODUCTION_SOURCES_DIR}/controller/channelController.hpp
     ${PRODUCTION_SOURCES_DIR}/containers/staticVector.hpp
     ${PRODUCTION_SOURCES_DIR}/display/font.hpp
@@ -34,6 +35,7 @@ set(production_sources
     ${PRODUCTION_SOURCES_DIR}/app/context.cpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.cpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/channelsSettings.cpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/channelSettings.cpp
     ${PRODUCTION_SOURCES_DIR}/controller/channelController.cpp
     
     ${PRODUCTION_SOURCES_DIR}/display/font.cpp
