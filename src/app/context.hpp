@@ -43,27 +43,37 @@ struct Context
 
     u8 currentMasterPower() const
     {
-        return masterPower_;
+        return powers_.master;
     }
 
     void currentMasterPower(u8 power)
     {
-        masterPower_ = power;
+        powers_.master = power;
     }
 
     u8& currentMasterPower()
     {
-        return masterPower_;
+        return powers_.master;
     }
 
     gsl::span<const u8> currentChannelsPowers() const
     {
-        return gsl::span<const u8>{channelPowers_};
+        return gsl::span<const u8>{powers_.channels};
     }
 
     gsl::span<u8> currentChannelsPowers()
     {
-        return gsl::span<u8>{channelPowers_};
+        return gsl::span<u8>{powers_.channels};
+    }
+
+    gsl::span<u8> allChannelsPowers()
+    {
+        return gsl::span<u8>{reinterpret_cast<u8*>(&powers_), sizeof(ChannelPowers)};
+    }
+    
+    gsl::span<const u8> allChannelsPowers() const
+    {
+        return gsl::span<const u8>{reinterpret_cast<const u8*>(&powers_), sizeof(ChannelPowers)};
     }
 
     bsp::Board& board_;
@@ -138,8 +148,12 @@ struct Context
 
 private:
     settings::ChannelsSettings channelsSettings_;
-    u8 channelPowers_[utils::NUMBER_OF_PWM_CHANNELS];
-    u8 masterPower_;
+    struct ChannelPowers
+    {
+        u8 channels[utils::NUMBER_OF_PWM_CHANNELS];
+        u8 master;
+    };
+    ChannelPowers powers_;
 
     int fastSunriseLength_;
     int fastSunsetLength_;

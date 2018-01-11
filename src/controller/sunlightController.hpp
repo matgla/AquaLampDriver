@@ -47,7 +47,7 @@ private:
 
     app::Context& context_;
 
-    ChannelController channelController_;
+    std::array<ChannelController, NUMBER_OF_PWM_CHANNELS> controllers_;
 };
 
 } // namespace controller

@@ -3,7 +3,7 @@
 #include <chrono>
 #include <ctime>
 
-#include "app/Context.hpp"
+#include "app/context.hpp"
 #include "bsp/board.hpp"
 #include "controller/sunlightController.hpp"
 #include "display/font.hpp"

@@ -9,7 +9,7 @@ SunlightController::SunlightController(app::Context& context)
     : logger_("SunlightController"),
       state_(State::Finished),
       context_(context),
-      channelController_(context.currentMasterPower())
+      masterController_(context.currentMasterPower())
 {
 }
 
@@ -34,7 +34,7 @@ void SunlightController::updateState(std::time_t currentTime)
                                                context_.channelsSettings().masterNight().time().minute(),
                                                context_.channelsSettings().masterNight().time().second());
             state_                = State::Sunset;
-            channelController_.start(startTime,
+            masterController_.start(startTime,
                                      context_.channelsSettings().masterNight().time().length(),
                                      context_.channelsSettings().masterNight().power());
         }
@@ -53,7 +53,7 @@ void SunlightController::updateState(std::time_t currentTime)
                                                context_.channelsSettings().masterDay().time().minute(),
                                                context_.channelsSettings().masterDay().time().second());
             state_                = State::Sunrise;
-            channelController_.start(startTime, context_.channelsSettings().masterDay().time().length(),
+            masterController_.start(startTime, context_.channelsSettings().masterDay().time().length(),
                                      context_.channelsSettings().masterDay().power());
         }
         return;
@@ -64,7 +64,7 @@ void SunlightController::fastSunrise(std::time_t startTime)
 {
     logger_.info() << "Performing fast sunrise";
     state_ = State::FastSunrise;
-    channelController_.start(startTime, context_.channelsSettings().masterDay().fastLength(),
+    masterController_.start(startTime, context_.channelsSettings().masterDay().fastLength(),
                              context_.channelsSettings().masterDay().power());
 }
 
@@ -72,7 +72,7 @@ void SunlightController::fastSunset(std::time_t startTime)
 {
     logger_.info() << "Performing fast sunset";
     state_ = State::FastSunset;
-    channelController_.start(startTime, context_.channelsSettings().masterNight().fastLength(),
+    masterController_.start(startTime, context_.channelsSettings().masterNight().fastLength(),
                              context_.channelsSettings().masterNight().power());
 }
 
@@ -88,28 +88,28 @@ void SunlightController::run(std::time_t currentTime)
 
         case State::Sunset:
         {
-            channelController_.update(context_.channelsSettings().masterNight().time().length(),
+            masterController_.update(context_.channelsSettings().masterNight().time().length(),
                                       context_.channelsSettings().masterNight().power());
         }
         break;
 
         case State::Sunrise:
         {
-            channelController_.update(context_.channelsSettings().masterDay().time().length(),
+            masterController_.update(context_.channelsSettings().masterDay().time().length(),
                                       context_.channelsSettings().masterDay().power());
         }
         break;
 
         case State::FastSunset:
         {
-            channelController_.update(context_.channelsSettings().masterNight().fastLength(),
+            masterController_.update(context_.channelsSettings().masterNight().fastLength(),
                                       context_.channelsSettings().masterNight().power());
         }
         break;
 
         case State::FastSunrise:
         {
-            channelController_.update(context_.channelsSettings().masterDay().fastLength(),
+            masterController_.update(context_.channelsSettings().masterDay().fastLength(),
                                       context_.channelsSettings().masterDay().power());
         }
         break;
@@ -119,7 +119,7 @@ void SunlightController::run(std::time_t currentTime)
         break;
     }
 
-    auto state = channelController_.run(currentTime);
+    auto state = masterController_.run(currentTime);
 
     if (state == ChannelController::State::Finished)
     {
@@ -135,7 +135,7 @@ void SunlightController::fastCorrection(std::time_t startTime, u8 setPointValue)
 {
     state_ = State::FastCorrection;
     // TODO: remove hardcode
-    channelController_.start(startTime, 100, setPointValue);
+    masterController_.start(startTime, 100, setPointValue);
 }
 
 void SunlightController::stop()
