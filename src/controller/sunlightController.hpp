@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <ctime>
 
 #include "app/context.hpp"
@@ -9,45 +10,59 @@
 namespace controller
 {
 
+template<const std::size_t NumberOfChannels = 1>
 class SunlightController
 {
 public:
-    enum class State
+    SunlightController(app::Context& context) 
+    : context_(context), logger_("SunlightController")
+{
+    // TODO: boundary check
+    int i = 0;
+    for (auto& channel : context_.getAllChannels())
     {
-        Sunrise,
-        Sunset,
-        FastSunrise,
-        FastSunset,
-        FastCorrection,
-        Finished
-    };
-
-    SunlightController(app::Context& context);
+        channels_[i++].setChannel(&channel);
+    }
+}
 
 
-    State state() const;
-    void fastSunrise(std::time_t startTime);
-    void fastSunset(std::time_t startTime);
-    void run(std::time_t currentTime);
-    bool finished();
-
-    void stop();
-
+    void fastSunrise(std::time_t startTime)
+{
+    logger_.info() << "Performing fast sunrise";
+    for (auto& channel : channels_)
+    {
+        channel.performFastSunrise(startTime);
+    }
+}
+    void fastSunset(std::time_t startTime)
+{
+    logger_.info() << "Performing fast sunset";
+    for (auto& channel : channels_)
+    {
+        channel.performFastSunset(startTime);
+    }
+}
+    void run(std::time_t currentTime)
+{
+    for (auto& channel : channels_)
+    {
+        channel.run(currentTime);
+    }
+}
+    ChannelController& master()
+{
+    return channels_[0];
+}
+  
+    const ChannelController& master() const
+{
+    return channels_[0];
+}
 private:
-    void updateState(std::time_t currentTime);
-    void fastCorrection(std::time_t startTime, u8 setPointValue);
-
-    std::time_t getSeconds(int hour, int minute, int second) const;
-    std::time_t getSunriseStartTime() const;
-    std::time_t getSunsetStartTime() const;
-
     logger::Logger logger_;
-
-    State state_;
-
+    
     app::Context& context_;
-
-    std::array<ChannelController, NUMBER_OF_PWM_CHANNELS> controllers_;
+    std::array<ChannelController, NumberOfChannels> channels_;
 };
 
 } // namespace controller

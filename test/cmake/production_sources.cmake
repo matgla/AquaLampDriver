@@ -4,8 +4,7 @@ set(HAL_SOURCES_DIR "${PROJECT_SOURCE_DIR}/src/hal")
 set(production_includes
     ${PRODUCTION_SOURCES_DIR}/app/context.hpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.hpp
-    ${PRODUCTION_SOURCES_DIR}/app/settings/channelsSettings.hpp
-    ${PRODUCTION_SOURCES_DIR}/app/settings/channelSettings.hpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/channel.hpp
     ${PRODUCTION_SOURCES_DIR}/controller/channelController.hpp
     ${PRODUCTION_SOURCES_DIR}/containers/staticVector.hpp
     ${PRODUCTION_SOURCES_DIR}/display/font.hpp
@@ -34,10 +33,9 @@ set(production_sources
     ${production_includes}
     ${PRODUCTION_SOURCES_DIR}/app/context.cpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.cpp
-    ${PRODUCTION_SOURCES_DIR}/app/settings/channelsSettings.cpp
-    ${PRODUCTION_SOURCES_DIR}/app/settings/channelSettings.cpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/channel.cpp
     ${PRODUCTION_SOURCES_DIR}/controller/channelController.cpp
-    
+
     ${PRODUCTION_SOURCES_DIR}/display/font.cpp
     ${PRODUCTION_SOURCES_DIR}/display/display.cpp
     
@@ -46,8 +44,6 @@ set(production_sources
     ${PRODUCTION_SOURCES_DIR}/utils.cpp
     ${PRODUCTION_SOURCES_DIR}/timer/intervalTimer.cpp
     ${PRODUCTION_SOURCES_DIR}/timer/timeoutTimer.cpp
-    ${PRODUCTION_SOURCES_DIR}/controller/sunlightController.cpp
-    
 
     ${HAL_SOURCES_DIR}/x86/core/criticalSection_x86.cpp
     ${HAL_SOURCES_DIR}/x86/core/core_x86.cpp
