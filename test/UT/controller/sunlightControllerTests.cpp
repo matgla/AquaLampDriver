@@ -83,7 +83,7 @@ protected:
     logger::Logger logger_;
     TimeStub time_;
     app::Context context_;
-    SunlightController controller_;
+    SunlightController<1> controller_;
 };
 
 std::time_t getTime(int hour, int minute, int second)
@@ -120,7 +120,6 @@ TEST_F(SunlightControllerShould, PerformSunrise)
     const std::time_t sunriseStartTime = getTime(sunriseHour, sunriseMinute, sunriseSecond);
 
     context_.masterChannel().currentPower(initialPower);
-
     context_.masterChannel().dayPower(finalPower);
     context_.masterChannel().setSunriseTime(sunriseHour, sunriseMinute, sunriseSecond, sunriseLength);
 
@@ -287,8 +286,8 @@ TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
         controller_.run(currentTime);
         if ((currentTime - sunsetStartTime) % part == 0)
         {
-            EXPECT_GE(context_.masterChannel().currentPower(), expectedPower - 2);
-            EXPECT_LE(context_.masterChannel().currentPower(), expectedPower + 2);
+            EXPECT_GE(context_.masterChannel().currentPower(), expectedPower - 4);
+            EXPECT_LE(context_.masterChannel().currentPower(), expectedPower + 4);
             expectedPower -= powerPart;
         }
     }

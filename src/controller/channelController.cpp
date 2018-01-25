@@ -83,6 +83,7 @@ void ChannelController::step(std::time_t currentTime)
             pointValue_ = pointValue_;
             operationState_ = OperationState::Correction;
             state_ = State::FastCorrection;
+            return;
         }
 
         if (error < 5)
@@ -92,6 +93,7 @@ void ChannelController::step(std::time_t currentTime)
             channel_->currentPower(pointValue_);
             operationState_ = OperationState::Finished;
             state_ = State::Finished;
+            return;
         }
 
         logger_.info() << "Finished";

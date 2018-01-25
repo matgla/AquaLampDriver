@@ -63,12 +63,12 @@ struct Context
     
     gsl::span<settings::Channel> getAllChannels()
     {
-        return gsl::span<settings::Channel>{reinterpret_cast<settings::Channel*>(&channels_), sizeof(Channels)};
+        return gsl::span<settings::Channel>{reinterpret_cast<settings::Channel*>(&channels_),NUMBER_OF_PWM_CHANNELS + 1};
     }
     
     gsl::span<const settings::Channel> getAllChannels() const
     {
-        return gsl::span<const settings::Channel>{reinterpret_cast<const settings::Channel*>(&channels_), sizeof(Channels)};
+        return gsl::span<const settings::Channel>{reinterpret_cast<const settings::Channel*>(&channels_), NUMBER_OF_PWM_CHANNELS + 1};
     }
     
     const settings::Channel& masterChannel() const
@@ -83,8 +83,8 @@ struct Context
 private:
     struct Channels
     {
-        std::array<settings::Channel, NUMBER_OF_PWM_CHANNELS> channels_;
         settings::Channel master_;
+        std::array<settings::Channel, NUMBER_OF_PWM_CHANNELS> channels_;
     };
     
     Channels channels_;

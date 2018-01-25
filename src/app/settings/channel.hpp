@@ -44,6 +44,8 @@ private:
     u8 nightPower_;
     u8 currentPower_;
     
+    
+    
     std::size_t fastOperationLength_;
 
     TimeEventSettings sunriseTime_;
