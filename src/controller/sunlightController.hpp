@@ -6,17 +6,20 @@
 #include "app/context.hpp"
 #include "controller/channelController.hpp"
 #include "logger/logger.hpp"
+#include "hal/utils/assert.hpp"
 
 namespace controller
 {
 
-template<const std::size_t NumberOfChannels = 13>
+template<const std::size_t NumberOfChannels = 14>
 class SunlightController
 {
 public:
     SunlightController(app::Context& context) 
     : context_(context), logger_("SunlightController")
     {
+        logger_.info() << context_.getAllChannels().size();
+        HAL_ASSERT_MSG(NumberOfChannels >= context_.getAllChannels().size(), "Channels not fit in controller");
         // TODO: boundary check
         int i = 0;
         for (auto& channel : context_.getAllChannels())
@@ -43,21 +46,34 @@ public:
     }
 }
     void run(std::time_t currentTime)
-{
-    for (auto& channel : channels_)
     {
-        channel.run(currentTime);
+        for (auto& channel : channels_)
+        {
+            channel.run(currentTime);
+        }
     }
-}
+    
     ChannelController& master()
-{
-    return channels_[0];
-}
-  
+    {
+        return channels_[0];
+    }
+      
     const ChannelController& master() const
-{
-    return channels_[0];
-}
+    {
+        return channels_[0];
+    }
+    
+    gsl::span<ChannelController> getChannels()
+    {
+        return gsl::span<ChannelController>{&channels_[1], 
+            static_cast<gsl::span<ChannelController>::index_type>(channels_.size()-1)};
+    }
+    
+    const gsl::span<const ChannelController> getChannels() const 
+    {
+        return gsl::span<const ChannelController>{&channels_[1], 
+            channels_.size()-1};
+    }
 private:
     logger::Logger logger_;
     

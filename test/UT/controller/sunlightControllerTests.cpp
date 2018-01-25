@@ -83,7 +83,7 @@ protected:
     logger::Logger logger_;
     TimeStub time_;
     app::Context context_;
-    SunlightController<1> controller_;
+    SunlightController<> controller_;
 };
 
 std::time_t getTime(int hour, int minute, int second)
@@ -123,19 +123,26 @@ TEST_F(SunlightControllerShould, PerformSunrise)
     context_.masterChannel().dayPower(finalPower);
     context_.masterChannel().setSunriseTime(sunriseHour, sunriseMinute, sunriseSecond, sunriseLength);
 
+    context_.getAllChannels().at(3).currentPower(initialPower);
+    context_.getAllChannels().at(3).dayPower(finalPower);
+    context_.getAllChannels().at(3).setSunriseTime(sunriseHour, sunriseMinute, sunriseSecond, sunriseLength);
+
     std::time_t currentTime = getTime(initialHour, initialMinute, initialSecond);
     std::time_t endTime     = sunriseStartTime + sunriseLength;
 
     EXPECT_EQ(ChannelController::State::Finished, controller_.master().state());
+    EXPECT_EQ(ChannelController::State::Finished, controller_.getChannels().at(2).state());
     for (currentTime; currentTime < sunriseStartTime; ++currentTime)
     {
         controller_.run(currentTime);
     }
     EXPECT_EQ(ChannelController::State::Finished, controller_.master().state());
+    EXPECT_EQ(ChannelController::State::Finished, controller_.getChannels().at(2).state());
 
     controller_.run(++currentTime);
     EXPECT_EQ(ChannelController::State::Sunrise, controller_.master().state());
-
+    EXPECT_EQ(ChannelController::State::Sunrise, controller_.getChannels().at(2).state());
+    EXPECT_EQ(ChannelController::State::Finished, controller_.getChannels().at(1).state());
     int part          = sunriseLength / 10;
     int powerPart     = (finalPower - initialPower) / 10;
     int expectedPower = powerPart;
@@ -144,6 +151,9 @@ TEST_F(SunlightControllerShould, PerformSunrise)
         controller_.run(currentTime);
         if ((currentTime - sunriseStartTime) % part == 0)
         {
+            EXPECT_GE(context_.getAllChannels().at(3).currentPower(), expectedPower - 2);
+            EXPECT_LE(context_.getAllChannels().at(3).currentPower(), expectedPower + 2);
+            
             EXPECT_GE(context_.masterChannel().currentPower(), expectedPower - 2);
             EXPECT_LE(context_.masterChannel().currentPower(), expectedPower + 2);
             expectedPower += powerPart;
@@ -151,10 +161,12 @@ TEST_F(SunlightControllerShould, PerformSunrise)
     }
 
     EXPECT_EQ(ChannelController::State::Sunrise, controller_.master().state());
-
+    EXPECT_EQ(ChannelController::State::Sunrise, controller_.getChannels().at(2).state());
     controller_.run(++currentTime);
     EXPECT_EQ(ChannelController::State::Finished, controller_.master().state());
+    EXPECT_EQ(ChannelController::State::Finished, controller_.getChannels().at(2).state());
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
+    EXPECT_EQ(finalPower, context_.getAllChannels().at(3).currentPower());
 }
 
 TEST_F(SunlightControllerShould, PerformSunset)
@@ -655,7 +667,5 @@ TEST_F(SunlightControllerShould, PerformFastCorrectionSunsetToUpperValue)
 
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
-
-// TODO: tests for performing rest scenarios
 
 } // namespace controller
