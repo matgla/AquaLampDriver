@@ -4,7 +4,7 @@ set(HAL_SOURCES_DIR "${PROJECT_SOURCE_DIR}/src/hal")
 set(production_includes
     ${PRODUCTION_SOURCES_DIR}/app/context.hpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.hpp
-    ${PRODUCTION_SOURCES_DIR}/app/settings/channel.hpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/lightChannel.hpp
     ${PRODUCTION_SOURCES_DIR}/controller/channelController.hpp
     ${PRODUCTION_SOURCES_DIR}/containers/staticVector.hpp
     ${PRODUCTION_SOURCES_DIR}/display/font.hpp
@@ -16,7 +16,7 @@ set(production_includes
     ${PRODUCTION_SOURCES_DIR}/timer/manager.hpp
     ${PRODUCTION_SOURCES_DIR}/utils.hpp
     ${PRODUCTION_SOURCES_DIR}/utils/constants.hpp
-    ${PRODUCTION_SOURCES_DIR}/controller/sunlightController.hpp
+    ${PRODUCTION_SOURCES_DIR}/controller/lightController.hpp
 
     ${HAL_SOURCES_DIR}/core/criticalSection.hpp
     ${HAL_SOURCES_DIR}/core/core.hpp
@@ -33,7 +33,7 @@ set(production_sources
     ${production_includes}
     ${PRODUCTION_SOURCES_DIR}/app/context.cpp
     ${PRODUCTION_SOURCES_DIR}/app/settings/timeEventSettings.cpp
-    ${PRODUCTION_SOURCES_DIR}/app/settings/channel.cpp
+    ${PRODUCTION_SOURCES_DIR}/app/settings/lightChannel.cpp
     ${PRODUCTION_SOURCES_DIR}/controller/channelController.cpp
 
     ${PRODUCTION_SOURCES_DIR}/display/font.cpp

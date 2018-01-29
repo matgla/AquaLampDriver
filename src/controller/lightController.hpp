@@ -5,18 +5,18 @@
 
 #include "app/context.hpp"
 #include "controller/channelController.hpp"
-#include "logger/logger.hpp"
 #include "hal/utils/assert.hpp"
+#include "logger/logger.hpp"
 
 namespace controller
 {
 
-template<const std::size_t NumberOfChannels = 14>
-class SunlightController
+template <const std::size_t NumberOfChannels = 14>
+class LightController
 {
 public:
-    SunlightController(app::Context& context) 
-    : context_(context), logger_("SunlightController")
+    LightController(app::Context& context)
+        : context_(context), logger_("LightChannel")
     {
         logger_.info() << context_.getAllChannels().size();
         HAL_ASSERT_MSG(NumberOfChannels >= context_.getAllChannels().size(), "Channels not fit in controller");
@@ -26,7 +26,6 @@ public:
         {
             channels_[i++].setChannel(&channel);
         }
-        
     }
 
     void fastSunrise(std::time_t startTime)
@@ -38,13 +37,13 @@ public:
         }
     }
     void fastSunset(std::time_t startTime)
-{
-    logger_.info() << "Performing fast sunset";
-    for (auto& channel : channels_)
     {
-        channel.performFastSunset(startTime);
+        logger_.info() << "Performing fast sunset";
+        for (auto& channel : channels_)
+        {
+            channel.performFastSunset(startTime);
+        }
     }
-}
     void run(std::time_t currentTime)
     {
         for (auto& channel : channels_)
@@ -52,31 +51,32 @@ public:
             channel.run(currentTime);
         }
     }
-    
+
     ChannelController& master()
     {
         return channels_[0];
     }
-      
+
     const ChannelController& master() const
     {
         return channels_[0];
     }
-    
+
     gsl::span<ChannelController> getChannels()
     {
-        return gsl::span<ChannelController>{&channels_[1], 
-            static_cast<gsl::span<ChannelController>::index_type>(channels_.size()-1)};
+        return gsl::span<ChannelController>{&channels_[1],
+                                            static_cast<gsl::span<ChannelController>::index_type>(channels_.size() - 1)};
     }
-    
-    const gsl::span<const ChannelController> getChannels() const 
+
+    const gsl::span<const ChannelController> getChannels() const
     {
-        return gsl::span<const ChannelController>{&channels_[1], 
-            channels_.size()-1};
+        return gsl::span<const ChannelController>{&channels_[1],
+                                                  channels_.size() - 1};
     }
+
 private:
     logger::Logger logger_;
-    
+
     app::Context& context_;
     std::array<ChannelController, NumberOfChannels> channels_;
 };

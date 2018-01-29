@@ -5,7 +5,7 @@
 
 #include "app/context.hpp"
 #include "bsp/board.hpp"
-#include "controller/sunlightController.hpp"
+#include "controller/lightController.hpp"
 #include "display/font.hpp"
 #include "drivers/lcd/displayDriver.hpp"
 #include "utils/types.hpp"
@@ -65,10 +65,10 @@ private:
 namespace controller
 {
 
-class SunlightControllerShould : public ::testing::Test
+class LightControllerShould : public ::testing::Test
 {
 public:
-    SunlightControllerShould()
+    LightControllerShould()
         : logger_("SunlightControllerTests"),
           display_(board_, driver_, display::font_5x7),
           context_(board_, display_, logger_),
@@ -83,7 +83,7 @@ protected:
     logger::Logger logger_;
     TimeStub time_;
     app::Context context_;
-    SunlightController<> controller_;
+    LightController<> controller_;
 };
 
 std::time_t getTime(int hour, int minute, int second)
@@ -97,12 +97,12 @@ std::time_t getTime(int hour, int minute, int second)
     return std::mktime(timeData);
 }
 
-TEST_F(SunlightControllerShould, StartInFinishedState)
+TEST_F(LightControllerShould, StartInFinishedState)
 {
     EXPECT_EQ(ChannelController::State::Finished, controller_.master().state());
 }
 
-TEST_F(SunlightControllerShould, PerformSunrise)
+TEST_F(LightControllerShould, PerformSunrise)
 {
     constexpr u8 initialPower = 0;
     constexpr u8 finalPower   = 60;
@@ -153,7 +153,7 @@ TEST_F(SunlightControllerShould, PerformSunrise)
         {
             EXPECT_GE(context_.getAllChannels().at(3).currentPower(), expectedPower - 2);
             EXPECT_LE(context_.getAllChannels().at(3).currentPower(), expectedPower + 2);
-            
+
             EXPECT_GE(context_.masterChannel().currentPower(), expectedPower - 2);
             EXPECT_LE(context_.masterChannel().currentPower(), expectedPower + 2);
             expectedPower += powerPart;
@@ -169,7 +169,7 @@ TEST_F(SunlightControllerShould, PerformSunrise)
     EXPECT_EQ(finalPower, context_.getAllChannels().at(3).currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformSunset)
+TEST_F(LightControllerShould, PerformSunset)
 {
     constexpr u8 initialPower = 75;
     constexpr u8 finalPower   = 5;
@@ -226,7 +226,7 @@ TEST_F(SunlightControllerShould, PerformSunset)
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
+TEST_F(LightControllerShould, SunsetBreaksSunrise)
 {
     constexpr u8 initialPower = 5;
     constexpr u8 finalPower   = 5;
@@ -313,7 +313,7 @@ TEST_F(SunlightControllerShould, SunsetBreaksSunrise)
     EXPECT_EQ(nightPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformFastSunrise)
+TEST_F(LightControllerShould, PerformFastSunrise)
 {
     constexpr u8 initialPower = 10;
     constexpr u8 finalPower   = 90;
@@ -358,7 +358,7 @@ TEST_F(SunlightControllerShould, PerformFastSunrise)
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformFastCorrectionSunriseToLowerValue)
+TEST_F(LightControllerShould, PerformFastCorrectionSunriseToLowerValue)
 {
     constexpr u8 initialPower = 10;
     constexpr u8 finalPower   = 90;
@@ -424,7 +424,7 @@ TEST_F(SunlightControllerShould, PerformFastCorrectionSunriseToLowerValue)
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformFastCorrectionSunriseToUpperValue)
+TEST_F(LightControllerShould, PerformFastCorrectionSunriseToUpperValue)
 {
     constexpr u8 initialPower = 10;
     constexpr u8 finalPower   = 60;
@@ -490,7 +490,7 @@ TEST_F(SunlightControllerShould, PerformFastCorrectionSunriseToUpperValue)
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformFastSunset)
+TEST_F(LightControllerShould, PerformFastSunset)
 {
     constexpr u8 initialPower = 90;
     constexpr u8 finalPower   = 10;
@@ -535,7 +535,7 @@ TEST_F(SunlightControllerShould, PerformFastSunset)
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformFastCorrectionSunsetToLowerValue)
+TEST_F(LightControllerShould, PerformFastCorrectionSunsetToLowerValue)
 {
     constexpr u8 initialPower = 90;
     constexpr u8 finalPower   = 10;
@@ -601,7 +601,7 @@ TEST_F(SunlightControllerShould, PerformFastCorrectionSunsetToLowerValue)
     EXPECT_EQ(finalPower, context_.masterChannel().currentPower());
 }
 
-TEST_F(SunlightControllerShould, PerformFastCorrectionSunsetToUpperValue)
+TEST_F(LightControllerShould, PerformFastCorrectionSunsetToUpperValue)
 {
     constexpr u8 initialPower = 90;
     constexpr u8 finalPower   = 10;

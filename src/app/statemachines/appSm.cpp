@@ -114,7 +114,7 @@ void AppSm::process_event(const events::Update& event)
 
 void AppSm::displayTime()
 {
-    context_.display.clear(display::Colors::OFF);
+    // context_.display.clear(display::Colors::OFF);
     constexpr const int TimeBufferSize = 12;
     constexpr const int DateBufferSize = 10;
     char timeBuffer[TimeBufferSize];
@@ -123,10 +123,10 @@ void AppSm::displayTime()
     struct tm* currentTime = std::localtime(&t);
     utils::formatDate(dateBuffer, DateBufferSize, currentTime);
     utils::formatTime(timeBuffer, TimeBufferSize, currentTime);
-    context_.display.print("    ");
-    context_.display.print(dateBuffer);
-    context_.display.print("    \n");
-    context_.display.print(timeBuffer);
+    // context_.display.print("    ");
+    // context_.display.print(dateBuffer);
+    // context_.display.print("    \n");
+    // context_.display.print(timeBuffer);
 }
 
 

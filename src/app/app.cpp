@@ -26,33 +26,33 @@ App::App(display::Display& display, bsp::Board& board)
 
 void App::applyBrightness()
 {
-    board_.ledPwm1.setPulse(context_.temporarySettings.channelPowers[1] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm2.setPulse(context_.temporarySettings.channelPowers[2] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm3.setPulse(context_.temporarySettings.channelPowers[3] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm4.setPulse(context_.temporarySettings.channelPowers[4] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm5.setPulse(context_.temporarySettings.channelPowers[5] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm6.setPulse(context_.temporarySettings.channelPowers[6] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm7.setPulse(context_.temporarySettings.channelPowers[7] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm8.setPulse(context_.temporarySettings.channelPowers[8] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm9.setPulse(context_.temporarySettings.channelPowers[9] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm10.setPulse(context_.temporarySettings.channelPowers[10] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm11.setPulse(context_.temporarySettings.channelPowers[11] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm12.setPulse(context_.temporarySettings.channelPowers[12] * (static_cast<float>(context_.masterPower) / 100));
-    board_.ledPwm13.setPulse(context_.temporarySettings.channelPowers[13] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm1.setPulse(context_.temporarySettings.channelPowers[1] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm2.setPulse(context_.temporarySettings.channelPowers[2] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm3.setPulse(context_.temporarySettings.channelPowers[3] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm4.setPulse(context_.temporarySettings.channelPowers[4] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm5.setPulse(context_.temporarySettings.channelPowers[5] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm6.setPulse(context_.temporarySettings.channelPowers[6] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm7.setPulse(context_.temporarySettings.channelPowers[7] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm8.setPulse(context_.temporarySettings.channelPowers[8] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm9.setPulse(context_.temporarySettings.channelPowers[9] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm10.setPulse(context_.temporarySettings.channelPowers[10] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm11.setPulse(context_.temporarySettings.channelPowers[11] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm12.setPulse(context_.temporarySettings.channelPowers[12] * (static_cast<float>(context_.masterPower) / 100));
+    // board_.ledPwm13.setPulse(context_.temporarySettings.channelPowers[13] * (static_cast<float>(context_.masterPower) / 100));
 }
 
 void App::performSunriseStep(std::time_t now, int sunriseTime)
 {
     int masterPower       = context_.settings.channelPowers[0];
     std::time_t timeToEnd = sunriseTime + now;
-    int powerDiff         = masterPower - context_.masterPower;
-    int stepBase          = std::abs(now);
+    // int powerDiff         = masterPower - context_.masterPower;
+    int stepBase = std::abs(now);
     if (powerDiff != 0)
     {
         stepBase = std::abs(timeToEnd / powerDiff);
     }
     bool increase = powerDiff > 0 ? true : false;
-    int step      = stepBase + context_.masterPower * stepBase;
+    // int step      = stepBase + context_.masterPower * stepBase;
     logger_.info() << "masterPower: " << masterPower << ", timeToEnd: " << timeToEnd << ", powerDiff: " << powerDiff << ", stepBase: " << stepBase
                    << ", increase: " << increase << ", step: " << step;
     if (step + now < 0)
@@ -60,13 +60,13 @@ void App::performSunriseStep(std::time_t now, int sunriseTime)
         if (increase)
         {
 
-            context_.masterPower += 1;
-            logger_.info() << "current power: " << context_.masterPower;
+            // context_.masterPower += 1;
+            // logger_.info() << "current power: " << context_.masterPower;
         }
         else
         {
-            context_.masterPower -= 1;
-            logger_.info() << "current power: " << context_.masterPower;
+            // context_.masterPower -= 1;
+            // logger_.info() << "current power: " << context_.masterPower;
         }
 
         applyBrightness();
@@ -114,9 +114,9 @@ void App::processLight(std::time_t time)
             logger_.info() << "QuickSunrise: " << time;
 
             int offset = 0;
-            if (quickSunriseTime_ - time < context_.settings.channelPowers[0] - context_.masterPower)
+            // if (quickSunriseTime_ - time < context_.settings.channelPowers[0] - context_.masterPower)
             {
-                offset = context_.settings.channelPowers[0] - context_.masterPower - (quickSunriseTime_ - time);
+                // offset = context_.settings.channelPowers[0] - context_.masterPower - (quickSunriseTime_ - time);
             }
             if (time < quickSunriseTime_ + offset)
             {
@@ -133,9 +133,9 @@ void App::processLight(std::time_t time)
             logger_.info() << "Sunrise: " << time;
 
             int offset = 0;
-            if (getTimeToSunrise(time) + sunriseTime_ < context_.settings.channelPowers[0] - context_.masterPower)
+            // if (getTimeToSunrise(time) + sunriseTime_ < context_.settings.channelPowers[0] - context_.masterPower)
             {
-                offset = context_.settings.channelPowers[0] - context_.masterPower - (sunriseTime_ - time);
+                // offset = context_.settings.channelPowers[0] - context_.masterPower - (sunriseTime_ - time);
             }
             logger_.info() << "Offset: " << offset;
 
@@ -154,9 +154,9 @@ void App::processLight(std::time_t time)
             logger_.info() << "Quick Sunshine: " << time;
 
             int offset = 0;
-            if (quickSunshineTime_ - time < context_.settings.channelPowers[0] - context_.masterPower)
+            // if (quickSunshineTime_ - time < context_.settings.channelPowers[0] - context_.masterPower)
             {
-                offset = context_.settings.channelPowers[0] - context_.masterPower - (quickSunshineTime_ - time);
+                // offset = context_.settings.channelPowers[0] - context_.masterPower - (quickSunshineTime_ - time);
             }
             if (time < quickSunshineTime_ + offset)
             {
@@ -173,9 +173,9 @@ void App::processLight(std::time_t time)
             logger_.info() << "Sunshine: " << time;
 
             int offset = 0;
-            if (getTimeToSunshine(time) + sunshineTime_ < std::abs(context_.masterPower - context_.settings.channelPowers[0]))
+            // if (getTimeToSunshine(time) + sunshineTime_ < std::abs(context_.masterPower - context_.settings.channelPowers[0]))
             {
-                offset = context_.settings.channelPowers[0] - context_.masterPower - (sunshineTime_ - time);
+                // offset = context_.settings.channelPowers[0] - context_.masterPower - (sunshineTime_ - time);
             }
             logger_.info() << "Offset: " << offset;
 
@@ -206,7 +206,7 @@ void App::start()
     if (hal::core::BackupRegisters::get().isFirstStartup())
     {
         logger_.info() << "Settings initializing";
-        context_.initSettings();
+        // context_.initSettings();
     }
 
     delayedBacklightOff();
@@ -224,12 +224,12 @@ void App::start()
 
     logger_.info() << "Started";
 
-    context_.readSettings();
-    context_.temporarySettings = context_.settings;
-    if (!isLightTime())
-    {
-        context_.masterPower = 0;
-    }
+    // context_.readSettings();
+    // context_.temporarySettings = context_.settings;
+    // if (!isLightTime())
+    // {
+    //     context_.masterPower = 0;
+    // }
     applyBrightness();
 }
 
@@ -238,9 +238,9 @@ time_t App::getTimeToSunrise(std::time_t now)
     struct tm sunriseTime = *std::localtime(&now);
     struct tm nowt        = *std::localtime(&now);
 
-    sunriseTime.tm_hour = context_.settings.sunrise.hours;
-    sunriseTime.tm_min  = context_.settings.sunrise.minutes;
-    sunriseTime.tm_sec  = context_.settings.sunrise.seconds;
+    // sunriseTime.tm_hour = context_.settings.sunrise.hours;
+    // sunriseTime.tm_min  = context_.settings.sunrise.minutes;
+    // sunriseTime.tm_sec  = context_.settings.sunrise.seconds;
 
     // clang-format off
         logger_.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec 
@@ -254,13 +254,13 @@ time_t App::getTimeToSunshine(std::time_t now)
 {
     struct tm sunshineTime = *std::localtime(&now);
     struct tm nowt         = *std::localtime(&now);
-    sunshineTime.tm_hour   = context_.settings.sunshine.hours;
-    sunshineTime.tm_min    = context_.settings.sunshine.minutes;
-    sunshineTime.tm_sec    = context_.settings.sunshine.seconds;
-    // clang-format off
-        logger_.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec 
-            << ", sunshine: " << sunshineTime.tm_hour << ":" << sunshineTime.tm_min << ":" << sunshineTime.tm_sec
-            << ", diff2: " << (long)(std::difftime(now, mktime(&sunshineTime)));
+    // sunshineTime.tm_hour   = context_.settings.sunshine.hours;
+    // sunshineTime.tm_min    = context_.settings.sunshine.minutes;
+    // sunshineTime.tm_sec    = context_.settings.sunshine.seconds;
+    // // clang-format off
+    logger_.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec
+                   << ", sunshine: " << sunshineTime.tm_hour << ":" << sunshineTime.tm_min << ":" << sunshineTime.tm_sec
+                   << ", diff2: " << (long)(std::difftime(now, mktime(&sunshineTime)));
     // clang-format on
 
     return std::difftime(now, mktime(&sunshineTime));
@@ -316,8 +316,8 @@ void App::run()
     using namespace statemachines;
     context_.timerManager.setInterval(1000, [this]() {
         termometers_.measureTemperature();
-        context_.temperatures_[0] = termometers_.readTemperature(0);
-        context_.temperatures_[1] = termometers_.readTemperature(1);
+        // context_.temperatures_[0] = termometers_.readTemperature(0);
+        // context_.temperatures_[1] = termometers_.readTemperature(1);
     });
 
     while (!board_.exit())
@@ -374,25 +374,25 @@ void App::run()
 
 void App::processTemperature()
 {
-    for (std::size_t i = 0; i < context_.temperatures_.size(); ++i)
-    {
-        if (context_.temperatures_[i] >= TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) > TEMPERATURE_HIST)
-        {
-            update();
-            board_.fanPwm1.setPulse(100);
-            board_.fanPwm2.setPulse(100);
-            temperaturesHistory_[i] = context_.temperatures_[i];
-            logger_.info() << "Fan: 100%";
-        }
-        else if (context_.temperatures_[i] < TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) < -1 * TEMPERATURE_HIST)
-        {
-            update();
-            board_.fanPwm1.setPulse(0);
-            board_.fanPwm2.setPulse(0);
-            temperaturesHistory_[i] = context_.temperatures_[i];
-            logger_.info() << "Fan: 0%";
-        }
-    }
+    // for (std::size_t i = 0; i < context_.temperatures_.size(); ++i)
+    // {
+    //     if (context_.temperatures_[i] >= TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) > TEMPERATURE_HIST)
+    //     {
+    //         update();
+    //         board_.fanPwm1.setPulse(100);
+    //         board_.fanPwm2.setPulse(100);
+    //         temperaturesHistory_[i] = context_.temperatures_[i];
+    //         logger_.info() << "Fan: 100%";
+    //     }
+    //     else if (context_.temperatures_[i] < TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) < -1 * TEMPERATURE_HIST)
+    //     {
+    //         update();
+    //         board_.fanPwm1.setPulse(0);
+    //         board_.fanPwm2.setPulse(0);
+    //         temperaturesHistory_[i] = context_.temperatures_[i];
+    //         logger_.info() << "Fan: 0%";
+    //     }
+    // }
 }
 
 } // namespace app

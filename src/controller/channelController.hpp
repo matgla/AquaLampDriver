@@ -10,7 +10,7 @@ namespace app
 {
 namespace settings
 {
-class Channel;
+class LightChannel;
 } // namespace settings
 } // namespace app
 
@@ -20,7 +20,6 @@ namespace controller
 class ChannelController
 {
 public:
-
     enum class State
     {
         Sunrise,
@@ -29,19 +28,19 @@ public:
         FastSunset,
         FastCorrection,
         Finished
-        
+
     };
-    
+
     enum class OperationState
     {
         Finished,
         Correction,
         Ongoing
     };
-    
+
     ChannelController();
-    ChannelController(app::settings::Channel* channel);
-    void setChannel(app::settings::Channel* channel);
+    ChannelController(app::settings::LightChannel* channel);
+    void setChannel(app::settings::LightChannel* channel);
     void start(std::time_t startTime, std::time_t length, u8 pointValue);
     void step(std::time_t time);
     void run(std::time_t time);
@@ -58,16 +57,15 @@ private:
     std::time_t getSeconds(int hour, int minute, int second) const;
 
     std::time_t startTime_;
-    app::settings::Channel* channel_;
+    app::settings::LightChannel* channel_;
 
     float currentPower_;
     logger::Logger logger_;
     State state_;
     OperationState operationState_;
-    
+
     u8 pointValue_;
     std::time_t length_;
-    
 };
 
 } // namespace controller

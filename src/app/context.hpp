@@ -2,7 +2,8 @@
 
 #include <type_traits>
 
-#include "app/settings/channel.hpp"
+#include "app/contextInterface.hpp"
+#include "app/settings/lightChannel.hpp"
 #include "app/settings/timeEventSettings.hpp"
 #include "app/timeSetting.hpp"
 #include "display/display.hpp"
@@ -15,10 +16,10 @@ constexpr std::size_t NUMBER_OF_PWM_CHANNELS = 13;
 
 namespace app
 {
-    
-struct Context
+
+struct Context : public ContextInterface<Context>
 {
-    
+
     // TODO: cleanup needed
     Context(bsp::Board& board, display::Display& lcd, logger::Logger& log)
         : board_(board), display(lcd), logger(log), forcedLight(false)
@@ -33,17 +34,17 @@ struct Context
     std::array<float, NUMBER_OF_TERMOMETERS> temperatures_;
     hal::memory::Eeprom eeprom;
 
-    void readSettings()
+    void readSettingsImpl()
     {
         // settings = eeprom.template read<Settings>(0x00);
     }
 
-    void saveSettings()
+    void saveSettingsImpl()
     {
         // eeprom.write(0x0, settings);
     }
 
-    void initSettings()
+    void initSettingsImpl()
     {
         // settings.sunrise.hours   = 8;
         // settings.sunrise.minutes = 0;
@@ -60,33 +61,34 @@ struct Context
     }
 
     bool forcedLight;
-    
-    gsl::span<settings::Channel> getAllChannels()
+
+    gsl::span<settings::LightChannel> getAllChannelsImpl()
     {
-        return gsl::span<settings::Channel>{reinterpret_cast<settings::Channel*>(&channels_),NUMBER_OF_PWM_CHANNELS + 1};
+        return gsl::span<settings::LightChannel>{reinterpret_cast<settings::LightChannel*>(&channels_), NUMBER_OF_PWM_CHANNELS + 1};
     }
-    
-    gsl::span<const settings::Channel> getAllChannels() const
+
+    gsl::span<const settings::LightChannel> getAllChannelsImpl() const
     {
-        return gsl::span<const settings::Channel>{reinterpret_cast<const settings::Channel*>(&channels_), NUMBER_OF_PWM_CHANNELS + 1};
+        return gsl::span<const settings::LightChannel>{reinterpret_cast<const settings::LightChannel*>(&channels_), NUMBER_OF_PWM_CHANNELS + 1};
     }
-    
-    const settings::Channel& masterChannel() const
-    {
-        return channels_.master_;
-    }
-    
-    settings::Channel& masterChannel()
+
+    const settings::LightChannel& masterChannelImpl() const
     {
         return channels_.master_;
     }
+
+    settings::LightChannel& masterChannelImpl()
+    {
+        return channels_.master_;
+    }
+
 private:
     struct Channels
     {
-        settings::Channel master_;
-        std::array<settings::Channel, NUMBER_OF_PWM_CHANNELS> channels_;
+        settings::LightChannel master_;
+        std::array<settings::LightChannel, NUMBER_OF_PWM_CHANNELS> channels_;
     };
-    
+
     Channels channels_;
 };
 

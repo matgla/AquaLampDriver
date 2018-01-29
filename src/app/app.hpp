@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <boost/sml.hpp>
 #include <cstdio>
 #include <cstring>

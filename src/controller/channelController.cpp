@@ -1,5 +1,5 @@
 #include "controller/channelController.hpp"
-#include "app/settings/channel.hpp"
+#include "app/settings/lightChannel.hpp"
 
 namespace controller
 {
@@ -9,7 +9,7 @@ ChannelController::ChannelController()
 {
 }
 
-ChannelController::ChannelController(app::settings::Channel* channel)
+ChannelController::ChannelController(app::settings::LightChannel* channel)
     : startTime_(0), channel_(channel), logger_("ChannelController"), state_(State::Finished), operationState_(OperationState::Finished)
 {
 }
@@ -17,7 +17,7 @@ ChannelController::ChannelController(app::settings::Channel* channel)
 void ChannelController::run(std::time_t currentTime)
 {
     updateState(currentTime);
-    
+
     switch (state_)
     {
         case State::Finished:
@@ -53,13 +53,13 @@ void ChannelController::run(std::time_t currentTime)
         }
         break;
     }
-    
+
     step(currentTime);
 }
 
 void ChannelController::update(std::time_t length, u8 pointValue)
 {
-    length_ = length;
+    length_     = length;
     pointValue_ = pointValue_;
 }
 
@@ -78,11 +78,11 @@ void ChannelController::step(std::time_t currentTime)
             // TODO: remove hardcode for correction time
             logger_.info() << "Error to high, performing correction...";
 
-            startTime_ = currentTime;
-            length_ = 100;
-            pointValue_ = pointValue_;
+            startTime_      = currentTime;
+            length_         = 100;
+            pointValue_     = pointValue_;
             operationState_ = OperationState::Correction;
-            state_ = State::FastCorrection;
+            state_          = State::FastCorrection;
             return;
         }
 
@@ -92,13 +92,13 @@ void ChannelController::step(std::time_t currentTime)
 
             channel_->currentPower(pointValue_);
             operationState_ = OperationState::Finished;
-            state_ = State::Finished;
+            state_          = State::Finished;
             return;
         }
 
         logger_.info() << "Finished";
         operationState_ = OperationState::Finished;
-        state_ = State::Finished;
+        state_          = State::Finished;
     }
 
     if (operationState_ != OperationState::Correction)
@@ -125,7 +125,7 @@ void ChannelController::step(std::time_t currentTime)
     }
 }
 
-void ChannelController::setChannel(app::settings::Channel* channel)
+void ChannelController::setChannel(app::settings::LightChannel* channel)
 {
     channel_ = channel;
 }
@@ -146,14 +146,14 @@ std::time_t ChannelController::getSunriseStartTime() const
 {
     return getSeconds(channel_->getSunriseTime().hour(),
                       channel_->getSunriseTime().minute(),
-                      channel_->getSunriseTime().second());    
+                      channel_->getSunriseTime().second());
 }
 
 std::time_t ChannelController::getSunsetStartTime() const
 {
     return getSeconds(channel_->getSunsetTime().hour(),
                       channel_->getSunsetTime().minute(),
-                      channel_->getSunsetTime().second());     
+                      channel_->getSunsetTime().second());
 }
 
 void ChannelController::updateState(std::time_t currentTime)
@@ -183,10 +183,10 @@ void ChannelController::updateState(std::time_t currentTime)
 
     const std::time_t sunriseStart = getSunriseStartTime();
 
-    logger_.info() << "currentTime: " << currentTime 
+    logger_.info() << "currentTime: " << currentTime
                    << ", sunriseStart: " << sunriseStart
                    << ", sunriseLenght: " << channel_->getSunriseTime().length();
-                   
+
     if (currentTime >= sunriseStart && currentTime < sunriseStart + channel_->getSunriseTime().length())
     {
         if (state_ != State::Sunrise)
@@ -208,21 +208,21 @@ void ChannelController::updateState(std::time_t currentTime)
 void ChannelController::performFastSunrise(std::time_t startTime)
 {
     logger_.info() << "Performing fast sunrise";
-    state_ = State::FastSunrise;
-    operationState_       = OperationState::Ongoing;
-    startTime_ = startTime;
-    length_ = channel_->fastOperationLength();
-    pointValue_ = channel_->dayPower();
+    state_          = State::FastSunrise;
+    operationState_ = OperationState::Ongoing;
+    startTime_      = startTime;
+    length_         = channel_->fastOperationLength();
+    pointValue_     = channel_->dayPower();
 }
 
 void ChannelController::performFastSunset(std::time_t startTime)
 {
     logger_.info() << "Performing fast sunset";
-    state_ = State::FastSunset;
-    operationState_       = OperationState::Ongoing;
-    startTime_ = startTime;
-    length_ = channel_->fastOperationLength();
-    pointValue_ = channel_->nightPower();
+    state_          = State::FastSunset;
+    operationState_ = OperationState::Ongoing;
+    startTime_      = startTime;
+    length_         = channel_->fastOperationLength();
+    pointValue_     = channel_->nightPower();
 }
 
 ChannelController::State ChannelController::state() const
