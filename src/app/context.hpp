@@ -17,7 +17,7 @@ constexpr std::size_t NUMBER_OF_PWM_CHANNELS = 13;
 namespace app
 {
 
-struct Context : public ContextInterface<Context>
+class Context : public ContextInterface<Context>
 {
 
     // TODO: cleanup needed
