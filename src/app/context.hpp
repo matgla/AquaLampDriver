@@ -17,69 +17,60 @@ constexpr std::size_t NUMBER_OF_PWM_CHANNELS = 13;
 namespace app
 {
 
-class Context : public ContextInterface<Context>
+class Context : public IContext
 {
 
+public:
     // TODO: cleanup needed
-    Context(bsp::Board& board, display::Display& lcd, logger::Logger& log)
-        : board_(board), display(lcd), logger(log), forcedLight(false)
+    Context(bsp::Board& board, display::Display& lcd)
+        : board_(board), display(lcd), forcedLight_(false)
     {
     }
     bsp::Board& board_;
     display::Display& display;
     timer::Manager<10, 10> timerManager;
 
-    logger::Logger& logger;
     timer::TimerId saveTimer;
     std::array<float, NUMBER_OF_TERMOMETERS> temperatures_;
     hal::memory::Eeprom eeprom;
-
-    void readSettingsImpl()
+    void load() override
     {
         // settings = eeprom.template read<Settings>(0x00);
     }
 
-    void saveSettingsImpl()
+    void store() override
     {
         // eeprom.write(0x0, settings);
     }
 
-    void initSettingsImpl()
-    {
-        // settings.sunrise.hours   = 8;
-        // settings.sunrise.minutes = 0;
-        // settings.sunrise.seconds = 0;
-
-        // settings.sunshine.hours  = 21;
-        // settings.sunrise.minutes = 0;
-        // settings.sunrise.seconds = 0;
-
-        // std::memset(settings.channelPowers, 30, sizeof(settings.channelPowers));
-        // settings.channelIndex = 0;
-
-        // eeprom.write(0x0, settings);
-    }
-
-    bool forcedLight;
-
-    gsl::span<settings::LightChannel> getAllChannelsImpl()
+    gsl::span<settings::LightChannel> getAllChannels() override
     {
         return gsl::span<settings::LightChannel>{reinterpret_cast<settings::LightChannel*>(&channels_), NUMBER_OF_PWM_CHANNELS + 1};
     }
 
-    gsl::span<const settings::LightChannel> getAllChannelsImpl() const
+    gsl::span<const settings::LightChannel> getAllChannels() const override
     {
         return gsl::span<const settings::LightChannel>{reinterpret_cast<const settings::LightChannel*>(&channels_), NUMBER_OF_PWM_CHANNELS + 1};
     }
 
-    const settings::LightChannel& masterChannelImpl() const
+    const settings::LightChannel& masterChannel() const override
     {
         return channels_.master_;
     }
 
-    settings::LightChannel& masterChannelImpl()
+    settings::LightChannel& masterChannel() override
     {
         return channels_.master_;
+    }
+
+    bool forcedLight() const
+    {
+        return forcedLight_;
+    }
+
+    void forcedLight(bool forced)
+    {
+        forcedLight_ = forced;
     }
 
 private:
@@ -90,6 +81,7 @@ private:
     };
 
     Channels channels_;
+    bool forcedLight_;
 };
 
 } // namespace app

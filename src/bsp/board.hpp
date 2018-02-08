@@ -24,6 +24,7 @@ public:
     Button<Buttons::Up> upButton;
     Button<Buttons::Back> backButton;
 
+
     Led<Leds::Led1> led;
     Led<Leds::LcdBacklight> lcdBacklight;
 
@@ -55,6 +56,7 @@ public:
 
 private:
     logger::Logger logger_;
+    Buttons pressedButton_;
 };
 
 } // namespace bsp

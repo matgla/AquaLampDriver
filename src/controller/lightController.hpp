@@ -3,7 +3,7 @@
 #include <array>
 #include <ctime>
 
-#include "app/context.hpp"
+#include "app/contextInterface.hpp"
 #include "controller/channelController.hpp"
 #include "hal/utils/assert.hpp"
 #include "logger/logger.hpp"
@@ -15,7 +15,7 @@ template <const std::size_t NumberOfChannels = 14>
 class LightController
 {
 public:
-    LightController(app::Context& context)
+    explicit LightController(app::IContext& context)
         : context_(context), logger_("LightChannel")
     {
         logger_.info() << context_.getAllChannels().size();
@@ -77,7 +77,7 @@ public:
 private:
     logger::Logger logger_;
 
-    app::Context& context_;
+    app::IContext& context_;
     std::array<ChannelController, NumberOfChannels> channels_;
 };
 

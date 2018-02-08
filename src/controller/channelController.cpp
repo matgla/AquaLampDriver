@@ -5,17 +5,24 @@ namespace controller
 {
 
 ChannelController::ChannelController()
-    : startTime_(0), channel_(nullptr), logger_("ChannelController"), state_(State::Finished), operationState_(OperationState::Finished)
+    : startTime_(0), channel_(nullptr), logger_("ChannelController"), state_(State::Finished), operationState_(OperationState::Finished), forced_(false)
 {
 }
 
 ChannelController::ChannelController(app::settings::LightChannel* channel)
-    : startTime_(0), channel_(channel), logger_("ChannelController"), state_(State::Finished), operationState_(OperationState::Finished)
+    : startTime_(0), channel_(channel), logger_("ChannelController"), state_(State::Finished), operationState_(OperationState::Finished), forced_(false)
 {
+}
+
+void ChannelController::turnOffForced()
+{
+    forced_ = false;
 }
 
 void ChannelController::run(std::time_t currentTime)
 {
+    if (forced_)
+        return;
     updateState(currentTime);
 
     switch (state_)
@@ -228,6 +235,30 @@ void ChannelController::performFastSunset(std::time_t startTime)
 ChannelController::State ChannelController::state() const
 {
     return state_;
+}
+
+void ChannelController::decreasePower(int power)
+{
+    forced_ = true;
+    if (power >= channel_.currentPower())
+    {
+        channel_.currentPower(0);
+        return;
+    }
+
+    channel_.currentPower(channel_.currentPower() - power);
+}
+
+void ChannelController::increasePower(int power)
+{
+    forced_ = true;
+    if (power + channel_.currentPower() >= 100)
+    {
+        channel_.currentPower(100);
+        return;
+    }
+
+    channel_.currentPower(channel_.currentPower() + power);
 }
 
 } // namespace controller

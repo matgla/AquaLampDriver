@@ -1,4 +1,5 @@
 #include "app/app.hpp"
+#include "app/context.hpp"
 #include "bsp/board.hpp"
 #include "display/display.hpp"
 #include "display/font.hpp"
@@ -23,8 +24,8 @@ int main()
     drivers::lcd::DisplaySfml lcdDriver;
 #endif
     display::Display display(board, lcdDriver, display::font_5x7);
-
-    app::App app(display, board);
+    app::Context context(board, display);
+    app::App app(display, board, context);
     app.start();
     app.run();
 

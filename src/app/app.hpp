@@ -5,10 +5,10 @@
 #include <cstdio>
 #include <cstring>
 
-#include "app/context.hpp"
+#include "app/contextInterface.hpp"
 #include "app/statemachines/appSm.hpp"
 #include "bsp/board.hpp"
-#include "controllers/lightController.hpp"
+#include "controller/lightController.hpp"
 #include "display/display.hpp"
 #include "drivers/devices/ds18b20.hpp"
 #include "hal/memory/eeprom.hpp"
@@ -37,13 +37,31 @@ enum class LightStates
 class App
 {
 public:
-    App(display::Display& driver, bsp::Board& board);
+    App(display::Display& driver, bsp::Board& board, app::IContext& context);
 
     void run();
     void start();
 
+    enum class State
+    {
+        Off,
+        Show,
+        Menu
+    };
+
 private:
-    controllers::LightController lightController_;
+    void onShow();
+
+    void delayedBacklightOff();
+
+
+    app::IContext& context_;
+    controller::LightController<> lightController_;
+    logger::Logger logger_;
+    bsp::Board& board_;
+    display::Display& display_;
+    State state_;
+    bool backlight_;
 };
 
 } // namespace app

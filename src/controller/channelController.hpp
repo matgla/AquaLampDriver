@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <ctime>
 #include <functional>
 
@@ -49,6 +50,9 @@ public:
     void performFastSunrise(std::time_t startTime);
     void performFastSunset(std::time_t startTime);
     State state() const;
+    void turnOffForced();
+    void decreasePower(int power);
+    void increasePower(int power);
 
 private:
     void updateState(std::time_t currentTime);
@@ -66,6 +70,8 @@ private:
 
     u8 pointValue_;
     std::time_t length_;
+
+    bool forced_;
 };
 
 } // namespace controller

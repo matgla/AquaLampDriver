@@ -15,7 +15,8 @@ enum class Buttons
     Left,
     Right,
     Select,
-    Back
+    Back,
+    None
 };
 
 template <Buttons button>
