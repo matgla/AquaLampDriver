@@ -42,20 +42,37 @@ PB9 - TIM4_CH4
 
 Potrzebuje
 
-1) USART2   RX   TX
+1) USART2   RX szary  TX zolty
 	        PA3  PA2
 2) SPI      RST   D/C  DN   SCLK CE    BL
                        MOSI SCK
 	        PB15  PB13 PA7  PA5  PB12  PA4
+
+na programatorze 
+zolty swclk -> zolty
+czerwony swdio -> zielony
+niebieski reset -> inside niebieski 
+bialy masa _> czarny 
+
+RST - szry PB15
+CE - biały PB12
+ADC - bordowy PB13
+DIN - żótty PA7
+CLK - fioletowy PA5
+VCC - czerwony 
+LIGHT zielony PA4 
+GND czarny
+
+
 3) 16 x timer
     TIM1 - PA8, PA9, PA10, PA11
-	TIM2 - PA0, PB1, PB10, PB11
+	TIM2 - PA0, PA1, PB10, PB11
 	TIM3 - PB4, PB5, PB0, PB1
 	TIM4 - PB6, PB7, PB8, PB9
 	
 4) termometry 1wire
    SCL   SDA
-   PB14
+   PB14  pb3 a15
 
 5) przyciski
    PA6 (ADC-6)
@@ -63,3 +80,4 @@ Potrzebuje
     L -2,2k
     D - 4,7k
 	
+
