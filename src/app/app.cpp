@@ -70,6 +70,7 @@ void App::start()
         context_.masterPower = 0;
     }
     applyBrightness();
+    board_.fanDriver.setPulse(100);
 }
 
 bool App::isLightTime()

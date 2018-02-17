@@ -6,12 +6,12 @@
 #include <stm32f10x_adc.h>
 
 constexpr uint16_t BOUNDARY_OFFSET         = 300;
-constexpr uint16_t BUTTON_LEFT_THRESHOLD   = 3650;
+constexpr uint16_t BUTTON_LEFT_THRESHOLD   = 2450;
 constexpr uint16_t BUTTON_DOWN_THRESHOLD   = 3000;
-constexpr uint16_t BUTTON_RIGHT_THRESHOLD  = 2500;
-constexpr uint16_t BUTTON_SELECT_THRESHOLD = 650;
-constexpr uint16_t BUTTON_UP_THRESHOLD     = 1270;
-constexpr uint16_t BUTTON_BACK_THRESHOLD   = 1670;
+constexpr uint16_t BUTTON_RIGHT_THRESHOLD  = 3650;
+constexpr uint16_t BUTTON_SELECT_THRESHOLD = 2100;
+constexpr uint16_t BUTTON_UP_THRESHOLD     = 1650;
+constexpr uint16_t BUTTON_BACK_THRESHOLD   = 800;
 
 constexpr uint32_t COUNTER_THRESHOLD = 100;
 

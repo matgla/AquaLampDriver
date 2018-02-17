@@ -105,7 +105,7 @@ uint32_t configureHardware(TIM_TypeDef* timer, u32 timerPeriphRcc, u32 gpioRcc, 
 {
     Helper::initPwmClocks(timer, timerPeriphRcc, gpioRcc);
     Helper::configureGpio(port, pin, GPIO_Mode_AF_PP, GPIO_Speed_50MHz);
-    return Helper::configureTimer(timer, TIM_CounterMode_Up, 10000); // 10 KHz
+    return Helper::configureTimer(timer, TIM_CounterMode_Up, 100); // 10 KHz
 }
 
 template <>
