@@ -50,7 +50,8 @@ public:
     void performFastSunrise(std::time_t startTime);
     void performFastSunset(std::time_t startTime);
     State state() const;
-    void turnOffForced();
+    void forced(bool forced);
+    bool forced() const;
     void decreasePower(int power);
     void increasePower(int power);
 

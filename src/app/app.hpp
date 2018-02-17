@@ -14,6 +14,7 @@
 #include "hal/memory/eeprom.hpp"
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
+#include "app/menu.hpp"
 
 constexpr float TEMPERATURE_TRESHOLD = 28;
 constexpr float TEMPERATURE_STEP     = 2;
@@ -22,17 +23,6 @@ constexpr float TEMPERATURE_HIST     = 2;
 
 namespace app
 {
-
-enum class LightStates
-{
-    On,
-    Off,
-    QuickSunrise,
-    Sunrise,
-    QuickSunshine,
-    Sunshine,
-    Night
-};
 
 class App
 {
@@ -50,10 +40,9 @@ public:
     };
 
 private:
-    void onShow();
-
+    void applyBrightness();
     void delayedBacklightOff();
-
+    void onShow();
 
     app::IContext& context_;
     controller::LightController<> lightController_;
@@ -62,6 +51,7 @@ private:
     display::Display& display_;
     State state_;
     bool backlight_;
+    Menu menu_;
 };
 
 } // namespace app

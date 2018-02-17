@@ -3,6 +3,8 @@ set(DRIVERS_SRC_DIR "${PROJECT_SOURCE_DIR}/src/drivers")
 
 set(common_porting_sources
     ${COMMON_SRC_DIR}/app/app.cpp
+    ${COMMON_SRC_DIR}/app/menu.cpp
+    ${COMMON_SRC_DIR}/app/channelMenu.cpp
     ${COMMON_SRC_DIR}/app/context.cpp
     ${COMMON_SRC_DIR}/controller/channelController.cpp
     ${COMMON_SRC_DIR}/app/settings/timeEventSettings.cpp
@@ -23,6 +25,8 @@ set(common_porting_sources
 
 set(common_porting_includes
     ${COMMON_SRC_DIR}/app/app.hpp
+    ${COMMON_SRC_DIR}/app/menu.hpp
+    ${COMMON_SRC_DIR}/app/channelMenu.hpp
     ${COMMON_SRC_DIR}/app/context.hpp
     ${COMMON_SRC_DIR}/app/timeSetting.hpp
     ${COMMON_SRC_DIR}/app/statemachines/appSm.hpp

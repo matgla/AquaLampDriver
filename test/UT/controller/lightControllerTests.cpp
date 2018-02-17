@@ -71,7 +71,7 @@ public:
     LightControllerShould()
         : logger_("SunlightControllerTests"),
           display_(board_, driver_, display::font_5x7),
-          context_(board_, display_, logger_),
+          context_(board_, display_),
           controller_(context_)
     {
     }

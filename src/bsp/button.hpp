@@ -1,6 +1,6 @@
 #pragma once
 
-#include "timer/timeoutTimer.hpp"
+#include "timer/timeoutTimer.hpp" 
 
 #define GPIO_IN_READ_DELAY 300
 #define TIME_TO_LONG_PUSH 1000
@@ -35,10 +35,11 @@ public:
             isLongTimer_.cancel();
             isLong_ = false;
             timer_.cancel();
+            return false;
         }
 
         if (timer_.enabled())
-        {
+        {            
             return false;
         }
 
@@ -50,7 +51,7 @@ public:
                 isLongTimer_.start(TIME_TO_LONG_PUSH, [this] { isLong_ = true; });
             }
 
-            return true;
+            return true && !isLong_;
         }
 
         return false;
@@ -58,6 +59,7 @@ public:
 
     bool isLongPressed()
     {
+        isPressed();
         return isLong_;
     }
 

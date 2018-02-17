@@ -39,10 +39,6 @@ void TimeoutTimer::run()
 
 u64 TimeoutTimer::elapsed()
 {
-    if (!enabled_)
-    {
-        return 0;
-    }
     return lastTime_ - startTime_;
 }
 

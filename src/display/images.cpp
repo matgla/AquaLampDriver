@@ -211,4 +211,62 @@ Image Images::ChessboardMosaic = {
     7,
     gsl::span<const uint8_t>{chessboardMosaic}};
 
+/** 
+ * @brief  Sun
+ * 
+ * 00100100
+ * 00000000
+ * 10011001
+ * 00111100
+ * 00111100
+ * 10011001
+ * 00000000
+ * 00100100
+ * 
+ * size width 8
+ *      height 8
+ */
+
+const uint8_t sunImage[8] = {
+    0b00100100,
+    0b00000000,
+    0b10011001,
+    0b00111100,
+    0b00111100,
+    0b10011001,
+    0b00000000,
+    0b00100100
+};
+
+Image Images::Sun {
+    8,
+    8,
+    gsl::span<const uint8_t>{sunImage}
+};
+
+/**
+ * @brief Moon
+ * 0011
+ * 0110
+ * 1100
+ * 1100
+ * 1100
+ * 1100
+ * 0110
+ * 0011
+ */
+
+const uint8_t moonImage[4] = {
+    0b00111100,
+    0b01111110,
+    0b11000011,
+    0b10000001
+};
+
+Image Images::Moon {
+    4,
+    8,
+    gsl::span<const uint8_t>{moonImage}
+};
+
 } // namespace display

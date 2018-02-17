@@ -24,6 +24,8 @@ extern Image backIcon;
 extern Image ArrowDown;
 extern Image ArrowUp;
 extern Image ChessboardMosaic;
+extern Image Sun;
+extern Image Moon;
 } // namespace Images
 
 } // namespace display

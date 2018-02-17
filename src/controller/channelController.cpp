@@ -14,9 +14,14 @@ ChannelController::ChannelController(app::settings::LightChannel* channel)
 {
 }
 
-void ChannelController::turnOffForced()
+void ChannelController::forced(bool forced)
 {
-    forced_ = false;
+    forced_ = forced;
+}
+
+bool ChannelController::forced() const 
+{
+    return forced_;
 }
 
 void ChannelController::run(std::time_t currentTime)
@@ -240,25 +245,25 @@ ChannelController::State ChannelController::state() const
 void ChannelController::decreasePower(int power)
 {
     forced_ = true;
-    if (power >= channel_.currentPower())
+    if (power >= channel_->currentPower())
     {
-        channel_.currentPower(0);
+        channel_->currentPower(0);
         return;
     }
 
-    channel_.currentPower(channel_.currentPower() - power);
+    channel_->currentPower(channel_->currentPower() - power);
 }
 
 void ChannelController::increasePower(int power)
 {
     forced_ = true;
-    if (power + channel_.currentPower() >= 100)
+    if (power + channel_->currentPower() >= 100)
     {
-        channel_.currentPower(100);
+        channel_->currentPower(100);
         return;
     }
 
-    channel_.currentPower(channel_.currentPower() + power);
+    channel_->currentPower(channel_->currentPower() + power);
 }
 
 } // namespace controller

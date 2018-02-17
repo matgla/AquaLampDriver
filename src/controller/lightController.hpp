@@ -16,10 +16,10 @@ class LightController
 {
 public:
     explicit LightController(app::IContext& context)
-        : context_(context), logger_("LightChannel")
+        : logger_("LightChannel"), context_(context)
     {
         logger_.info() << context_.getAllChannels().size();
-        HAL_ASSERT_MSG(NumberOfChannels >= context_.getAllChannels().size(), "Channels not fit in controller");
+        HAL_ASSERT_MSG(NumberOfChannels >= static_cast<std::size_t>(context_.getAllChannels().size()), "Channels not fit in controller");
         // TODO: boundary check
         int i = 0;
         for (auto& channel : context_.getAllChannels())
@@ -74,6 +74,26 @@ public:
                                                   channels_.size() - 1};
     }
 
+    void forceLight(bool forced)
+    {
+        for (auto& channel : channels_)
+        {
+            channel.forced(forced);
+        }
+    }
+
+    bool isForced() const 
+    {
+        for (auto& channel : channels_)
+        {
+            if (channel.forced())
+            {
+                return true;
+            }
+        }
+
+        return false;        
+    }
 private:
     logger::Logger logger_;
 

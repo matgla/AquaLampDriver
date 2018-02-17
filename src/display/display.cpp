@@ -10,6 +10,30 @@ Display::Display(bsp::Board& board,
 {
 }
 
+void Display::decrementCursorX(u8 offsetX)
+{
+    if (offsetX >= cursorPosition_.x)
+    {
+        cursorPosition_.y = 0;
+    }
+    else
+    {
+        cursorPosition_.x -= offsetX;
+    }
+}
+
+void Display::decrementCursorY(u8 offsetY)
+{   
+    if (offsetY >= cursorPosition_.y)
+    {
+        cursorPosition_.y = 0;
+    }
+    else
+    {
+        cursorPosition_.y -= offsetY;
+    }
+}
+
 void Display::backlightOn()
 {
     board_.lcdBacklight.on();
@@ -35,12 +59,17 @@ void Display::clear(Colors color)
     driver_.display();
 }
 
-void Display::setPixel(u16 x, u16 y, Colors color)
+
+void Display::setPixel(u16 x, u16 y, Colors color, Style style)
 {
+    if (style == Style::Negative)
+    {
+        color = getNegative(color);
+    }
     driver_.setPixel(x, y, color);
 }
 
-void Display::print(char c, Colors color)
+void Display::print(char c, Colors color, Style style)
 {
     if (c == 0xA)
     {
@@ -71,9 +100,16 @@ void Display::print(char c, Colors color)
             {
                 if (i < driver_.getWidth() && (cursorPosition_.y + font_.height - j) < driver_.getHeight())
                 {
-                    driver_.setPixel(i, cursorPosition_.y + font_.height - j, color);
+                    setPixel(i, cursorPosition_.y + font_.height - j, color, style);
+                    continue;
                 }
             }
+            setPixel(i, cursorPosition_.y + font_.height - j, Colors::OFF, style);
+        }
+
+        if (style == Style::Underscore)
+        {
+            setPixel(i, cursorPosition_.y + font_.height + 1, Colors::BLACK);            
         }
         ++font_ptr;
     }
@@ -81,12 +117,25 @@ void Display::print(char c, Colors color)
     driver_.display();
 }
 
+Colors Display::getNegative(Colors color)
+{
+    switch (color)
+    {
+        case Colors::BLACK:
+            return Colors::OFF;
+        case Colors::OFF:
+            return Colors::BLACK;
+        case Colors::WHITE:
+            return Colors::BLACK;
+    }
+    return Colors::BLACK;
+}
 
-void Display::print(const char* str, Colors color)
+void Display::print(const char* str, Colors color, Style style)
 {
     for (std::size_t i = 0; i < strlen(str); i++)
     {
-        print(str[i], color);
+        print(str[i], color, style);
     }
 }
 
@@ -106,7 +155,7 @@ void Display::setY(u8 y)
     cursorPosition_.y = y;
 }
 
-void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, Colors color)
+void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, Colors color, Style style)
 {
     UNUSED(color);
     if (buffer.length() < width || sizeof(buffer[0]) * 8 < height)
@@ -119,16 +168,24 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
     int i = 0;
     for (int x = cursorPosition_.x; x < cursorPosition_.x + width; ++x)
     {
-        for (int y = height; y > 0; --y)
+        for (int y = height; y >= 0; --y)
         {
             if ((buffer[i] >> y) & 0x01)
             {
                 if (x < driver_.getWidth() && (cursorPosition_.y + height - y) < driver_.getHeight())
                 {
-                    driver_.setPixel(x, cursorPosition_.y + height - y, color);
+                    setPixel(x, cursorPosition_.y + height - y, color, style);
+                    continue;
                 }
             }
+            setPixel(x, cursorPosition_.y + height - y, Colors::OFF, style);
         }
+
+        if (style == Style::Underscore)
+        {
+            setPixel(x, cursorPosition_.y + height + 1, Colors::BLACK);            
+        }
+
         i++;
     }
 
@@ -136,27 +193,24 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
     driver_.display();
 }
 
-void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, u8 x, u8 y, Colors color)
+void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, u8 x, u8 y, Colors color, Style style)
 {
-    UNUSED(color);
     cursorPosition_.x = x;
     cursorPosition_.y = y;
-    drawImage(buffer, width, height);
+    drawImage(buffer, width, height, color, style);
 }
 
-void Display::drawImage(const Image& image, u8 x, u8 y, Colors color)
+void Display::drawImage(const Image& image, u8 x, u8 y, Colors color, Style style)
 {
-    UNUSED(color);
     cursorPosition_.x = x;
     cursorPosition_.y = y;
-    drawImage(image);
+    drawImage(image, color, style);
 }
 
 
-void Display::drawImage(const Image& image, Colors color)
+void Display::drawImage(const Image& image, Colors color, Style style)
 {
-    UNUSED(color);
-    drawImage(image.data, image.width, image.height);
+    drawImage(image.data, image.width, image.height, color, style);
 }
 
 void Display::incrementCursorX(u8 offsetX, u8 offsetY)
