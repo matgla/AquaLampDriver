@@ -48,7 +48,7 @@ public:
         visible_ = visible;
     }
 
-    void run(Keys key, bool isLongPressed)
+    void onRun(Keys key, bool isLongPressed)
     {
         if (isLongPressed)
         {
@@ -64,6 +64,11 @@ public:
                 onKey_[key]();
             }
         }
+        draw();
+    }
+    virtual void run(Keys key, bool isLongPressed)
+    {
+        onRun(key, isLongPressed);
     }
 
     void draw()

@@ -95,7 +95,10 @@ void Display::setPixel(u16 x, u16 y, Colors color, Style style)
     {
         color = getNegative(color);
     }
-    driver_.setPixel(x, y, color);
+    if (x <= getWidth() && y <= getHeight())
+    {
+        driver_.setPixel(x, y, color);
+    }
 }
 
 void Display::print(char c, Colors color, Style style)
