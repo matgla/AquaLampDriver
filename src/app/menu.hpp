@@ -10,10 +10,15 @@
 namespace app
 {
 
-class MainMenu : public gui::Menu<5>
+class MainMenu : public gui::Menu
 {
 public:
     MainMenu(bsp::Board& board, IContext& context);
+
+protected:
+    void createChannelsMenu();
+
+    gui::Menu channelsMenu_;
 };
 
 } // namespace app

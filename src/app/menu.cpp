@@ -6,7 +6,7 @@ namespace app
 {
 
 MainMenu::MainMenu(bsp::Board& board, IContext& context)
-    : gui::Menu<5>("Main")
+    : gui::Menu<5>("Main"), channelsMenu_("Channels")
 {
     static gui::Text channelText("Channel");
     static gui::Text generalText("General");
@@ -15,22 +15,28 @@ MainMenu::MainMenu(bsp::Board& board, IContext& context)
     static gui::Text aboutText("About");
 
 
-    gui::Option channel;
+    static gui::Option channel;
     channel.next(&channelText);
-    gui::Option time;
+    static gui::Option time;
     time.next(&timeText);
-    gui::Option general;
+    static gui::Option general;
     general.next(&generalText);
-    gui::Option effects;
+    static gui::Option effects;
     effects.next(&effectsText);
-    gui::Option about;
+    static gui::Option about;
     about.next(&aboutText);
 
-    addOption(channel);
-    addOption(time);
-    addOption(general);
-    addOption(effects);
-    addOption(about);
+    addOption(&channel);
+    addOption(&time);
+    addOption(&general);
+    addOption(&effects);
+    addOption(&about);
+}
+
+void MainMenu::createChannelsMenu()
+{
+    Option
+        channelsMenu_
 }
 
 // void Menu::onShow()
