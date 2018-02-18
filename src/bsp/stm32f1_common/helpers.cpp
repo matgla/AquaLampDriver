@@ -23,9 +23,9 @@ uint32_t Helper::configureTimer(TIM_TypeDef* timer, uint16_t mode, uint16_t freq
     TIM_TimeBaseInitTypeDef tim;
     TIM_TimeBaseStructInit(&tim);
     tim.TIM_CounterMode = mode;
-    uint32_t pre        = SystemCoreClock / 10000 - 1;
-    tim.TIM_Prescaler   = pre;
-    tim.TIM_Period      = period - 1;
+    uint32_t pre        = SystemCoreClock / frequency / 1000;
+    tim.TIM_Prescaler   = pre - 1;
+    tim.TIM_Period      = 1000 - 1;
     TIM_TimeBaseInit(timer, &tim);
 
     return period;
@@ -39,8 +39,7 @@ uint8_t Helper::setPwmPulse(TIM_TypeDef* timer, std::function<void(TIM_TypeDef*,
     TIM_OCStructInit(&channel);
     channel.TIM_OCMode      = TIM_OCMode_PWM1;
     channel.TIM_OutputState = TIM_OutputState_Enable;
-    float multiplier        = (float)width / 100;
-    u32 pulse               = (float)period * multiplier;
+    u32 pulse               = width * 10;
     channel.TIM_Pulse       = pulse;
     ocInit(timer, &channel);
     TIM_Cmd(timer, ENABLE);
