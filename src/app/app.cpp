@@ -19,7 +19,9 @@ App::App(display::Display& display, bsp::Board& board)
       context_(board, display, logger_),
       backlight_(false),
       statemachine_(context_),
-      termometers_(board)
+      termometers_(board),
+      isLightTime_(false),
+      isNightTime_(false)
 {
 }
 
@@ -42,6 +44,8 @@ void App::applyBrightness()
 
 void App::start()
 {
+    context_.masterPower = 0;
+    applyBrightness();
     if (hal::core::BackupRegisters::get().isFirstStartup())
     {
         logger_.info() << "Settings initializing";
@@ -71,6 +75,14 @@ void App::start()
     }
     applyBrightness();
     board_.fanDriver.setPulse(100);
+
+    context_.settings.sunshine.hours   = 22;
+    context_.settings.sunshine.minutes = 30;
+    context_.settings.sunshine.seconds = 0;
+
+    context_.settings.sunrise.hours   = 10;
+    context_.settings.sunrise.minutes = 30;
+    context_.settings.sunrise.seconds = 0;
 }
 
 bool App::isLightTime()
@@ -105,18 +117,60 @@ bool App::isLightTime()
 
 void App::update()
 {
-    if (isLightTime())
+    if (isLightTime() && !isLightTime_)
     {
-        context_.masterPower = context_.settings.channelPowers[0];
-        applyBrightness();
-    }
-    else
-    {
+        context_.temporarySettings.channelPowers[1]  = 70;
+        context_.temporarySettings.channelPowers[2]  = 90;
+        context_.temporarySettings.channelPowers[3]  = 70;
+        context_.temporarySettings.channelPowers[4]  = 90;
+        context_.temporarySettings.channelPowers[5]  = 0;
+        context_.temporarySettings.channelPowers[6]  = 70;
+        context_.temporarySettings.channelPowers[7]  = 70;
+        context_.temporarySettings.channelPowers[8]  = 70;
+        context_.temporarySettings.channelPowers[9]  = 90;
+        context_.temporarySettings.channelPowers[10] = 70;
+        context_.temporarySettings.channelPowers[11] = 90;
+        context_.temporarySettings.channelPowers[12] = 70;
+        context_.temporarySettings.channelPowers[13] = 90;
+
         if (!context_.forcedLight)
         {
-            context_.masterPower = 0;
-            applyBrightness();
+            context_.masterPower = 80;
         }
+
+        board_.fanPwm1.setPulse(100);
+        board_.fanPwm2.setPulse(100);
+
+        applyBrightness();
+        isLightTime_ = true;
+        isNightTime_ = false;
+    }
+    else if (!isLightTime() && !isNightTime_)
+    {
+        context_.temporarySettings.channelPowers[1]  = 60;
+        context_.temporarySettings.channelPowers[2]  = 0;
+        context_.temporarySettings.channelPowers[3]  = 0;
+        context_.temporarySettings.channelPowers[4]  = 0;
+        context_.temporarySettings.channelPowers[5]  = 0;
+        context_.temporarySettings.channelPowers[6]  = 0;
+        context_.temporarySettings.channelPowers[7]  = 0;
+        context_.temporarySettings.channelPowers[8]  = 0;
+        context_.temporarySettings.channelPowers[9]  = 40;
+        context_.temporarySettings.channelPowers[10] = 0;
+        context_.temporarySettings.channelPowers[11] = 0;
+        context_.temporarySettings.channelPowers[12] = 0;
+        context_.temporarySettings.channelPowers[13] = 40;
+
+        if (!context_.forcedLight)
+        {
+            context_.masterPower = 2;
+        }
+
+        board_.fanPwm1.setPulse(0);
+        board_.fanPwm2.setPulse(0);
+        isLightTime_ = false;
+        isNightTime_ = true;
+        applyBrightness();
     }
 
     hal::core::startCriticalSection();
@@ -215,8 +269,7 @@ void App::processTemperature()
         if (context_.temperatures_[i] >= TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) > TEMPERATURE_HIST)
         {
             update();
-            board_.fanPwm1.setPulse(100);
-            board_.fanPwm2.setPulse(100);
+
             temperaturesHistory_[i] = context_.temperatures_[i];
             logger_.info() << "Fan: 100%";
         }

@@ -18,12 +18,12 @@ void Helper::configureGpio(GPIO_TypeDef* port, uint16_t pin, GPIOMode_TypeDef mo
 
 uint32_t Helper::configureTimer(TIM_TypeDef* timer, uint16_t mode, uint16_t frequency)
 {
-    uint32_t period = 100000 / frequency;
+    uint32_t period = 10000 / frequency;
 
     TIM_TimeBaseInitTypeDef tim;
     TIM_TimeBaseStructInit(&tim);
     tim.TIM_CounterMode = mode;
-    uint32_t pre        = SystemCoreClock / 100000 - 1;
+    uint32_t pre        = SystemCoreClock / 10000 - 1;
     tim.TIM_Prescaler   = pre;
     tim.TIM_Period      = period - 1;
     TIM_TimeBaseInit(timer, &tim);

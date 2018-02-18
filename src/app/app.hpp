@@ -42,6 +42,8 @@ private:
     Context context_;
     timer::TimerId backlightTimer_;
     bool backlight_;
+    bool isLightTime_;
+    bool isNightTime_;
     boost::sml::sm<statemachines::AppSm> statemachine_;
     drivers::devices::Ds18b20<NUMBER_OF_TERMOMETERS> termometers_;
     std::array<float, NUMBER_OF_TERMOMETERS> temperaturesHistory_;
