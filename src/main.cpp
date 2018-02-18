@@ -23,9 +23,9 @@ int main()
 #elif SFML_DISPLAY
     drivers::lcd::DisplaySfml lcdDriver;
 #endif
-    display::Display display(board, lcdDriver, display::font_5x7);
-    app::Context context(board, display);
-    app::App app(display, board, context);
+    display::Display::initialize(board, lcdDriver, display::font_5x7);
+    app::Context context(board, *display::Display::get());
+    app::App app(*display::Display::get(), board, context);
     app.start();
     app.run();
 

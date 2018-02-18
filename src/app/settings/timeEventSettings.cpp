@@ -15,12 +15,22 @@ u8 TimeEventSettings::hour() const
     return hour_;
 }
 
+u8& TimeEventSettings::hour()
+{
+    return hour_;
+}
+
 void TimeEventSettings::minute(u8 minute)
 {
     minute_ = minute;
 }
 
 u8 TimeEventSettings::minute() const
+{
+    return minute_;
+}
+
+u8& TimeEventSettings::minute()
 {
     return minute_;
 }
@@ -35,12 +45,23 @@ u8 TimeEventSettings::second() const
     return second_;
 }
 
+u8& TimeEventSettings::second()
+{
+    return second_;
+}
+
+
 void TimeEventSettings::length(std::size_t length)
 {
     length_ = length;
 }
 
 std::size_t TimeEventSettings::length() const
+{
+    return length_;
+}
+
+std::size_t& TimeEventSettings::length()
 {
     return length_;
 }

@@ -32,7 +32,6 @@ public:
         Negative,
         Underscore
     };
-    Display(bsp::Board& board, drivers::lcd::DisplayDriver& driver, Font& font);
     void backlightOn();
     void backlightOff();
     void clear(display::Colors color);
@@ -55,15 +54,25 @@ public:
 
     u16 getHeight() const;
     u16 getWidth() const;
+    u16 getCharWidth() const;
+    u16 getCharHeight() const;
+    u16 getEmptyCharLines() const;
+    u16 getWidthToEnd() const;
 
     Font& getFont();
 
+    static void initialize(bsp::Board& board, drivers::lcd::DisplayDriver& driver, Font& font);
+    static Display* get();
+
 private:
+    Display(bsp::Board& board, drivers::lcd::DisplayDriver& driver, Font& font);
+
     bsp::Board board_;
     Vector2u cursorPosition_;
     logger::Logger logger_;
     drivers::lcd::DisplayDriver& driver_;
     Font& font_;
+    static Display* display_;
 };
 
 } // namespace display

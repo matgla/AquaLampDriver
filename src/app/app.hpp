@@ -6,15 +6,16 @@
 #include <cstring>
 
 #include "app/contextInterface.hpp"
+#include "app/menu.hpp"
 #include "app/statemachines/appSm.hpp"
 #include "bsp/board.hpp"
 #include "controller/lightController.hpp"
 #include "display/display.hpp"
 #include "drivers/devices/ds18b20.hpp"
+#include "gui/keys.hpp"
 #include "hal/memory/eeprom.hpp"
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
-#include "app/menu.hpp"
 
 constexpr float TEMPERATURE_TRESHOLD = 28;
 constexpr float TEMPERATURE_STEP     = 2;
@@ -43,6 +44,7 @@ private:
     void applyBrightness();
     void delayedBacklightOff();
     void onShow();
+    void updateKey();
 
     app::IContext& context_;
     controller::LightController<> lightController_;
@@ -51,7 +53,10 @@ private:
     display::Display& display_;
     State state_;
     bool backlight_;
-    Menu menu_;
+    MainMenu menu_;
+
+    gui::Keys key_;
+    bool isLongPressedKey_;
 };
 
 } // namespace app

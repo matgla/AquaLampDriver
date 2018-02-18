@@ -4,16 +4,16 @@
 
 #include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
+#include "gui/keys.hpp"
 #include "hal/core/criticalSection.hpp"
 #include "hal/time/rtc.hpp"
 #include "hal/time/watchdog.hpp"
 #include "logger/logger.hpp"
 
-
 namespace app
 {
 App::App(display::Display& display, bsp::Board& board, app::IContext& context)
-    : context_(context), lightController_(context), logger_("App"), board_(board), display_(display), state_(App::State::Off), backlight_(true), menu_(display, board, context)
+    : context_(context), lightController_(context), logger_("App"), board_(board), display_(display), state_(App::State::Off), backlight_(true), menu_(board, context)
 
 {
 }
@@ -108,16 +108,12 @@ void App::onShow()
     {
         delayedBacklightOff();
         state_ = State::Menu;
-        menu_.start();        
-        menu_.run();
         return;
     }
     if (board_.upButton.isPressed())
     {
         delayedBacklightOff();
         state_ = State::Menu;
-        menu_.start();
-        menu_.run();
         return;
     }
     if (board_.leftButton.isPressed())
@@ -140,7 +136,7 @@ void App::onShow()
     {
         delayedBacklightOff();
         lightController_.master().increasePower(5);
-        hal::time::msleep(100);    
+        hal::time::msleep(100);
     }
     if (board_.selectButton.isPressed())
     {
@@ -194,6 +190,95 @@ void App::onShow()
     // display_.print(buffer);
 }
 
+void App::updateKey()
+{
+    if (board_.leftButton.isPressed())
+    {
+        key_              = gui::Keys::Left;
+        isLongPressedKey_ = false;
+        return;
+    }
+
+    if (board_.upButton.isPressed())
+    {
+        key_              = gui::Keys::Up;
+        isLongPressedKey_ = false;
+        return;
+    }
+
+    if (board_.rightButton.isPressed())
+    {
+        key_              = gui::Keys::Right;
+        isLongPressedKey_ = false;
+        return;
+    }
+
+    if (board_.downButton.isPressed())
+    {
+        key_              = gui::Keys::Down;
+        isLongPressedKey_ = false;
+        return;
+    }
+
+    if (board_.selectButton.isPressed())
+    {
+        key_              = gui::Keys::Select;
+        isLongPressedKey_ = false;
+        return;
+    }
+
+    if (board_.backButton.isPressed())
+    {
+        key_              = gui::Keys::Back;
+        isLongPressedKey_ = false;
+        return;
+    }
+
+    if (board_.leftButton.isLongPressed())
+    {
+        key_              = gui::Keys::Left;
+        isLongPressedKey_ = true;
+        return;
+    }
+
+    if (board_.upButton.isLongPressed())
+    {
+        key_              = gui::Keys::Up;
+        isLongPressedKey_ = true;
+        return;
+    }
+
+    if (board_.rightButton.isLongPressed())
+    {
+        key_              = gui::Keys::Right;
+        isLongPressedKey_ = true;
+        return;
+    }
+
+    if (board_.downButton.isLongPressed())
+    {
+        key_              = gui::Keys::Down;
+        isLongPressedKey_ = true;
+        return;
+    }
+
+    if (board_.selectButton.isLongPressed())
+    {
+        key_              = gui::Keys::Select;
+        isLongPressedKey_ = true;
+        return;
+    }
+
+    if (board_.backButton.isLongPressed())
+    {
+        key_              = gui::Keys::Back;
+        isLongPressedKey_ = true;
+        return;
+    }
+
+    key_              = gui::Keys::None;
+    isLongPressedKey_ = false;
+}
 
 void App::run()
 {
@@ -216,7 +301,9 @@ void App::run()
                 onShow();
                 break;
             case State::Menu:
-                if(Menu::State::Close == menu_.run())
+                updateKey();
+                menu_.run(key_, isLongPressedKey_);
+                if (!menu_.active())
                 {
                     state_ = State::Show;
                 }

@@ -1,13 +1,42 @@
 #include "display/display.hpp"
 
+
 namespace display
 {
+
+display::Display* Display::display_ = nullptr;
+
+void Display::initialize(bsp::Board& board, drivers::lcd::DisplayDriver& driver, Font& font)
+{
+    static Display display(board, driver, font);
+    Display::display_ = &display;
+}
+
+Display* Display::get()
+{
+    return Display::display_;
+}
 
 Display::Display(bsp::Board& board,
                  drivers::lcd::DisplayDriver& driver, Font& font)
     : board_(board), cursorPosition_{0, 0}, logger_("Display"),
       driver_(driver), font_(font)
 {
+}
+
+u16 Display::getCharWidth() const
+{
+    return (getWidth() / (font_.width + 1));
+}
+
+u16 Display::getCharHeight() const
+{
+    return (getHeight() / (font_.height + 1));
+}
+
+u16 Display::getEmptyCharLines() const
+{
+    return (cursorPosition_.y / (font_.height + 1));
 }
 
 void Display::decrementCursorX(u8 offsetX)
@@ -23,7 +52,7 @@ void Display::decrementCursorX(u8 offsetX)
 }
 
 void Display::decrementCursorY(u8 offsetY)
-{   
+{
     if (offsetY >= cursorPosition_.y)
     {
         cursorPosition_.y = 0;
@@ -87,8 +116,8 @@ void Display::print(char c, Colors color, Style style)
     if (c < 32)
         return;
 
-    u16 charOffset = static_cast<u16>(c - 32); // 32 first letter in font
-    u16 charPosition = charOffset * font_.width;
+    u16 charOffset          = static_cast<u16>(c - 32); // 32 first letter in font
+    u16 charPosition        = charOffset * font_.width;
     const uint8_t* font_ptr = &font_.array[charPosition];
 
     int i = 0;
@@ -109,7 +138,7 @@ void Display::print(char c, Colors color, Style style)
 
         if (style == Style::Underscore)
         {
-            setPixel(i, cursorPosition_.y + font_.height + 1, Colors::BLACK);            
+            setPixel(i, cursorPosition_.y + font_.height + 1, Colors::BLACK);
         }
         ++font_ptr;
     }
@@ -168,7 +197,7 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
     int i = 0;
     for (int x = cursorPosition_.x; x < cursorPosition_.x + width; ++x)
     {
-        for (int y = height; y >= 0; --y)
+        for (int y = height; y > 0; --y)
         {
             if ((buffer[i] >> y) & 0x01)
             {
@@ -183,7 +212,7 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
 
         if (style == Style::Underscore)
         {
-            setPixel(x, cursorPosition_.y + height + 1, Colors::BLACK);            
+            setPixel(x, cursorPosition_.y + height + 1, Colors::BLACK);
         }
 
         i++;
@@ -253,6 +282,12 @@ u16 Display::getWidth() const
 {
     return driver_.getWidth();
 }
+
+u16 Display::getWidthToEnd() const
+{
+    return getWidth() - cursorPosition_.x;
+}
+
 
 Font& Display::getFont()
 {

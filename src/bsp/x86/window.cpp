@@ -71,7 +71,10 @@ void Window::run()
 
     for (auto& shape : shapes_)
     {
-        bsp::x86::window.draw(*shape.second);
+        if (shape.second != nullptr)
+        {
+            bsp::x86::window.draw(*shape.second);
+        }
     }
     bsp::x86::window.display();
 }
