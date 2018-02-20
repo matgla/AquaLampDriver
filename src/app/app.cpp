@@ -133,10 +133,9 @@ void App::update()
         context_.temporarySettings.channelPowers[12] = 70;
         context_.temporarySettings.channelPowers[13] = 90;
 
-        if (!context_.forcedLight)
-        {
-            context_.masterPower = 80;
-        }
+
+        context_.masterPower = 80;
+
 
         board_.fanPwm1.setPulse(100);
         board_.fanPwm2.setPulse(100);
@@ -161,10 +160,9 @@ void App::update()
         context_.temporarySettings.channelPowers[12] = 0;
         context_.temporarySettings.channelPowers[13] = 40;
 
-        if (!context_.forcedLight)
-        {
-            context_.masterPower = 2;
-        }
+
+        context_.masterPower = 2;
+
 
         board_.fanPwm1.setPulse(0);
         board_.fanPwm2.setPulse(0);
