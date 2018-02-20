@@ -108,12 +108,16 @@ void App::onShow()
     {
         delayedBacklightOff();
         state_ = State::Menu;
+        std::cout << "Menu" << std::endl;
+
         return;
     }
     if (board_.upButton.isPressed())
     {
         delayedBacklightOff();
         state_ = State::Menu;
+        std::cout << "Menu" << std::endl;
+
         return;
     }
     if (board_.leftButton.isPressed())
@@ -306,6 +310,7 @@ void App::run()
                 if (!menu_.active())
                 {
                     state_ = State::Show;
+                    std::cout << "Menu off" << std::endl;
                 }
                 break;
         }

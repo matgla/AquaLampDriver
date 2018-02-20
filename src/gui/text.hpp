@@ -27,6 +27,11 @@ public:
         }
     }
 
+    void setText(std::string_view text)
+    {
+        text_ = text;
+    }
+
 protected:
     std::string_view text_;
 };

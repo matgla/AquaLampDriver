@@ -25,10 +25,6 @@ public:
 
     void visible(int from, int to)
     {
-        HAL_ASSERT_MSG(to >= from, "to must be >= from");
-        HAL_ASSERT_MSG(to >= 0, "to must be >= 0");
-        HAL_ASSERT_MSG(to <= currentNrOfOptions_, "to must be < all available options");
-        HAL_ASSERT_MSG(from >= 0, "from must be >= 0");
         for (int i = 0; i < from; ++i)
         {
             options_[i]->visible(false);
@@ -43,13 +39,28 @@ public:
         }
     }
 
+    int getMaxOptionsHeight()
+    {
+        int max = 0;
+        for (auto& option : options_)
+        {
+            if (option->height() > max)
+            {
+                max = option->height();
+            }
+        }
+        return max;
+    }
+
     int maxOptions()
     {
-        return display::Display::get()->getCharHeight() - 2;
+        logger::Logger log("uu");
+        log.info() << "size: " << display::Display::get()->getHeight() << " / " << getMaxOptionsHeight() << " - " << 2;
+        return display::Display::get()->getHeight() / getMaxOptionsHeight() - 2;
     }
 
     Menu(const char* name)
-        : Element(name), currentNrOfOptions_(0), active_(true), activeOption_(0)
+        : Element(name), currentNrOfOptions_(0), activeOption_(0)
     {
         onKey(gui::Keys::Down, [this] {
             options_[activeOption_]->active(false);
@@ -91,8 +102,6 @@ public:
             visible(offset, offset + maxOptions());
             options_[activeOption_]->active(true);
         });
-
-        onKey(gui::Keys::Back, [this] { active_ = false; });
     }
 
     void addOption(const Option& option)
@@ -110,45 +119,6 @@ public:
         {
             options_[0]->active(true);
         }
-    }
-
-    void run(Keys key, bool isLongPressed)
-    {
-        bool hasAction = false;
-        if (isLongPressed)
-        {
-            if (onLongPressedKey_[key])
-            {
-                onLongPressedKey_[key]();
-                hasAction = true;
-            }
-        }
-        else
-        {
-            if (onKey_[key])
-            {
-                onKey_[key]();
-                hasAction = true;
-            }
-        }
-
-        if (!hasAction)
-        {
-            for (auto& option : options_)
-            {
-                if (option.has_value())
-                {
-                    option->run(key, isLongPressed);
-                }
-            }
-        }
-
-        draw();
-    }
-
-    bool active() const
-    {
-        return active_;
     }
 
     void drawTitle()
@@ -186,11 +156,30 @@ public:
         display::Display::get()->drawImage(display::Images::selectIcon);
     }
 
-    void draw()
+    void run(Keys key, bool isLongPressed) override
+    {
+        std::cout << "custom run" << std::endl;
+        bool hasAction = onRun(key, isLongPressed);
+        if (!hasAction)
+        {
+            for (auto& option : options_)
+            {
+                if (option.has_value())
+                {
+                    if (option->active())
+                    {
+                        option->run(key, isLongPressed);
+                    }
+                }
+            }
+        }
+        draw();
+    }
+
+    void draw() override
     {
         display::Display::get()->clear(display::Colors::OFF);
         drawTitle();
-
         for (auto& option : options_)
         {
             if (option.has_value())
@@ -205,7 +194,6 @@ public:
 protected:
     std::array<std::optional<Option>, nrOfOptions> options_;
     int currentNrOfOptions_;
-    bool active_;
     int activeOption_;
 };
 

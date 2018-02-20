@@ -1,6 +1,7 @@
 #pragma once
 
 #include <experimental/string_view>
+#include <optional>
 
 #include "display/display.hpp"
 #include "display/images.hpp"
@@ -36,20 +37,22 @@ public:
 
     void onDraw() override
     {
-        if (!visible_)
-        {
-            return;
-        }
         drawArrow();
         display::Display::get()->print(" ");
-        if (next_)
-        {
-            next_->draw();
-        }
-        display::Display::get()->print("\n");
+    }
+
+    int height() override
+    {
+        return height_.value_or(Element::height());
+    }
+
+    void height(int height)
+    {
+        height_ = height;
     }
 
 protected:
+    std::optional<int> height_;
 };
 
 } // namespace gui

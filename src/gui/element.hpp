@@ -8,6 +8,8 @@
 #include "gui/keys.hpp"
 #include "logger/logger.hpp"
 
+#include <iostream>
+
 namespace gui
 {
 
@@ -38,9 +40,14 @@ public:
         onLongPressedKey_[key] = action;
     }
 
-    void active(bool active)
+    virtual void active(bool active)
     {
         active_ = active;
+    }
+
+    bool active() const
+    {
+        return active_;
     }
 
     void visible(bool visible)
@@ -48,13 +55,14 @@ public:
         visible_ = visible;
     }
 
-    void onRun(Keys key, bool isLongPressed)
+    virtual bool onRun(Keys key, bool isLongPressed)
     {
         if (isLongPressed)
         {
             if (onLongPressedKey_[key])
             {
                 onLongPressedKey_[key]();
+                return true;
             }
         }
         else
@@ -62,20 +70,28 @@ public:
             if (onKey_[key])
             {
                 onKey_[key]();
+                return true;
             }
         }
-        draw();
+        return false;
     }
     virtual void run(Keys key, bool isLongPressed)
     {
+        std::cout << "element::run" << std::endl;
         onRun(key, isLongPressed);
+        draw();
     }
 
-    void draw()
+    virtual void draw()
     {
         if (visible_)
         {
             onDraw();
+
+            if (next_)
+            {
+                next_->draw();
+            }
         }
     }
 
@@ -89,9 +105,10 @@ public:
         return display::Display::get()->getFont().width;
     }
 
-    void next(Element* element)
+    Element& next(Element* element)
     {
         next_ = element;
+        return *next_;
     }
 
 protected:

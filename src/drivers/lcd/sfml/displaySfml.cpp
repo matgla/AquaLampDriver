@@ -51,13 +51,13 @@ void DisplaySfml::setPixel(u16 x, u16 y, display::Colors color)
 {
     if (x >= buffer_.getSize().x)
     {
-        logger_.error() << "out of buffer in x";
+        logger_.error() << "out of buffer in x: " << x;
         return;
     }
 
     if (y >= buffer_.getSize().y)
     {
-        logger_.error() << "out of buffer in y";
+        logger_.error() << "out of buffer in y: " << y;
         return;
     }
     buffer_.setPixel(x, y, convertToSfColor(color));

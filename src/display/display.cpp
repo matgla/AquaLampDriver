@@ -95,7 +95,7 @@ void Display::setPixel(u16 x, u16 y, Colors color, Style style)
     {
         color = getNegative(color);
     }
-    if (x <= getWidth() && y <= getHeight())
+    if (x < getWidth() && y < getHeight())
     {
         driver_.setPixel(x, y, color);
     }
@@ -200,7 +200,7 @@ void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, 
     int i = 0;
     for (int x = cursorPosition_.x; x < cursorPosition_.x + width; ++x)
     {
-        for (int y = height; y > 0; --y)
+        for (int y = height; y >= 0; --y)
         {
             if ((buffer[i] >> y) & 0x01)
             {
