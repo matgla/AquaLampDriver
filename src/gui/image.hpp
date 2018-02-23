@@ -3,38 +3,55 @@
 #include "display/display.hpp"
 #include "display/images.hpp"
 #include "gui/element.hpp"
-
+#include "gui/primitives/IShape.hpp"
+#include "gui/widgetBase.hpp"
 namespace gui
 {
 
-class Image : public Element
+class Image : public WidgetBase
 {
 public:
-    Image(const display::Image& image)
-        : Element(""), image_(image)
+    Image(const primitives::IShape& shape)
+        : shape_(shape)
     {
     }
 
-    void onDraw() override
+    void draw() const override
     {
-        if (customDraw_)
-        {
-            customDraw_(image_);
-        }
-        else
-        {
-            display::Display::get()->drawImage(image_);
-        }
-    }
-
-    void setDraw(const std::function<void(const display::Image&)>& draw)
-    {
-        customDraw_ = draw;
+        shape_.draw();
     }
 
 private:
-    const display::Image& image_;
-    std::function<void(const display::Image&)> customDraw_;
+    const primitives::IShape& shape_;
 };
+// class Image : public Element
+// {
+// public:
+//     Image(const display::Image& image)
+//         : Element(""), image_(image)
+//     {
+//     }
+
+//     void onDraw() override
+//     {
+//         if (customDraw_)
+//         {
+//             customDraw_(image_);
+//         }
+//         else
+//         {
+//             display::Display::get()->drawImage(image_);
+//         }
+//     }
+
+//     void setDraw(const std::function<void(const display::Image&)>& draw)
+//     {
+//         customDraw_ = draw;
+//     }
+
+// private:
+//     const display::Image& image_;
+//     std::function<void(const display::Image&)> customDraw_;
+// };
 
 } // namespace gui

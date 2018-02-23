@@ -13,6 +13,7 @@
 #include "display/display.hpp"
 #include "drivers/devices/ds18b20.hpp"
 #include "gui/keys.hpp"
+#include "gui/window.hpp"
 #include "hal/memory/eeprom.hpp"
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
@@ -57,6 +58,7 @@ private:
 
     gui::Keys key_;
     bool isLongPressedKey_;
+    gui::Window<10> window_;
 };
 
 } // namespace app

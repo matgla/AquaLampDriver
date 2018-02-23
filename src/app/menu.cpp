@@ -101,124 +101,125 @@ void MainMenu::updatePage()
 
 void MainMenu::createChannelsMenu()
 {
-    static gui::Text channelText("Ch ");
-    static gui::BufferedText<3> channelNr;
-    utils::writeToBufferAligned(channelNr.data(), currentChannel_, '\0');
-    static gui::Text channelName(getChannelName(currentChannel_));
+    // static gui::Text channelText("Ch ");
+    // static gui::BufferedText<3> channelNr;
+    // utils::writeToBufferAligned(channelNr.data(), currentChannel_, '\0');
+    // static gui::Text channelName(getChannelName(currentChannel_));
 
 
-    static gui::Option channelOption;
+    // static gui::Option channelOption;
 
-    channelOption
-        .next(&channelText)
-        .next(&channelNr)
-        .next(&colon)
-        .next(&channelName)
-        .next(&newLine);
+    // channelOption
+    //     .next(&channelText)
+    //     .next(&channelNr)
+    //     .next(&colon)
+    //     .next(&channelName)
+    //     .next(&newLine);
 
-    channelOption.onKey(gui::Keys::Right, [this]() {
-        if (currentChannel_ < context_.getAllChannels().size() - 1)
-        {
-            ++currentChannel_;
-        }
-        else
-        {
-            currentChannel_ = 0;
-        }
-        utils::writeToBufferAligned(channelNr.data(), currentChannel_, '\0');
-        channelName.setText(getChannelName(currentChannel_));
-        updatePage();
+    // channelOption.onKey(gui::Keys::Right, [this]() {
+    //     if (currentChannel_ < context_.getAllChannels().size() - 1)
+    //     {
+    //         ++currentChannel_;
+    //     }
+    //     else
+    //     {
+    //         currentChannel_ = 0;
+    //     }
+    //     utils::writeToBufferAligned(channelNr.data(), currentChannel_, '\0');
+    //     channelName.setText(getChannelName(currentChannel_));
+    //     updatePage();
 
-    });
+    // });
 
-    channelOption.onKey(gui::Keys::Left, [this] {
-        if (currentChannel_ <= 0)
-        {
-            currentChannel_ = context_.getAllChannels().size() - 1;
-        }
-        else
-        {
-            --currentChannel_;
-        }
-        utils::writeToBufferAligned(channelNr.data(), currentChannel_, '\0');
-        channelName.setText(getChannelName(currentChannel_));
-        updatePage();
+    // channelOption.onKey(gui::Keys::Left, [this] {
+    //     if (currentChannel_ <= 0)
+    //     {
+    //         currentChannel_ = context_.getAllChannels().size() - 1;
+    //     }
+    //     else
+    //     {
+    //         --currentChannel_;
+    //     }
+    //     utils::writeToBufferAligned(channelNr.data(), currentChannel_, '\0');
+    //     channelName.setText(getChannelName(currentChannel_));
+    //     updatePage();
 
-    });
+    // });
 
-    channelOption.visible(true);
-    channelsMenu_.onKey(gui::Keys::Back,
-                        [this]() {
-                            currentMenu_ = &mainMenu_;
-                            currentMenu_->active(true);
-                        });
+    // channelOption.visible(true);
+    // channelsMenu_.onKey(gui::Keys::Back,
+    //                     [this]() {
+    //                         currentMenu_ = &mainMenu_;
+    //                         currentMenu_->active(true);
+    //                     });
 
-    static gui::Option power;
-    static gui::Image dayImage(display::Images::Sun);
-    auto imageDraw = [](const display::Image& image) {
-        display::Display& display = *display::Display::get();
-        display.decrementCursorY(1);
-        display.drawImage(image);
-        display.incrementCursorY(1);
-        display.incrementCursorX(2);
-    };
-    dayImage.setDraw(imageDraw);
-    static gui::Image nightImage(display::Images::Moon);
-    nightImage.setDraw(imageDraw);
-    static gui::MoveCursor<4, 0> space;
-    static gui::MoveCursor<0, 2> offsetY;
-    static gui::Text daySuffix("%");
-    static gui::Text nightSuffix("%");
-
-
-    power.next(&dayImage)
-        .next(&dayPower)
-        .next(&daySuffix)
-        .next(&offsetY)
-        .next(&newLine);
-
-    power.height(power.height() + 2);
-    static gui::Option nightPower;
-    static gui::MoveCursor<0, 2> nightPowerOffsetY;
-
-    nightPower.next(&nightImage)
-        .next(&nightPower)
-        .next(&nightSuffix)
-        .next(&nightPowerOffsetY)
-        .next(&newLine);
-    nightPower.height(nightPower.height() + 2);
-
-    static gui::Option currentPower;
-    static gui::Text currentPowerText("C: 100%");
-    currentPower.next(&currentPowerText).next(&newLine);
+    // static gui::Option power;
+    // static gui::Image dayImage(display::Images::Sun);
+    // auto imageDraw = [](const display::Image& image) {
+    //     display::Display& display = *display::Display::get();
+    //     display.decrementCursorY(1);
+    //     display.drawImage(image);
+    //     display.incrementCursorY(1);
+    //     display.incrementCursorX(2);
+    // };
+    // dayImage.setDraw(imageDraw);
+    // static gui::Image nightImage(display::Images::Moon);
+    // nightImage.setDraw(imageDraw);
+    // static gui::MoveCursor<4, 0> space;
+    // static gui::MoveCursor<0, 2> offsetY;
+    // static gui::Text daySuffix("%");
+    // static gui::Text nightSuffix("%");
 
 
-    static gui::Option sunriseTime;
-    static gui::Text sunriseText(" 00:00:00");
-    static gui::Text sunshineText(" 00:00:00");
+    // power.next(&dayImage)
+    //     .next(&dayPower)
+    //     .next(&daySuffix)
+    //     .next(&offsetY)
+    //     .next(&newLine);
 
-    static gui::Image sunriseImage(display::Images::Sun);
-    sunriseImage.setDraw(imageDraw);
-    static gui::Image sunshineImage(display::Images::Moon);
-    sunshineImage.setDraw(imageDraw);
-    static gui::MoveCursor<0, 1> nightOffsetY;
+    //     power.height(power.height() + 2);
+    //     static gui::Option nightPower;
+    //     static gui::MoveCursor<0, 2> nightPowerOffsetY;
 
-    sunriseTime.next(&sunriseImage).next(&sunriseText).next(&nightOffsetY).next(&newLine);
-    sunriseTime.height(sunriseTime.height() + 1);
+    //     nightPower.next(&nightImage)
+    //         .next(&nightPower)
+    //         .next(&nightSuffix)
+    //         .next(&nightPowerOffsetY)
+    //         .next(&newLine);
+    //     nightPower.height(nightPower.height() + 2);
 
-    static gui::Option sunshineTime;
-    static gui::MoveCursor<4, 0> nightSpace;
-    sunshineTime.next(&sunshineImage).next(&nightSpace).next(&sunshineText).next(&newLine);
+    //     static gui::Option currentPower;
+    //     static gui::Text currentPowerText("C: 100%");
+    //     currentPower.next(&currentPowerText).next(&newLine);
 
 
-    channelsMenu_.addOption(channelOption);
-    channelsMenu_.addOption(currentPower);
-    channelsMenu_.addOption(power);
-    channelsMenu_.addOption(nightPower);
-    channelsMenu_.addOption(sunriseTime);
-    channelsMenu_.addOption(sunshineTime);
+    //     static gui::Option sunriseTime;
+    //     static gui::Text sunriseText(" 00:00:00");
+    //     static gui::Text sunshineText(" 00:00:00");
 
-    updatePage();
+    //     static gui::Image sunriseImage(display::Images::Sun);
+    //     sunriseImage.setDraw(imageDraw);
+    //     static gui::Image sunshineImage(display::Images::Moon);
+    //     sunshineImage.setDraw(imageDraw);
+    //     static gui::MoveCursor<0, 1> nightOffsetY;
+
+    //     sunriseTime.next(&sunriseImage).next(&sunriseText).next(&nightOffsetY).next(&newLine);
+    //     sunriseTime.height(sunriseTime.height() + 1);
+
+    //     static gui::Option sunshineTime;
+    //     static gui::MoveCursor<4, 0> nightSpace;
+    //     sunshineTime.next(&sunshineImage).next(&nightSpace).next(&sunshineText).next(&newLine);
+
+
+    //     channelsMenu_.addOption(channelOption);
+    //     channelsMenu_.addOption(currentPower);
+    //     channelsMenu_.addOption(power);
+    //     channelsMenu_.addOption(nightPower);
+    //     channelsMenu_.addOption(sunriseTime);
+    //     channelsMenu_.addOption(sunshineTime);
+
+    //     updatePage();
+    // }
 }
 
 bool MainMenu::active() const

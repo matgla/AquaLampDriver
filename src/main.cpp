@@ -3,7 +3,8 @@
 #include "bsp/board.hpp"
 #include "display/display.hpp"
 #include "display/font.hpp"
-
+#include "gui/graphicDriver.hpp"
+#include "gui/gui.hpp"
 
 // TODO: remove this ugly preprocessor
 
@@ -25,6 +26,16 @@ int main()
 #endif
     display::Display::initialize(board, lcdDriver, display::font_5x7);
     app::Context context(board, *display::Display::get());
+    gui::GraphicDriver driver(
+        [&lcdDriver](int x, int y, bool enable) {
+            display::Colors color = enable ? display::Colors::BLACK : display::Colors::OFF;
+            lcdDriver.setPixel(x, y, color);
+            lcdDriver.display();
+        },
+        [&lcdDriver] { return lcdDriver.getWidth(); },
+        [&lcdDriver] { return lcdDriver.getHeight(); });
+
+    gui::Gui::get().setDriver(driver);
     app::App app(*display::Display::get(), board, context);
     app.start();
     app.run();

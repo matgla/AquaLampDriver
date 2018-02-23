@@ -13,9 +13,10 @@
 namespace app
 {
 App::App(display::Display& display, bsp::Board& board, app::IContext& context)
-    : context_(context), lightController_(context), logger_("App"), board_(board), display_(display), state_(App::State::Off), backlight_(true), menu_(board, context)
+    : context_(context), lightController_(context), logger_("App"), board_(board), display_(display), state_(App::State::Off), backlight_(true), menu_(board, context), window_({0, 0}, 0, 0, "Main")
 
 {
+    window_.fullscreen(true);
 }
 
 //     : logger_("App"),
@@ -295,25 +296,25 @@ void App::run()
 
     while (!board_.exit())
     {
+        window_.draw();
 
-
-        switch (state_)
-        {
-            case State::Off:
-                break;
-            case State::Show:
-                onShow();
-                break;
-            case State::Menu:
-                updateKey();
-                menu_.run(key_, isLongPressedKey_);
-                if (!menu_.active())
-                {
-                    state_ = State::Show;
-                    std::cout << "Menu off" << std::endl;
-                }
-                break;
-        }
+        // switch (state_)
+        // {
+        //     case State::Off:
+        //         break;
+        //     case State::Show:
+        //         onShow();
+        //         break;
+        //     case State::Menu:
+        //         updateKey();
+        //         menu_.run(key_, isLongPressedKey_);
+        //         if (!menu_.active())
+        //         {
+        //             state_ = State::Show;
+        //             std::cout << "Menu off" << std::endl;
+        //         }
+        //         break;
+        // }
         // hal::time::WatchDog::feed();
 
 

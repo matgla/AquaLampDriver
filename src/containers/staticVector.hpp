@@ -32,6 +32,29 @@ public:
         return firstFreePosition_;
     }
 
+    typedef Type* iterator;
+    typedef const Type* const_iterator;
+
+    iterator begin()
+    {
+        return &data_[0];
+    }
+
+    const_iterator begin() const
+    {
+        return &data_[0];
+    }
+
+    iterator end()
+    {
+        return &data_[firstFreePosition_];
+    }
+
+    const_iterator end() const
+    {
+        return &data_[firstFreePosition_];
+    }
+
     Type pop_back()
     {
         if (0 == firstFreePosition_)
