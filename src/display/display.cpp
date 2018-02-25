@@ -190,10 +190,10 @@ void Display::setY(u8 y)
 void Display::drawImage(const gsl::span<const u8>& buffer, u8 width, u8 height, Colors color, Style style)
 {
     UNUSED(color);
-    if (buffer.length() < width || sizeof(buffer[0]) * 8 < height)
+    if (buffer.size() < width || sizeof(buffer[0]) * 8 < height)
     {
         logger_.error() << "Buffer smaller than picture";
-        logger_.error() << "buffer.length()=" << buffer.length() << ", width=" << width << ", sizeof(buffer[0])=" << sizeof(buffer[0]) << ", height=" << height;
+        logger_.error() << "buffer.length()=" << buffer.size() << ", width=" << width << ", sizeof(buffer[0])=" << sizeof(buffer[0]) << ", height=" << height;
         return;
     }
 

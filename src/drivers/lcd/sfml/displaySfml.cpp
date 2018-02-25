@@ -37,17 +37,17 @@ void DisplaySfml::display()
     bsp::x86::Window::get().setDisplay(texture);
 }
 
-u16 DisplaySfml::getHeight() const
+int DisplaySfml::getHeight() const
 {
     return DISPLAY_HEIGHT;
 }
 
-u16 DisplaySfml::getWidth() const
+int DisplaySfml::getWidth() const
 {
     return DISPLAY_WIDTH;
 }
 
-void DisplaySfml::setPixel(u16 x, u16 y, display::Colors color)
+void DisplaySfml::setPixel(int x, int y, display::Colors color)
 {
     if (x >= buffer_.getSize().x)
     {

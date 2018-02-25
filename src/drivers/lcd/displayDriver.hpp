@@ -16,10 +16,10 @@ class DisplayDriver
 public:
     virtual ~DisplayDriver() = default;
 
-    virtual void display() = 0;
-    virtual u16 getHeight() const = 0;
-    virtual u16 getWidth() const = 0;
-    virtual void setPixel(u16 x, u16 y, display::Colors color = display::Colors::BLACK) = 0;
+    virtual void display()                                                              = 0;
+    virtual int getHeight() const                                                       = 0;
+    virtual int getWidth() const                                                        = 0;
+    virtual void setPixel(int x, int y, display::Colors color = display::Colors::BLACK) = 0;
 };
 
 } // namespace lcd

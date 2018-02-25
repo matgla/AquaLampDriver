@@ -1,10 +1,14 @@
+#include <msgui/Font.hpp>
+#include <msgui/GraphicDriver.hpp>
+#include <msgui/Gui.hpp>
+
 #include "app/app.hpp"
 #include "app/context.hpp"
 #include "bsp/board.hpp"
 #include "display/display.hpp"
 #include "display/font.hpp"
-#include "gui/graphicDriver.hpp"
-#include "gui/gui.hpp"
+// #include "gui/graphicDriver.hpp"
+
 
 // TODO: remove this ugly preprocessor
 
@@ -26,16 +30,18 @@ int main()
 #endif
     display::Display::initialize(board, lcdDriver, display::font_5x7);
     app::Context context(board, *display::Display::get());
-    gui::GraphicDriver driver(
+    msgui::GraphicDriver driver(
         [&lcdDriver](int x, int y, bool enable) {
             display::Colors color = enable ? display::Colors::BLACK : display::Colors::OFF;
             lcdDriver.setPixel(x, y, color);
             lcdDriver.display();
         },
         [&lcdDriver] { return lcdDriver.getWidth(); },
-        [&lcdDriver] { return lcdDriver.getHeight(); });
+        [&lcdDriver] { return lcdDriver.getHeight(); },
+        [&lcdDriver] { lcdDriver.display(); });
 
-    gui::Gui::get().setDriver(driver);
+    msgui::Gui::get().setDriver(driver);
+
     app::App app(*display::Display::get(), board, context);
     app.start();
     app.run();

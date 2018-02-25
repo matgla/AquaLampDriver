@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <msgui/Text.hpp>
+
 #include "app/statemachines/events.hpp"
 #include "bsp/board.hpp"
 #include "gui/keys.hpp"
@@ -13,10 +15,10 @@
 namespace app
 {
 App::App(display::Display& display, bsp::Board& board, app::IContext& context)
-    : context_(context), lightController_(context), logger_("App"), board_(board), display_(display), state_(App::State::Off), backlight_(true), menu_(board, context), window_({0, 0}, 0, 0, "Main")
-
+    : context_(context), lightController_(context), logger_("App"), board_(board), display_(display), state_(App::State::Off), backlight_(true), window_({0, 0}, 0, 0, "Main"), helloText_("Hello :)", {10, 20}, msgui::fonts::Font5x7)
 {
     window_.fullscreen(true);
+    window_.attach(helloText_);
 }
 
 //     : logger_("App"),
@@ -57,7 +59,7 @@ void App::start()
     // }
 
     // delayedBacklightOff();
-    display_.clear(display::Colors::OFF);
+    // display_.clear(display::Colors::OFF);
     logger_.info() << "Startup";
 
     // hal::time::Rtc::get().setSecondsHandler([this] {
@@ -109,16 +111,12 @@ void App::onShow()
     {
         delayedBacklightOff();
         state_ = State::Menu;
-        std::cout << "Menu" << std::endl;
-
         return;
     }
     if (board_.upButton.isPressed())
     {
         delayedBacklightOff();
         state_ = State::Menu;
-        std::cout << "Menu" << std::endl;
-
         return;
     }
     if (board_.leftButton.isPressed())
@@ -154,7 +152,7 @@ void App::onShow()
         lightController_.forceLight(false);
     }
 
-    display_.clear(display::Colors::OFF);
+    // display_.clear(display::Colors::OFF);
     constexpr const int TimeBufferSize = 9;
     constexpr const int DateBufferSize = 12;
     char timeBuffer[TimeBufferSize];
@@ -197,92 +195,92 @@ void App::onShow()
 
 void App::updateKey()
 {
-    if (board_.leftButton.isPressed())
-    {
-        key_              = gui::Keys::Left;
-        isLongPressedKey_ = false;
-        return;
-    }
+    // if (board_.leftButton.isPressed())
+    // {
+    //     key_              = gui::Keys::Left;
+    //     isLongPressedKey_ = false;
+    //     return;
+    // }
 
-    if (board_.upButton.isPressed())
-    {
-        key_              = gui::Keys::Up;
-        isLongPressedKey_ = false;
-        return;
-    }
+    // if (board_.upButton.isPressed())
+    // {
+    //     key_              = gui::Keys::Up;
+    //     isLongPressedKey_ = false;
+    //     return;
+    // }
 
-    if (board_.rightButton.isPressed())
-    {
-        key_              = gui::Keys::Right;
-        isLongPressedKey_ = false;
-        return;
-    }
+    // if (board_.rightButton.isPressed())
+    // {
+    //     key_              = gui::Keys::Right;
+    //     isLongPressedKey_ = false;
+    //     return;
+    // }
 
-    if (board_.downButton.isPressed())
-    {
-        key_              = gui::Keys::Down;
-        isLongPressedKey_ = false;
-        return;
-    }
+    // if (board_.downButton.isPressed())
+    // {
+    //     key_              = gui::Keys::Down;
+    //     isLongPressedKey_ = false;
+    //     return;
+    // }
 
-    if (board_.selectButton.isPressed())
-    {
-        key_              = gui::Keys::Select;
-        isLongPressedKey_ = false;
-        return;
-    }
+    // if (board_.selectButton.isPressed())
+    // {
+    //     key_              = gui::Keys::Select;
+    //     isLongPressedKey_ = false;
+    //     return;
+    // }
 
-    if (board_.backButton.isPressed())
-    {
-        key_              = gui::Keys::Back;
-        isLongPressedKey_ = false;
-        return;
-    }
+    // if (board_.backButton.isPressed())
+    // {
+    //     key_              = gui::Keys::Back;
+    //     isLongPressedKey_ = false;
+    //     return;
+    // }
 
-    if (board_.leftButton.isLongPressed())
-    {
-        key_              = gui::Keys::Left;
-        isLongPressedKey_ = true;
-        return;
-    }
+    // if (board_.leftButton.isLongPressed())
+    // {
+    //     key_              = gui::Keys::Left;
+    //     isLongPressedKey_ = true;
+    //     return;
+    // }
 
-    if (board_.upButton.isLongPressed())
-    {
-        key_              = gui::Keys::Up;
-        isLongPressedKey_ = true;
-        return;
-    }
+    // if (board_.upButton.isLongPressed())
+    // {
+    //     key_              = gui::Keys::Up;
+    //     isLongPressedKey_ = true;
+    //     return;
+    // }
 
-    if (board_.rightButton.isLongPressed())
-    {
-        key_              = gui::Keys::Right;
-        isLongPressedKey_ = true;
-        return;
-    }
+    // if (board_.rightButton.isLongPressed())
+    // {
+    //     key_              = gui::Keys::Right;
+    //     isLongPressedKey_ = true;
+    //     return;
+    // }
 
-    if (board_.downButton.isLongPressed())
-    {
-        key_              = gui::Keys::Down;
-        isLongPressedKey_ = true;
-        return;
-    }
+    // if (board_.downButton.isLongPressed())
+    // {
+    //     key_              = gui::Keys::Down;
+    //     isLongPressedKey_ = true;
+    //     return;
+    // }
 
-    if (board_.selectButton.isLongPressed())
-    {
-        key_              = gui::Keys::Select;
-        isLongPressedKey_ = true;
-        return;
-    }
+    // if (board_.selectButton.isLongPressed())
+    // {
+    //     key_              = gui::Keys::Select;
+    //     isLongPressedKey_ = true;
+    //     return;
+    // }
 
-    if (board_.backButton.isLongPressed())
-    {
-        key_              = gui::Keys::Back;
-        isLongPressedKey_ = true;
-        return;
-    }
+    // if (board_.backButton.isLongPressed())
+    // {
+    //     key_              = gui::Keys::Back;
+    //     isLongPressedKey_ = true;
+    //     return;
+    // }
 
-    key_              = gui::Keys::None;
-    isLongPressedKey_ = false;
+    // key_              = gui::Keys::None;
+    // isLongPressedKey_ = false;
 }
 
 void App::run()

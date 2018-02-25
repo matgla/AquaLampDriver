@@ -86,17 +86,17 @@ void DisplayPcd8544::display()
     board_.spi.cePinHigh();
 }
 
-u16 DisplayPcd8544::getHeight() const
+int DisplayPcd8544::getHeight() const
 {
     return PCD8544_SCREEN_HEIGHT;
 }
 
-u16 DisplayPcd8544::getWidth() const
+int DisplayPcd8544::getWidth() const
 {
     return PCD8544_SCREEN_WIDTH;
 }
 
-void DisplayPcd8544::setPixel(u16 x, u16 y, display::Colors color)
+void DisplayPcd8544::setPixel(int x, int y, display::Colors color)
 {
     if (y >= getHeight() || x >= getWidth())
     {

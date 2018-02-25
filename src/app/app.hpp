@@ -5,6 +5,10 @@
 #include <cstdio>
 #include <cstring>
 
+#include <msgui/Text.hpp>
+#include <msgui/Window.hpp>
+#include <msgui/fonts/Font5x7.hpp>
+
 #include "app/contextInterface.hpp"
 #include "app/menu.hpp"
 #include "app/statemachines/appSm.hpp"
@@ -12,8 +16,6 @@
 #include "controller/lightController.hpp"
 #include "display/display.hpp"
 #include "drivers/devices/ds18b20.hpp"
-#include "gui/keys.hpp"
-#include "gui/window.hpp"
 #include "hal/memory/eeprom.hpp"
 #include "logger/logger.hpp"
 #include "timer/manager.hpp"
@@ -54,11 +56,10 @@ private:
     display::Display& display_;
     State state_;
     bool backlight_;
-    MainMenu menu_;
 
-    gui::Keys key_;
     bool isLongPressedKey_;
-    gui::Window<10> window_;
+    msgui::Window<10> window_;
+    msgui::Text<msgui::fonts::Font5x7Type> helloText_;
 };
 
 } // namespace app

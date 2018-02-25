@@ -13,7 +13,7 @@ include(cmake/bsp/common.cmake)
 
 set(bsp_sources ${bsp_common_sources} ${bsp_common_includes})
 
-set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl )
+set(target_libs ${target_libs} gsl sml msgui)# ArduinoJson sml crcpp gsl )
 
 if (${BOARD} STREQUAL "STM32_Black_Pill")
     # TODO: make this smarter
