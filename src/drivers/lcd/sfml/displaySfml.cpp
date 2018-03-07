@@ -30,7 +30,7 @@ void DisplaySfml::display()
     sf::Texture texture;
     texture.loadFromImage(buffer_);
 
-    sf::RectangleShape rectangle(sf::Vector2f(DISPLAY_WIDTH + 4, DISPLAY_HEIGHT + 4));
+    sf::RectangleShape rectangle(sf::Vector2f(DISPLAY_WIDTH + 2, DISPLAY_HEIGHT + 2));
     rectangle.setFillColor(sf::Color(100, 60, 10));
 
     bsp::x86::Window::get().setDisplayBox(rectangle);

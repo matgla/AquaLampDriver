@@ -1,8 +1,8 @@
 #include "bsp/x86/window.hpp"
 #include <iostream>
 
-#define WINDOW_HEIGHT 100
-#define WINDOW_WIDTH 84
+#define WINDOW_HEIGHT 640
+#define WINDOW_WIDTH 480
 #define WINDOW_SCALE 6
 
 namespace bsp
@@ -10,7 +10,7 @@ namespace bsp
 namespace x86
 {
 
-static sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "AquaLampDriver");
+static sf::RenderWindow window(sf::VideoMode(WINDOW_HEIGHT, WINDOW_WIDTH), "AquaLampDriver");
 
 Window::Window()
 {
@@ -20,23 +20,23 @@ Window::Window()
 Window& Window::get()
 {
     static Window w;
-    bsp::x86::window.setSize(sf::Vector2u(WINDOW_HEIGHT * WINDOW_SCALE, WINDOW_WIDTH * WINDOW_SCALE));
     return w;
 }
 
 int Window::getHeight()
 {
-    return bsp::x86::window.getSize().y / WINDOW_SCALE;
+    return bsp::x86::window.getSize().y;
 }
 
 int Window::getWidth()
 {
-    return bsp::x86::window.getSize().x / WINDOW_SCALE;
+    return bsp::x86::window.getSize().x;
 }
 
 void Window::setDisplayBox(const sf::RectangleShape& displayBox)
 {
     displayBox_ = displayBox;
+    displayBox_.setScale(sf::Vector2f{WINDOW_SCALE, WINDOW_SCALE});
 }
 
 void Window::setDisplay(const sf::Texture& display)
@@ -66,7 +66,8 @@ void Window::run()
     bsp::x86::window.draw(displayBox_);
 
     sf::Sprite displaySprite(display_);
-    displaySprite.setPosition(2, 2);
+    displaySprite.setPosition(WINDOW_SCALE, WINDOW_SCALE);
+    displaySprite.setScale(sf::Vector2f{WINDOW_SCALE, WINDOW_SCALE});
     bsp::x86::window.draw(displaySprite);
 
     for (auto& shape : shapes_)
