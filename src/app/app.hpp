@@ -33,9 +33,10 @@ private:
     void update();
     void processTemperature();
     void delayedBacklightOff();
-    bool isLightTime();
     void applyBrightness();
-
+    double timeToSunshine();
+    double timeToSunrise();
+    
     logger::Logger logger_;
     display::Display& display_;
     bsp::Board& board_;
@@ -44,6 +45,10 @@ private:
     bool backlight_;
     bool isLightTime_;
     bool isNightTime_;
+    bool sunriseOngoing_;
+    bool sunshineOngoing_;
+    std::time_t timeToAction_;
+    
     boost::sml::sm<statemachines::AppSm> statemachine_;
     drivers::devices::Ds18b20<NUMBER_OF_TERMOMETERS> termometers_;
     std::array<float, NUMBER_OF_TERMOMETERS> temperaturesHistory_;

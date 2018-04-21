@@ -3,6 +3,10 @@
 #include "display/display.hpp"
 #include "display/font.hpp"
 
+extern "C"
+{
+    #include <hdlc/minihdlc.h>
+}
 
 // TODO: remove this ugly preprocessor
 
@@ -12,8 +16,15 @@
 #include "drivers/lcd/sfml/displaySfml.hpp"
 #endif
 
+void read(const uint8_t* framebuffer, uint16_t framelength) {}
+void write(uint8_t d) {}
+
 int main()
 {
+    minihdlc_init(write, read);
+    uint8_t data[20];
+    minihdlc_send_frame(data, 20);
+    minihdlc_char_receiver(2);
     bsp::BoardInit();
     bsp::Board board;
 
@@ -27,6 +38,7 @@ int main()
     app::App app(display, board);
     app.start();
     app.run();
+
 
     return 0;
 }

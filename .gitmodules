@@ -16,3 +16,6 @@
 [submodule "lib/boost/beast"]
 	path = lib/boost/beast
 	url = https://github.com/boostorg/beast.git
+[submodule "lib/hdlc/hdlc"]
+	path = lib/hdlc/hdlc
+	url = https://github.com/mengguang/minihdlc

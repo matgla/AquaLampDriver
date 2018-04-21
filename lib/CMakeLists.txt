@@ -1,4 +1,6 @@
+message(" -- Adding libraries")
 add_subdirectory(json)
 add_subdirectory(boost)
 add_subdirectory(CRCpp)
 add_subdirectory(gsl)
+add_subdirectory(hdlc)

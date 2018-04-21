@@ -69,108 +69,141 @@ void App::start()
 
     context_.readSettings();
     context_.temporarySettings = context_.settings;
-    if (!isLightTime())
-    {
-        context_.masterPower = 0;
-    }
+ 
+    context_.masterPower = 0;
     applyBrightness();
     board_.fanDriver.setPulse(100);
+    context_.temporarySettings.channelPowers[0]  = 80;
+    context_.temporarySettings.channelPowers[1]  = 70;
+    context_.temporarySettings.channelPowers[2]  = 90;
+    context_.temporarySettings.channelPowers[3]  = 70;
+    context_.temporarySettings.channelPowers[4]  = 90;
+    context_.temporarySettings.channelPowers[5]  = 20;
+    context_.temporarySettings.channelPowers[6]  = 70;
+    context_.temporarySettings.channelPowers[7]  = 70;
+    context_.temporarySettings.channelPowers[8]  = 70;
+    context_.temporarySettings.channelPowers[9]  = 90;
+    context_.temporarySettings.channelPowers[10] = 70;
+    context_.temporarySettings.channelPowers[11] = 90;
+    context_.temporarySettings.channelPowers[12] = 70;
+    context_.temporarySettings.channelPowers[13] = 90;
 
-    context_.settings.sunshine.hours   = 22;
-    context_.settings.sunshine.minutes = 30;
+    context_.settings.sunshine.hours   = 9;
+    context_.settings.sunshine.minutes = 0;
     context_.settings.sunshine.seconds = 0;
 
-    context_.settings.sunrise.hours   = 10;
-    context_.settings.sunrise.minutes = 30;
+    context_.settings.sunrise.hours   = 20;
+    context_.settings.sunrise.minutes = 0;
     context_.settings.sunrise.seconds = 0;
+    
+    isLightTime_ = false;
+    isNightTime_ = true;
+    sunriseOngoing_ = false;
+    sunshineOngoing_ = false;
 }
 
-bool App::isLightTime()
+double App::timeToSunshine()
 {
     time_t now             = std::time(nullptr);
-    struct tm sunshineTime = *std::localtime(&now);
-    struct tm sunriseTime  = *std::localtime(&now);
-    struct tm nowt         = *std::localtime(&now);
+    struct tm sunshineTime  = *std::localtime(&now);
+
     sunshineTime.tm_hour   = context_.settings.sunshine.hours;
     sunshineTime.tm_min    = context_.settings.sunshine.minutes;
     sunshineTime.tm_sec    = context_.settings.sunshine.seconds;
+    
+    return std::difftime(now, mktime(&sunshineTime));
+}
+
+double App::timeToSunrise()
+{
+    time_t now             = std::time(nullptr);
+    struct tm sunriseTime  = *std::localtime(&now);
 
     sunriseTime.tm_hour = context_.settings.sunrise.hours;
     sunriseTime.tm_min  = context_.settings.sunrise.minutes;
     sunriseTime.tm_sec  = context_.settings.sunrise.seconds;
-
-    // clang-format off
-        logger_.info() << "Now: " << nowt.tm_hour << ":" << nowt.tm_min << ":" << nowt.tm_sec 
-            << ", sunrise: " << sunriseTime.tm_hour << ":" << sunriseTime.tm_min << ":" << sunriseTime.tm_sec 
-            << ", sunshine: " << sunshineTime.tm_hour << ":" << sunshineTime.tm_min << ":" << sunshineTime.tm_sec
-            << ", diff1: " << (long)(std::difftime(now, mktime(&sunriseTime)))
-            << ", diff2: " << (long)(std::difftime(now, mktime(&sunshineTime)));
-    // clang-format on
-    if (std::difftime(now, mktime(&sunriseTime)) >= 0 && std::difftime(now, mktime(&sunshineTime)) < 0)
-    {
-        return true;
-    }
-
-
-    return false;
+    
+    return std::difftime(mktime(&sunriseTime), now);
 }
 
 void App::update()
 {
-    if (isLightTime() && !isLightTime_)
+    /* init sunrise */
+    if (timeToSunrise() <= 0 && sunriseOngoing_ == false && !context_.forcedLight)
     {
-        context_.temporarySettings.channelPowers[1]  = 70;
-        context_.temporarySettings.channelPowers[2]  = 90;
-        context_.temporarySettings.channelPowers[3]  = 70;
-        context_.temporarySettings.channelPowers[4]  = 90;
-        context_.temporarySettings.channelPowers[5]  = 0;
-        context_.temporarySettings.channelPowers[6]  = 70;
-        context_.temporarySettings.channelPowers[7]  = 70;
-        context_.temporarySettings.channelPowers[8]  = 70;
-        context_.temporarySettings.channelPowers[9]  = 90;
-        context_.temporarySettings.channelPowers[10] = 70;
-        context_.temporarySettings.channelPowers[11] = 90;
-        context_.temporarySettings.channelPowers[12] = 70;
-        context_.temporarySettings.channelPowers[13] = 90;
-
-
-        context_.masterPower = 80;
-
-
+        sunriseOngoing_ = true;
         board_.fanPwm1.setPulse(100);
         board_.fanPwm2.setPulse(100);
-
-        applyBrightness();
-        isLightTime_ = true;
-        isNightTime_ = false;
     }
-    else if (!isLightTime() && !isNightTime_)
+    
+    if (timeToSunshine() <= 0 && sunriseOngoing_ == false && sunshineOngoing_ == false && !context_.forcedLight)
     {
-        context_.temporarySettings.channelPowers[1]  = 60;
-        context_.temporarySettings.channelPowers[2]  = 0;
-        context_.temporarySettings.channelPowers[3]  = 0;
-        context_.temporarySettings.channelPowers[4]  = 0;
-        context_.temporarySettings.channelPowers[5]  = 0;
-        context_.temporarySettings.channelPowers[6]  = 0;
-        context_.temporarySettings.channelPowers[7]  = 0;
-        context_.temporarySettings.channelPowers[8]  = 0;
-        context_.temporarySettings.channelPowers[9]  = 40;
-        context_.temporarySettings.channelPowers[10] = 0;
-        context_.temporarySettings.channelPowers[11] = 0;
-        context_.temporarySettings.channelPowers[12] = 0;
-        context_.temporarySettings.channelPowers[13] = 40;
-
-
-        context_.masterPower = 2;
-
-
+        sunshineOngoing_ = true;
         board_.fanPwm1.setPulse(0);
         board_.fanPwm2.setPulse(0);
-        isLightTime_ = false;
-        isNightTime_ = true;
-        applyBrightness();
+    }
+    /* fast sunrise if 100 * 60 hour after sunrise */
+    
+    if (sunriseOngoing_ || sunshineOngoing_)
+    {
+        if (timeToAction_ == 0)
+        {
+            if (sunriseOngoing_ && timeToSunrise() <= -6000)    
+            {
+                timeToAction_ = 1;
+            }
+            
+            if (sunriseOngoing_ && timeToSunrise() > -6000)    
+            {
+                timeToAction_ = 60;
+            }
+            
+            if (sunshineOngoing_ && timeToSunshine() > -6000)
+            {
+                timeToAction_ = 60;
+            }
+            
+            if (sunshineOngoing_ && timeToSunshine() <= -6000)
+            {
+                timeToAction_ = 1;
+            }
+        }
+    }
+    
+    if (sunriseOngoing_)
+    {
+        --timeToAction_;
+        if (timeToAction_ == 0)
+        {
+            if (context_.masterPower < context_.temporarySettings.channelPowers[0])
+            {
+                ++context_.masterPower;
+                 applyBrightness();
+            }
+            else 
+            {
+                sunriseOngoing_ = false;
+            }
+        }
     }
 
+    if (sunshineOngoing_)
+    {
+        --timeToAction_;
+        if (timeToAction_ == 0)
+        {
+            if (context_.masterPower < context_.temporarySettings.channelPowers[0])
+            {
+                --context_.masterPower;
+                applyBrightness();
+            }
+            else 
+            {
+                sunshineOngoing_ = false;
+            }
+        }
+    }
+   
     hal::core::startCriticalSection();
     statemachine_.process_event(statemachines::events::Update{});
     hal::core::stopCriticalSection();
@@ -274,8 +307,8 @@ void App::processTemperature()
         else if (context_.temperatures_[i] < TEMPERATURE_TRESHOLD && (context_.temperatures_[i] - temperaturesHistory_[i]) < -1 * TEMPERATURE_HIST)
         {
             update();
-            board_.fanPwm1.setPulse(0);
-            board_.fanPwm2.setPulse(0);
+            // board_.fanPwm1.setPulse(0);
+            // board_.fanPwm2.setPulse(0);
             temperaturesHistory_[i] = context_.temperatures_[i];
             logger_.info() << "Fan: 0%";
         }

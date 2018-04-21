@@ -13,7 +13,7 @@ include(cmake/bsp/common.cmake)
 
 set(bsp_sources ${bsp_common_sources} ${bsp_common_includes})
 
-set(target_libs ${target_libs} gsl sml)# ArduinoJson sml crcpp gsl )
+set(target_libs ${target_libs} gsl sml hdlc)# ArduinoJson sml crcpp gsl )
 
 if (${BOARD} STREQUAL "STM32_Black_Pill")
     # TODO: make this smarter
@@ -35,8 +35,6 @@ elseif (${BOARD} STREQUAL "X86")
         ${x86_bsp_includes}
     )
 endif (${BOARD} STREQUAL "STM32_Black_Pill")
-
-message("BSP sources: ${bsp_sources}")
 
 set(production_srcs ${production_srcs} ${bsp_sources})
 
@@ -100,7 +98,6 @@ elseif (${ARCH} STREQUAL "STM32")
 
     add_custom_target(${target_name}.hex DEPENDS ${target_name} COMMAND ${CMAKE_OBJCOPY} -Oihex ${target_name}.elf ${target_name}.hex)
     file(TO_CMAKE_PATH "${CMAKE_OBJCOPY}" OBJCPY)
-    message("cmd: ${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin")
     add_custom_target(${target_name}.bin DEPENDS ${target_name} COMMAND ${OBJCPY} -Obinary ${target_name}.elf ${target_name}.bin)
 
     # If STM32 ST-Link Utility is found, add a make target to program the chip

@@ -9,7 +9,6 @@ set(SML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/lib/boost/sml/include" CACHE STRING "
 add_library(sml INTERFACE)
 target_sources(sml INTERFACE ${boost_sml_srcs})
 target_include_directories(sml INTERFACE ${SML_INCLUDE_DIR})
-message("sml sources ${SML_INCLUDE_DIR}")
 
 file(GLOB_RECURSE beast_srcs
     "beast/include/*.hpp"
